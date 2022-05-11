@@ -647,6 +647,11 @@ struct kmap_ctrl {
 };
 
 struct task_struct {
+/*
+thread_info可以放在内核栈的栈顶部位，
+这里可以看到，如果thread_info包含在task_struct中的，它在第一个位置，而且不被打乱，可以看后面，都被打乱了
+原因是可以通过拿到thread_info的地址，就拿到了task_struct的地址。
+*/
 #ifdef CONFIG_THREAD_INFO_IN_TASK
 	/*
 	 * For reasons of header soup (see current_thread_info()), this
@@ -661,6 +666,16 @@ struct task_struct {
 	 * This begins the randomizable portion of task_struct. Only
 	 * scheduling-critical items should be added above here.
 	 */
+	/*
+	从这里开始才是打乱的部分
+	但是container_of宏还是能获取，因为container_of是编译期的行为。
+	看看这里：
+	https://app.yinxiang.com/shard/s65/nl/15273355/cd602d62-fccb-4b28-be3d-bd1ba95461ed/
+	原因是：
+	1 编译期怎么打乱都没事，GCC知道所有的信息；
+	2 运行时打乱后，编译器的代码已经生成，所以你根据运行时的信息是无法知道具体的偏移的。
+	3 而且container_of是个宏，在编译期已经inline了，你也找不到线索（没有符号了），反编译也没用。
+	*/
 	randomized_struct_fields_start
 
 	void				*stack;
