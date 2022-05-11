@@ -97,22 +97,37 @@ SYM_CODE_START(entry_SYSCALL_64)
 /* Interrupts are off on entry. */
 	swapgs
 	/* tss.sp2 is scratch space. */
-	/* 将用户栈偏移保存到 per-cpu 变量 rsp_scratch 中*/
+	/* 将用户栈偏移保存到 per-cpu 变量 rsp_scratch 中 -1*/
 	movq	%rsp, PER_CPU_VAR(cpu_tss_rw + TSS_sp2)
+
+	/* 切换到内核的cr3 cr3是页目录的寄存器*/
+	/* 将用户栈偏移保存到 per-cpu 变量 rsp_scratch 中 -2*/
 	SWITCH_TO_KERNEL_CR3 scratch_reg=%rsp
+	
+	/*切换到进程的内核态栈
+	cpu_current_top_of_stack 宏可以从tss段取到内核栈顶的地址。放入rsp中。
+	*/
 	movq	PER_CPU_VAR(cpu_current_top_of_stack), %rsp
 
 SYM_INNER_LABEL(entry_SYSCALL_64_safe_stack, SYM_L_GLOBAL)
 
-	/* Construct struct pt_regs on stack */
+	/* Construct struct pt_regs on stack  这里看到在内核态的栈顶首先就是压栈 
+	把用户态的ss cs  flag ip都保存在内核态的栈顶了。
+	所以可以通过内核态的栈顶得到pt_reg这个结构。
+	*/
 	pushq	$__USER_DS				/* pt_regs->ss */
 	pushq	PER_CPU_VAR(cpu_tss_rw + TSS_sp2)	/* pt_regs->sp */
 	pushq	%r11					/* pt_regs->flags */
 	pushq	$__USER_CS				/* pt_regs->cs */
 	pushq	%rcx					/* pt_regs->ip */
 SYM_INNER_LABEL(entry_SYSCALL_64_after_hwframe, SYM_L_GLOBAL)
+	/*保存系统调用号*/
 	pushq	%rax					/* pt_regs->orig_ax */
 
+/*https://app.yinxiang.com/shard/s65/nl/15273355/944b618a-1a86-4fd2-be76-ebc2b881a7f4/
+
+.macro PUSH_AND_CLEAR_REGS rdx=%rdx rax=%rax save_ret=0 //calling.h 保存剩余的用户态寄存器信息
+*/
 	PUSH_AND_CLEAR_REGS rax=$-ENOSYS
 
 	/* IRQs are off. */

@@ -432,6 +432,12 @@ DECLARE_PER_CPU(struct irq_stack *, hardirq_stack_ptr);
 DECLARE_PER_CPU(unsigned long, cpu_current_top_of_stack);
 #else
 /* The RO copy can't be accessed with this_cpu_xyz(), so use the RW copy. */
+/*
+TSS 任务状态段是个特殊的x86下的存放内核状态信息的段。
+系统调用的时候entry_64.S 需要从这个段中取到内核堆栈的地址。
+
+lin->第三章->任务状态段
+*/
 #define cpu_current_top_of_stack cpu_tss_rw.x86_tss.sp1
 #endif
 
