@@ -12,8 +12,8 @@ DECLARE_PER_CPU(struct task_struct *, current_task);
 
 static __always_inline struct task_struct *get_current(void)
 {
-	//stem##4(variable)
-	//this_cpu_read_stable_8(current_task)	percpu_stable_op(8, "mov", current_task)
+	//看看
+	//https://app.yinxiang.com/shard/s65/nl/15273355/8fa24190-582f-4068-b5b5-b770d907f599/
 	return this_cpu_read_stable(current_task);
 }
 

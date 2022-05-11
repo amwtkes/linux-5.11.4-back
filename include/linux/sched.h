@@ -678,6 +678,12 @@ thread_info可以放在内核栈的栈顶部位，
 	*/
 	randomized_struct_fields_start
 
+	/*
+	有一点需要注意，进程描述符中的 task_struct.stack指针，是指向栈区域内存基地址，即thread_union.stack 数组基地址，
+	既不是栈顶也不是栈底，栈顶存在寄存器rsp中，栈底是task_struct.stack+THREAD_SIZE，代码中引用时需要注意。
+
+	https://app.yinxiang.com/shard/s65/nl/15273355/944b618a-1a86-4fd2-be76-ebc2b881a7f4/
+	*/
 	void				*stack;
 	refcount_t			usage;
 	/* Per task flags (PF_*), defined further below: */
