@@ -17,6 +17,10 @@
 
 #define __SYSCALL_64(nr, sym) [nr] = __x64_##sym,
 
+/*
+在编译的时候从syscall_64.tbl文件通过执行shell来自动改写这里，
+填上相应的值。
+*/
 asmlinkage const sys_call_ptr_t sys_call_table[__NR_syscall_max+1] = {
 	/*
 	 * Smells like a compiler bug -- it doesn't work

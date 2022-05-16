@@ -116,9 +116,11 @@ SYM_INNER_LABEL(entry_SYSCALL_64_safe_stack, SYM_L_GLOBAL)
 	所以可以通过内核态的栈顶得到pt_reg这个结构。
 	*/
 	pushq	$__USER_DS				/* pt_regs->ss */
+	/*从tss中的sp2 slot取出用户态栈顶，保存在栈上面*/
 	pushq	PER_CPU_VAR(cpu_tss_rw + TSS_sp2)	/* pt_regs->sp */
 	pushq	%r11					/* pt_regs->flags */
 	pushq	$__USER_CS				/* pt_regs->cs */
+	/*保存返回用户态要执行的指令地址*/
 	pushq	%rcx					/* pt_regs->ip */
 SYM_INNER_LABEL(entry_SYSCALL_64_after_hwframe, SYM_L_GLOBAL)
 	/*保存系统调用号*/
