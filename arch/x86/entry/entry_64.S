@@ -100,7 +100,7 @@ SYM_CODE_START(entry_SYSCALL_64)
 	/* 将用户栈偏移保存到 per-cpu 变量 rsp_scratch 中 -1*/
 	movq	%rsp, PER_CPU_VAR(cpu_tss_rw + TSS_sp2)
 
-	/* 切换到内核的cr3 cr3是页目录的寄存器*/
+	/* 切换到内核的cr3 cr3是页目录的寄存器 PIT开启就要将内核态与用户态的页表在PGD层面隔离，防止meltdown攻击。*/
 	/* 将用户栈偏移保存到 per-cpu 变量 rsp_scratch 中 -2*/
 	SWITCH_TO_KERNEL_CR3 scratch_reg=%rsp
 	
