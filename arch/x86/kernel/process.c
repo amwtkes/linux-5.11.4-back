@@ -134,7 +134,9 @@ int copy_thread(unsigned long clone_flags, unsigned long sp, unsigned long arg,
 	struct pt_regs *childregs;
 	int ret = 0;
 
-	/*内核栈里面保存的用户态栈的值——childregs*/
+	/*内核栈里面保存的用户态栈的值——childregs
+	注意这里是：fork_frame里面的pt_regs
+	*/
 	childregs = task_pt_regs(p);
 
 	/* xiaojin

@@ -493,7 +493,7 @@ struct perf_event;
 
 struct thread_struct {
 	/* Cached TLS descriptors: Thread-Local Storage (TLS) segments*/
-	struct desc_struct	tls_array[GDT_ENTRY_TLS_ENTRIES];
+	struct desc_struct	tls_array[GDT_ENTRY_TLS_ENTRIES]; //最多三个。
 #ifdef CONFIG_X86_32
 	unsigned long		sp0;
 #endif
