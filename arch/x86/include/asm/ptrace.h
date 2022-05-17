@@ -53,6 +53,7 @@ struct pt_regs {
 
 #else /* __i386__ */
 
+/*放在内核栈栈顶底 entry_64.s*/
 struct pt_regs {
 /*
  * C ABI says these regs are callee-preserved. They aren't saved on kernel entry

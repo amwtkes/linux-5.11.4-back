@@ -44,6 +44,11 @@ __visible noinstr void do_syscall_64(unsigned long nr, struct pt_regs *regs)
 	if (likely(nr < NR_syscalls)) {
 		nr = array_index_nospec(nr, NR_syscalls);
 		/*系统调用的入口*/
+		/* 通过系统调用跳转表，调用系统调用号对应的函数。
+         * 函数返回值保存在 regs->ax 里，最后将这个值，保存到 rax 寄存器传递到用户空间。 */
+
+
+		/*sys_call_table 是编译时进行设置的，通过syscalltbl.sh脚本与syscall_64.tbl文件生成的，奇葩。*/
 		regs->ax = sys_call_table[nr](regs);
 #ifdef CONFIG_X86_X32_ABI
 	} else if (likely((nr & __X32_SYSCALL_BIT) &&
