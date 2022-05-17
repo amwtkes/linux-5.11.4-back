@@ -123,6 +123,9 @@ static int set_new_tls(struct task_struct *p, unsigned long tls)
 }
 
 //p是新产生的task_struct
+/*
+sp就是args->stack 用户态栈的地址，栈顶地址。用sp表示。
+*/
 int copy_thread(unsigned long clone_flags, unsigned long sp, unsigned long arg,
 		struct task_struct *p, unsigned long tls)
 {
@@ -131,9 +134,18 @@ int copy_thread(unsigned long clone_flags, unsigned long sp, unsigned long arg,
 	struct pt_regs *childregs;
 	int ret = 0;
 
+	/*内核栈里面保存的用户态栈的值——childregs*/
 	childregs = task_pt_regs(p);
+
+	/* xiaojin
+	fork_from是一个不活跃进程的栈结构，不是当前进程的栈。
+	可以看	struct inactive_task_frame { 注释。
+	这里pt_reg的布局应该要跟_switch_to吻合？？？ 不懂
+
+	但是肯定的是，这个还在老进程的系统调用里面，还没实际运行，所以不能取运行时进程的pt_reg.
+	*/
 	fork_frame = container_of(childregs, struct fork_frame, regs);
-	frame = &fork_frame->frame;
+	frame = &fork_frame->frame; //就是inactive frame 一堆寄存器的值。
 
 	frame->bp = encode_frame_pointer(childregs);
 	frame->ret_addr = (unsigned long) ret_from_fork;

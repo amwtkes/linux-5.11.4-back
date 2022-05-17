@@ -12,7 +12,7 @@
 
 #include <linux/types.h>
 
-/* 8 byte segment descriptor */
+/* 8 byte segment descriptor Thread-Local Storage (TLS) segments*/
 struct desc_struct {
 	u16	limit0;
 	u16	base0;
