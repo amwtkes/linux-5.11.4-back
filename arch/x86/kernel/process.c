@@ -184,6 +184,7 @@ int copy_thread(unsigned long clone_flags, unsigned long sp, unsigned long arg,
 
 	frame->bx = 0;
 	*childregs = *current_pt_regs();
+	/*子进程也就是clone出来的进程返回值是0.也就是clone对于子进程pid=0*/
 	childregs->ax = 0;
 	// sp放入了regs里面，栈顶的指针，用户态的栈。
 	// p-> stack 是内核栈。
