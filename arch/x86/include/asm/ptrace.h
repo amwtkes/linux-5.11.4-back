@@ -66,25 +66,26 @@ struct pt_regs {
 	unsigned long bx;
 /* These regs are callee-clobbered. Always saved on kernel entry. */
 	unsigned long r11;
-	unsigned long r10;
-	unsigned long r9;
-	unsigned long r8;
-	unsigned long ax;
-	unsigned long cx;
-	unsigned long dx;
-	unsigned long si;
-	unsigned long di;
+	unsigned long r10;/* 程序传递到内核的第 4 个参数。 */
+	unsigned long r9;/* 程序传递到内核的第 6 个参数。 */
+	unsigned long r8;/* 程序传递到内核的第 5 个参数。 */
+	unsigned long ax;/* 程序传递到内核的系统调用号。 */
+	unsigned long cx;/* 程序传递到内核的 syscall 的下一条指令地址。 */
+	unsigned long dx;/* 程序传递到内核的第 3 个参数。 */
+	unsigned long si;/* 程序传递到内核的第 2 个参数。 */
+	unsigned long di;/* 程序传递到内核的第 1 个参数。 */
 /*
  * On syscall entry, this is syscall#. On CPU exception, this is error code.
  * On hw interrupt, it's IRQ number:
  */
 	unsigned long orig_ax;
 /* Return frame for iretq */
-	unsigned long ip;
-	unsigned long cs;
-	unsigned long flags;
-	unsigned long sp;
-	unsigned long ss;
+/* 内核态返回用户态需要恢复现场的数据。*/
+	unsigned long ip;/* 保存程序调用 syscall 的下一条指令地址。用户态下一条 */
+	unsigned long cs;/* 用户态代码起始段地址。 */
+	unsigned long flags;/* 用户态的 CPU 标志。 */
+	unsigned long sp;/* 用户态的栈顶地址（栈内存是向下增长的）。 */
+	unsigned long ss;/* 用户态的数据段地址。 */
 /* top of stack page */
 };
 
