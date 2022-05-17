@@ -597,7 +597,7 @@ void load_percpu_segment(int cpu)
 	loadsegment(fs, __KERNEL_PERCPU);
 #else
 	__loadsegment_simple(gs, 0);
-	/*percup确实是gs指向的*/
+	/*percup确实是gs指向的，GS没有放在GDT中了，而是有MSR这个特殊模组寄存器来存放。*/
 	wrmsrl(MSR_GS_BASE, cpu_kernelmode_gs_base(cpu));
 #endif
 	load_stack_canary_segment();
