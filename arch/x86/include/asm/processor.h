@@ -311,7 +311,7 @@ struct x86_hw_tss {
 
 } __attribute__((packed));
 #else
-struct x86_hw_tss {
+struct x86_hw_tss { //xiaojin
 	u32			reserved1;
 	u64			sp0;
 
@@ -319,6 +319,7 @@ struct x86_hw_tss {
 	 * We store cpu_current_top_of_stack in sp1 so it's always accessible.
 	 * Linux does not use ring 1, so sp1 is not otherwise needed.
 	 */
+		/*内核栈rsp存在这里*/
 	u64			sp1;
 
 	/*
@@ -326,6 +327,7 @@ struct x86_hw_tss {
 	 * hardware.  entry_SYSCALL_64 uses it as scratch space to stash
 	 * the user RSP value.
 	 */
+	/*用户态的rsp存在这里*/
 	u64			sp2;
 
 	u64			reserved2;
@@ -431,7 +433,8 @@ DECLARE_PER_CPU(struct irq_stack *, hardirq_stack_ptr);
 #ifdef CONFIG_X86_32
 DECLARE_PER_CPU(unsigned long, cpu_current_top_of_stack);
 #else
-/* The RO copy can't be accessed with this_cpu_xyz(), so use the RW copy. */
+/* xiaojin
+The RO copy can't be accessed with this_cpu_xyz(), so use the RW copy. */
 /*
 TSS 任务状态段是个特殊的x86下的存放内核状态信息的段。
 系统调用的时候entry_64.S 需要从这个段中取到内核堆栈的地址。

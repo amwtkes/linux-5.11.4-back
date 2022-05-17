@@ -92,12 +92,33 @@ SYM_CODE_END(native_usergs_sysret64)
  * with them due to bugs in both AMD and Intel CPUs.
  */
 
-SYM_CODE_START(entry_SYSCALL_64)
+/* xiaojin
+1. 用户态栈保存，然后切换到内核栈
+2. 切换cr3寄存器，从用户态切换到内核态
+3. 保存用户态regs的值，到pt_reg,也就是内核栈的最开头
+4. 调用do_syscall_64 进入具体的系统调用
+5. 返回值放在ax寄存器，
+6. 恢复用户态栈准备返回用户空间
+7. 切换cr3到用户态
+8. 切换gs寄存器，执行sysret指令。
+*/
+SYM_CODE_START(entry_SYSCALL_64) 
 	UNWIND_HINT_EMPTY
 /* Interrupts are off on entry. */
 	swapgs
 	/* tss.sp2 is scratch space. */
-	/* 将用户栈偏移保存到 per-cpu 变量 rsp_scratch 中 -1*/
+	/* 将用户栈偏移保存到 tss段
+	（GDT中只有一个tss的描述符，后面的CPU可以通过gs指向per cpu变量
+	通过gs去指向，gs的值可以通过MSR_GS_BASE初始化，不需要GDT了）
+	的sp2这个位置，可以在 tss_struct 看到，原本是为了ring0-2各有个tss的栈指针保存，但是linux只用了2与0；
+	所以TSS_sp2这个slot存储用户态的rsp，TSS_sp0存储内核态的rsp。
+
+	tss——任务状态段，task specific segment，用来存储task相关的信息，TR寄存器作为段选择子，段描述符存在GDT中。
+	但是linux并没有按照intel CPU的设计，为每个task保存一个tss段，GDT中也只有一个tss，所以tss描述符其实就表示在这个CPU
+	运行的task的信息，内存的段也是存储这个正在运行的task的相关信息。
+
+	常常被用作系统调用来保存，用户态与内核态的相关需要保存的信息而存在。（深入理解linux内核，intel手册的第三本，task management一章有解释）
+	*/
 	movq	%rsp, PER_CPU_VAR(cpu_tss_rw + TSS_sp2)
 
 	/* 切换到内核的cr3 cr3是页目录的寄存器 PIT开启就要将内核态与用户态的页表在PGD层面隔离，防止meltdown攻击。*/
@@ -106,6 +127,9 @@ SYM_CODE_START(entry_SYSCALL_64)
 	
 	/*切换到进程的内核态栈
 	cpu_current_top_of_stack 宏可以从tss段取到内核栈顶的地址。放入rsp中。
+	#define cpu_current_top_of_stack cpu_tss_rw.x86_tss.sp1
+
+	栈切换完成，然后开始push，保存用户态pt_reg了。这个过程不能中断。
 	*/
 	movq	PER_CPU_VAR(cpu_current_top_of_stack), %rsp
 
@@ -128,13 +152,17 @@ SYM_INNER_LABEL(entry_SYSCALL_64_after_hwframe, SYM_L_GLOBAL)
 
 /*https://app.yinxiang.com/shard/s65/nl/15273355/944b618a-1a86-4fd2-be76-ebc2b881a7f4/
 
-.macro PUSH_AND_CLEAR_REGS rdx=%rdx rax=%rax save_ret=0 //calling.h 保存剩余的用户态寄存器信息
+.macro PUSH_AND_CLEAR_REGS rdx=%rdx rax=%rax save_ret=0 //calling.h 
+保存剩余的用户态寄存器信息
 */
 	PUSH_AND_CLEAR_REGS rax=$-ENOSYS
 
 	/* IRQs are off. */
 	movq	%rax, %rdi
 	movq	%rsp, %rsi
+
+	/*保存完用户态的信息，
+	进入系统调用*/
 	call	do_syscall_64		/* returns with IRQs disabled */
 
 	/*
@@ -233,6 +261,13 @@ syscall_return_via_sysret:
 
 	popq	%rdi
 	popq	%rsp
+
+	/*
+		swapgs;					\
+     	sysretq;
+		 sysret指令，它是syscall从内核态返回用户态的伴随指令。执行sysret时，它从rcx加载rip，并从r11加载rflags，从 MSR的 IA32_STAR[63:48] 加载CS ，
+		 从 IA32_STAR[63:48] + 8 加载SS。SYSRET指令不会修改堆栈指针（ESP或RSP），因此在执行SYSRET之前rsp必须切换到用户堆栈，当然还要切换GS寄存器。
+	*/
 	USERGS_SYSRET64
 SYM_CODE_END(entry_SYSCALL_64)
 
