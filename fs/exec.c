@@ -1798,6 +1798,7 @@ static int bprm_execve(struct linux_binprm *bprm,
 	check_unsafe_exec(bprm);
 	current->in_execve = 1;
 
+/*打开文件，根据flag*/
 	file = do_open_execat(fd, filename, flags);
 	retval = PTR_ERR(file);
 	if (IS_ERR(file))
@@ -1852,6 +1853,10 @@ out_unmark:
 	return retval;
 }
 
+/*
+fd = AT_FDCWD -100
+flags = 0
+*/
 static int do_execveat_common(int fd, struct filename *filename,
 			      struct user_arg_ptr argv,
 			      struct user_arg_ptr envp,
@@ -1869,6 +1874,8 @@ static int do_execveat_common(int fd, struct filename *filename,
 	 * don't check setuid() return code.  Here we additionally recheck
 	 * whether NPROC limit is still exceeded.
 	 */
+
+	/*RLIMIT_NPROC 用户可以创建的最大进程数*/
 	if ((current->flags & PF_NPROC_EXCEEDED) &&
 	    atomic_read(&current_user()->processes) > rlimit(RLIMIT_NPROC)) {
 		retval = -EAGAIN;
@@ -1978,8 +1985,12 @@ static int do_execve(struct filename *filename,
 	const char __user *const __user *__argv,
 	const char __user *const __user *__envp)
 {
+	/*xiaojin 参数列表，java就有很多*/
 	struct user_arg_ptr argv = { .ptr.native = __argv };
+
+	/*环境变量*/
 	struct user_arg_ptr envp = { .ptr.native = __envp };
+	/*AT_FDCWD 表示用当前目录。*/
 	return do_execveat_common(AT_FDCWD, filename, argv, envp, 0);
 }
 

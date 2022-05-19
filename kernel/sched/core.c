@@ -4431,6 +4431,11 @@ unsigned long nr_iowait(void)
  * sched_exec - execve() is a valuable balancing opportunity, because at
  * this point the task has the smallest effective memory and cache footprint.
  */
+
+/* xiaojin
+The sched_exec function is used to determine the least loaded processor that can execute the new program and to migrate the current process to it.
+看看哪个cpu更合适新的进程运行。
+*/
 void sched_exec(void)
 {
 	struct task_struct *p = current;
@@ -4439,6 +4444,7 @@ void sched_exec(void)
 
 	raw_spin_lock_irqsave(&p->pi_lock, flags);
 	dest_cpu = p->sched_class->select_task_rq(p, task_cpu(p), WF_EXEC);
+	/*如果最合适的核就是当前核，啥也不做，退出*/
 	if (dest_cpu == smp_processor_id())
 		goto unlock;
 

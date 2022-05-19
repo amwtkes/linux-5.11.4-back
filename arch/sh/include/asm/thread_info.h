@@ -28,7 +28,7 @@ struct thread_info {
 	struct task_struct	*task;		/* main task structure */
 	unsigned long		flags;		/* low level flags */
 	__u32			status;		/* thread synchronous flags */
-	__u32			cpu;
+	__u32			cpu; /*在哪个cpu上跑*/
 	int			preempt_count; /* 0 => preemptable, <0 => BUG */
 	mm_segment_t		addr_limit;	/* thread address space */
 	unsigned long		previous_sp;	/* sp of previous stack in case
