@@ -1016,6 +1016,12 @@ out_free_interp:
 	if (!(current->personality & ADDR_NO_RANDOMIZE) && randomize_va_space)
 		current->flags |= PF_RANDOMIZE;
 
+	/*
+	mmap_base 表示虚拟地址空间中用于内存映射(大内存，文件映射，共享内存等等，这段区域也是从高地址到低地址扩展，这段区域在栈的下面。)的起始地址。
+	一般情况下，这个空间是从高地址到低地址增长的。
+	前面咱们讲 malloc 申请一大块内存的时候，就是通过 mmap 在这里映射一块区域到物理内存。
+	咱们加载动态链接库 so 文件，也是在这个区域里面，映射一块区域到 so 文件。
+	*/
 	setup_new_exec(bprm);
 
 	/* Do this so that we can load the interpreter, if need be.  We will
