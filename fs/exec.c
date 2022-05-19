@@ -1798,12 +1798,13 @@ static int bprm_execve(struct linux_binprm *bprm,
 	check_unsafe_exec(bprm);
 	current->in_execve = 1;
 
-/*打开文件，根据flag*/
+/*xiaojin 打开文件，根据flag*/
 	file = do_open_execat(fd, filename, flags);
 	retval = PTR_ERR(file);
 	if (IS_ERR(file))
 		goto out_unmark;
 
+/*看看自己更适合到哪个cpu去执行，shell进程。*/
 	sched_exec();
 
 	bprm->file = file;
