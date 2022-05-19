@@ -4434,7 +4434,9 @@ unsigned long nr_iowait(void)
 
 /* xiaojin
 The sched_exec function is used to determine the least loaded processor that can execute the new program and to migrate the current process to it.
-看看哪个cpu更合适新的进程运行。
+将当前线程迁移到更合适的cpu执行，
+后台运行。
+https://app.yinxiang.com/shard/s65/nl/15273355/09b3abe2-6252-4242-bce2-1214955694f2/
 */
 void sched_exec(void)
 {
