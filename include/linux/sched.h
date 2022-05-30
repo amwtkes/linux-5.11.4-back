@@ -684,7 +684,7 @@ thread_info可以放在内核栈的栈顶部位，
 
 	https://app.yinxiang.com/shard/s65/nl/15273355/944b618a-1a86-4fd2-be76-ebc2b881a7f4/
 	*/
-	void				*stack;
+	void				*stack; /*内核栈基址*/
 	refcount_t			usage;
 	/* Per task flags (PF_*), defined further below: */
 	unsigned int			flags;
