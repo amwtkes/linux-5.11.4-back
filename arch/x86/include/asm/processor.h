@@ -491,6 +491,7 @@ extern unsigned int fpu_user_xstate_size;
 
 struct perf_event;
 
+/*进程内核态的上下文*/
 struct thread_struct {
 	/* Cached TLS descriptors: Thread-Local Storage (TLS) segments*/
 	struct desc_struct	tls_array[GDT_ENTRY_TLS_ENTRIES]; //最多三个。
