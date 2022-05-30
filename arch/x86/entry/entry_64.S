@@ -169,6 +169,8 @@ SYM_INNER_LABEL(entry_SYSCALL_64_after_hwframe, SYM_L_GLOBAL)
 	 * Try to use SYSRET instead of IRET if we're returning to
 	 * a completely clean 64-bit userspace context.  If we're not,
 	 * go to the slow exit path.
+
+	 恢复rcx与r11两个寄存器。
 	 */
 	movq	RCX(%rsp), %rcx
 	movq	RIP(%rsp), %r11
@@ -237,7 +239,10 @@ SYM_INNER_LABEL(entry_SYSCALL_64_after_hwframe, SYM_L_GLOBAL)
 	 * perf profiles. Nothing jumps here.
 	 */
 syscall_return_via_sysret:
-	/* rcx and r11 are already restored (see code above) */
+	/* intel手册sysret里面有记载，这个指令会自动把rcx设置到ip，
+	r11到eflags。
+	最后就是调用sysret，在这个宏USERGS_SYSRET64
+	rcx and r11 are already restored (see code above) */
 	POP_REGS pop_rdi=0 skip_r11rcx=1
 
 	/*
