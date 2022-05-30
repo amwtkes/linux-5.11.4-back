@@ -250,6 +250,8 @@ syscall_return_via_sysret:
 	 * Save old stack pointer and switch to trampoline stack.
 	 */
 	movq	%rsp, %rdi
+
+	/*必须手动切换rsp*/
 	movq	PER_CPU_VAR(cpu_tss_rw + TSS_sp0), %rsp
 	UNWIND_HINT_EMPTY
 
@@ -261,7 +263,8 @@ syscall_return_via_sysret:
 	 * We can do future final exit work right here.
 	 */
 	STACKLEAK_ERASE_NOCLOBBER
-
+	
+	/*切换回用户态的顶级页目录*/
 	SWITCH_TO_USER_CR3_STACK scratch_reg=%rdi
 
 	popq	%rdi
