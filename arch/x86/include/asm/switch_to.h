@@ -36,7 +36,7 @@ struct inactive_task_frame {
 	 * needed by get_frame_pointer().
 	 */
 	unsigned long bp;
-	unsigned long ret_addr;/* 这就是上一个task保存的ip寄存器 inactive就这个意思*/
+	unsigned long ret_addr;/* =ret_from_fork 这就是上一个task保存的ip寄存器 inactive就这个意思*/
 };
 
 struct fork_frame {

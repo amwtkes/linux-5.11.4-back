@@ -84,7 +84,7 @@ struct pt_regs {
  */
 	unsigned long orig_ax;
 /* Return frame for iretq 
-	中断上下文的恢复*/
+	iretq指令的返回结构*/
 	unsigned long ip;/* 用户态下一条 */
 	unsigned long cs;/* 用户态代码起始段地址。 */
 	unsigned long flags;/* 用户态的 CPU 标志。 */

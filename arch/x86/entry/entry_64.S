@@ -296,7 +296,8 @@ SYM_FUNC_START(__switch_to_asm)
 	pushq	%r14
 	pushq	%r15
 
-	/* switch stack */
+	/* switch stack 
+	内核栈切换到了next的进程*/
 	movq	%rsp, TASK_threadsp(%rdi)
 	movq	TASK_threadsp(%rsi), %rsp
 
@@ -316,7 +317,8 @@ SYM_FUNC_START(__switch_to_asm)
 	FILL_RETURN_BUFFER %r12, RSB_CLEAR_LOOPS, X86_FEATURE_RSB_CTXSW
 #endif
 
-	/* restore callee-saved registers */
+	/* restore callee-saved registers 
+	next的inactive_task_frame被恢复了*/
 	popq	%r15
 	popq	%r14
 	popq	%r13

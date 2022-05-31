@@ -632,6 +632,7 @@ __switch_to(struct task_struct *prev_p, struct task_struct *next_p)
 	/* Load the Intel cache allocation PQR MSR. */
 	resctrl_sched_in();
 
+	/* prev_p 放入eax*/
 	return prev_p;
 }
 
