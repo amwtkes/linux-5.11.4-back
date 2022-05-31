@@ -69,12 +69,12 @@ struct pt_regs {
 	unsigned long bp;
 	unsigned long bx;
 /* These regs are callee-clobbered. Always saved on kernel entry. */
-	unsigned long r11;
+	unsigned long r11; /*如果用sysret返回用户态，这个寄存器存eflag*/
 	unsigned long r10;/* 程序传递到内核的第 4 个参数。 */
 	unsigned long r9;/* 程序传递到内核的第 6 个参数。 */
 	unsigned long r8;/* 程序传递到内核的第 5 个参数。 */
 	unsigned long ax;/* 程序传递到内核的系统调用号。 */
-	unsigned long cx;/* 程序传递到内核的 syscall 的下一条指令地址。 */
+	unsigned long cx;/* 如果用sysret返回用户态，这个寄存器存用户态的下一条指令，程序传递到内核的 syscall 的下一条指令地址。 */
 	unsigned long dx;/* 程序传递到内核的第 3 个参数。 */
 	unsigned long si;/* 程序传递到内核的第 2 个参数。 */
 	unsigned long di;/* 程序传递到内核的第 1 个参数。 */
@@ -83,9 +83,9 @@ struct pt_regs {
  * On hw interrupt, it's IRQ number:
  */
 	unsigned long orig_ax;
-/* Return frame for iretq */
-/* 内核态返回用户态需要恢复现场的数据。*/
-	unsigned long ip;/* 保存程序调用 syscall 的下一条指令地址。用户态下一条 */
+/* Return frame for iretq 
+	中断上下文的恢复*/
+	unsigned long ip;/* 用户态下一条 */
 	unsigned long cs;/* 用户态代码起始段地址。 */
 	unsigned long flags;/* 用户态的 CPU 标志。 */
 	unsigned long sp;/* 用户态的栈顶地址（栈内存是向下增长的）。 */
