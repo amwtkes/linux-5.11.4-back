@@ -326,6 +326,13 @@ SYM_FUNC_START(__switch_to_asm)
 	popq	%rbx
 	popq	%rbp
 
+/* xiaojin
+https://app.yinxiang.com/shard/s65/nl/15273355/8e77b8e9-eb82-4514-bc30-746f5ff58040/
+这里采用jmp而不是call的原因。
+__switch_to函数的两个参数还是在这里
+ * %rdi: prev task
+ * %rsi: next task
+*/
 	jmp	__switch_to
 SYM_FUNC_END(__switch_to_asm)
 .popsection
