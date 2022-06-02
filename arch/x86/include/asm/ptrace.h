@@ -79,17 +79,17 @@ struct pt_regs {
 	unsigned long si;/* 程序传递到内核的第 2 个参数。 */
 	unsigned long di;/* 程序传递到内核的第 1 个参数。 */
 /*
- * On syscall entry, this is syscall#. On CPU exception, this is error code.
+ * On syscall entry, this is syscall# 系统调用号. On CPU exception, this is error code.
  * On hw interrupt, it's IRQ number:
  */
 	unsigned long orig_ax;
 /* Return frame for iretq 
 	iretq指令的返回结构*/
-	unsigned long ip;/* 用户态下一条 */
-	unsigned long cs;/* 用户态代码起始段地址。 */
-	unsigned long flags;/* 用户态的 CPU 标志。 */
-	unsigned long sp;/* 用户态的栈顶地址（栈内存是向下增长的）。 */
-	unsigned long ss;/* 用户态的数据段地址。 */
+	unsigned long ip;/* 内核下一条 or系统调用pushq	%rcx pt_regs->ip 保存用户态返回地址 rcx*/
+	unsigned long cs;/* 内核代码起始段地址。 */
+	unsigned long flags;/* 内核的 CPU 标志。 */
+	unsigned long sp;/* 内核的栈顶地址（栈内存是向下增长的）。 */
+	unsigned long ss;/* 内核态shadow stack段。 */
 /* top of stack page */
 };
 

@@ -242,7 +242,10 @@ syscall_return_via_sysret:
 	/* intel手册sysret里面有记载，这个指令会自动把rcx设置到ip，
 	r11到eflags。
 	最后就是调用sysret，在这个宏USERGS_SYSRET64
-	rcx and r11 are already restored (see code above) */
+	rcx and r11 are already restored (see code above) 
+	
+	pop_rdi==0 表示rdi没有恢复 
+	同时也skip了r11*/
 	POP_REGS pop_rdi=0 skip_r11rcx=1
 
 	/*
@@ -251,7 +254,7 @@ syscall_return_via_sysret:
 	 */
 	movq	%rsp, %rdi
 
-	/*必须手动切换rsp*/
+	/*必须手动切换到用户态rsp TSS_sp0用户态sp*/
 	movq	PER_CPU_VAR(cpu_tss_rw + TSS_sp0), %rsp
 	UNWIND_HINT_EMPTY
 

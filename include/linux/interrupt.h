@@ -97,7 +97,7 @@ typedef irqreturn_t (*irq_handler_t)(int, void *);
  * @name:	name of the device
  * @dev_id:	cookie to identify the device
  * @percpu_dev_id:	cookie to identify the device
- * @next:	pointer to the next irqaction for shared interrupts
+ * @next:	pointer to the next irqaction for shared interrupts。一个中断号可能对应多个中断。这是复用，因为早期把中断号分配给了固定的设备如键盘，计时器等。
  * @irq:	interrupt number
  * @flags:	flags (see IRQF_* above)
  * @thread_fn:	interrupt handler function for threaded interrupts
