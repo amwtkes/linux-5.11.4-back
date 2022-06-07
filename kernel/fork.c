@@ -836,6 +836,8 @@ void __init fork_init(void)
 int __weak arch_dup_task_struct(struct task_struct *dst,
 					       struct task_struct *src)
 {
+	/*直接两个结构体的对拷贝
+	底层编译成memcopy*/
 	*dst = *src;
 	return 0;
 }
