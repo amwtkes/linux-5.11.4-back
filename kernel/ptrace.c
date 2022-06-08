@@ -39,6 +39,7 @@
  * Source/target buffer must be kernel space,
  * Do not walk the page table directly, use get_user_pages
  */
+/*xiaojin-ptrace-1.1 buf就是传进来的long data 要修改成的值*/
 int ptrace_access_vm(struct task_struct *tsk, unsigned long addr,
 		     void *buf, int len, unsigned int gup_flags)
 {
@@ -1010,7 +1011,7 @@ int ptrace_request(struct task_struct *child, long request,
 	case PTRACE_PEEKTEXT:
 	case PTRACE_PEEKDATA:
 		return generic_ptrace_peekdata(child, addr, data);
-		/* 将数据写入一个被跟踪的进程的空间的内存*/
+		/* xiaojin-ptrace-0.2 将数据写入一个被跟踪的进程的空间的内存*/
 	case PTRACE_POKETEXT:
 	case PTRACE_POKEDATA:
 		return generic_ptrace_pokedata(child, addr, data);

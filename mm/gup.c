@@ -765,7 +765,8 @@ struct page *follow_page(struct vm_area_struct *vma, unsigned long address,
 	return page;
 }
 
-/*xiaojin-ptrace-4-1 通过mm获取一个地址的物理页框的方法
+/*xiaojin-ptrace-4-1 主要包含页表的遍历+通过mm获取一个地址的物理页框的方法
+
 */
 static int get_gate_page(struct mm_struct *mm, unsigned long address,
 		unsigned int gup_flags, struct vm_area_struct **vma,
@@ -1020,9 +1021,14 @@ static long __get_user_pages(struct mm_struct *mm,
 
 		/* first iteration or cross vma bound */
 		if (!vma || start >= vma->vm_end) {
+			/*xiaojin-ptrace-3.1 find_extend_vma*/
 			vma = find_extend_vma(mm, start);
 			if (!vma && in_gate_area(mm, start)) {
-				/*xiaojin-ptrace-4*/
+				/*xiaojin-ptrace-3-over << 
+				vma拿到，3over 4开始，去拿page
+				get user page*/
+
+				/*xiaojin-ptrace-4 开始拿page*/
 				ret = get_gate_page(mm, start & PAGE_MASK,
 						gup_flags, &vma,
 						pages ? &pages[i] : NULL);
@@ -1256,6 +1262,7 @@ static __always_inline long __get_user_pages_locked(struct mm_struct *mm,
 	pages_done = 0;
 	lock_dropped = false;
 	for (;;) {
+		/*xiaojin-ptrace-3 __get_user_pages 填充vma与page*/
 		ret = __get_user_pages(mm, start, nr_pages, flags, pages,
 				       vmas, locked);
 		if (!locked)

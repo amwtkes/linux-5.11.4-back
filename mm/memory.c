@@ -591,7 +591,8 @@ static void print_bad_pte(struct vm_area_struct *vma, unsigned long addr,
  * PFNMAP mappings in order to support COWable mappings.
  *
  */
-/*xiaojin-ptrace-4-2 通过vma，pte找到物理页框的方法*/
+/*xiaojin-ptrace-4-2 通过vma，pte找到物理页框的方法
+pte是页表项的index 最后一层表的index*/
 struct page *vm_normal_page(struct vm_area_struct *vma, unsigned long addr,
 			    pte_t pte)
 {
@@ -4911,7 +4912,7 @@ int __access_remote_vm(struct mm_struct *mm, unsigned long addr, void *buf,
 		void *maddr;
 		struct page *page = NULL;
 
-        /*xiaojin-ptrace-2 
+        /*xiaojin-ptrace-2.0 通过mm获取vma与page描述符
 		这里的page是物理页框描述符*/
 		ret = get_user_pages_remote(mm, addr, 1,
 				gup_flags, &page, &vma, NULL);
@@ -4939,13 +4940,16 @@ int __access_remote_vm(struct mm_struct *mm, unsigned long addr, void *buf,
 			if (bytes > PAGE_SIZE-offset)
 				bytes = PAGE_SIZE-offset;
 
-			/*xiaojin-ptrace-3
+			/*xiaojin-ptrace-5 >>> 开始写入流程。kmap+copy_to_user_page
 			这里就是将要修改的这个子进程的线性地址对应的页框映射到内核的地址空间来，
 			然后调用copy_to_user_page拷贝*/
 			maddr = kmap(page);
 			if (write) {
-				/* xiaojin-ptrace-1
-				写入被跟踪进程内存地址的具体调用点*/
+				/* xiaojin-ptrace-5.1 over<<<写入被跟踪进程内存地址的具体调用点
+				其实就是memcpt 
+				1. kmap将用户态的页框映射到内核空间的页表
+				2. 然后将buf这个long值通过内核的页表拷贝到maddr+offset这个内核虚拟地址上。其实对应的就是一个物理页框。
+				*/
 				copy_to_user_page(vma, page, addr,
 						  maddr + offset, buf, bytes);
 				set_page_dirty_lock(page);
