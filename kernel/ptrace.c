@@ -44,11 +44,12 @@ int ptrace_access_vm(struct task_struct *tsk, unsigned long addr,
 {
 	struct mm_struct *mm;
 	int ret;
-
+	/* 加锁 */
 	mm = get_task_mm(tsk);
 	if (!mm)
 		return 0;
 
+	/*异常情况检测*/
 	if (!tsk->ptrace ||
 	    (current != tsk->parent) ||
 	    ((get_dumpable(mm) != SUID_DUMP_USER) &&
@@ -58,6 +59,8 @@ int ptrace_access_vm(struct task_struct *tsk, unsigned long addr,
 	}
 
 	ret = __access_remote_vm(mm, addr, buf, len, gup_flags);
+	
+	/*放锁*/
 	mmput(mm);
 
 	return ret;
@@ -1007,6 +1010,7 @@ int ptrace_request(struct task_struct *child, long request,
 	case PTRACE_PEEKTEXT:
 	case PTRACE_PEEKDATA:
 		return generic_ptrace_peekdata(child, addr, data);
+		/* 将数据写入一个被跟踪的进程的空间的内存*/
 	case PTRACE_POKETEXT:
 	case PTRACE_POKEDATA:
 		return generic_ptrace_pokedata(child, addr, data);
