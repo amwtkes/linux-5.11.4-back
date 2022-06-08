@@ -4910,6 +4910,8 @@ int __access_remote_vm(struct mm_struct *mm, unsigned long addr, void *buf,
 		void *maddr;
 		struct page *page = NULL;
 
+        /*xiaojin-ptrace-2 
+		这里的page是物理页框描述符*/
 		ret = get_user_pages_remote(mm, addr, 1,
 				gup_flags, &page, &vma, NULL);
 		if (ret <= 0) {
@@ -4936,8 +4938,13 @@ int __access_remote_vm(struct mm_struct *mm, unsigned long addr, void *buf,
 			if (bytes > PAGE_SIZE-offset)
 				bytes = PAGE_SIZE-offset;
 
+			/*xiaojin-ptrace-3
+			这里就是将要修改的这个子进程的线性地址对应的页框映射到内核的地址空间来，
+			然后调用copy_to_user_page拷贝*/
 			maddr = kmap(page);
 			if (write) {
+				/* xiaojin-ptrace-1
+				写入被跟踪进程内存地址的具体调用点*/
 				copy_to_user_page(vma, page, addr,
 						  maddr + offset, buf, bytes);
 				set_page_dirty_lock(page);
