@@ -147,6 +147,9 @@ static inline struct page *kmap_to_page(void *addr)
 static inline void *kmap(struct page *page)
 {
 	might_sleep();
+	/*所有的低端内存，在内核初始化时就已经映射好了，并且是不变得，且物理到虚拟相差0xc0000000  
+	如果是 64 位没有高端地址的，就调用 page_address，里面会调用 lowmem_page_address
+	*/
 	return page_address(page);
 }
 
