@@ -1274,6 +1274,7 @@ SYSCALL_DEFINE4(ptrace, long, request, long, pid, unsigned long, addr,
 	if (ret < 0)
 		goto out_put_task_struct;
 
+/*xiaojin-ptrace 0.1 从系统调用进入arch_ptrace */
 	ret = arch_ptrace(child, request, addr, data);
 	if (ret || request != PTRACE_DETACH)
 		ptrace_unfreeze_traced(child);
