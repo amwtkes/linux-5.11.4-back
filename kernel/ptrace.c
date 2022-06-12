@@ -1011,7 +1011,7 @@ int ptrace_request(struct task_struct *child, long request,
 	case PTRACE_PEEKTEXT:
 	case PTRACE_PEEKDATA:
 		return generic_ptrace_peekdata(child, addr, data);
-		/* xiaojin-ptrace-0.2 将数据写入一个被跟踪的进程的空间的内存*/
+		/* xiaojin-ptrace-0.4 将数据写入一个被跟踪的进程的空间的内存*/
 	case PTRACE_POKETEXT:
 	case PTRACE_POKEDATA:
 		return generic_ptrace_pokedata(child, addr, data);

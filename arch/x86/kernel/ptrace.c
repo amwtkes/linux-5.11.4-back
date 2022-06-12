@@ -705,6 +705,7 @@ void ptrace_disable(struct task_struct *child)
 static const struct user_regset_view user_x86_32_view; /* Initialized below. */
 #endif
 
+/*xiaojin-ptrace-0.2 arch_ptrace 起点。大switch起点*/
 long arch_ptrace(struct task_struct *child, long request,
 		 unsigned long addr, unsigned long data)
 {
@@ -815,6 +816,7 @@ long arch_ptrace(struct task_struct *child, long request,
 #endif
 
 	default:
+	/*xiaojin-ptrace 0.3 default case: ptrace_request*/
 		ret = ptrace_request(child, request, addr, data);
 		break;
 	}
