@@ -102,6 +102,8 @@ SYM_CODE_END(native_usergs_sysret64)
 7. 切换cr3到用户态
 8. 切换gs寄存器，执行sysret指令。
 */
+
+/*xiaojin-syacall-0*/
 SYM_CODE_START(entry_SYSCALL_64) 
 	UNWIND_HINT_EMPTY
 /* Interrupts are off on entry. */
