@@ -102,6 +102,8 @@ static void tick_periodic(int cpu)
 }
 
 /*
+	xiaojin - interrupt -- timer 1
+
  * Event handler for periodic ticks
  */
 void tick_handle_periodic(struct clock_event_device *dev)
