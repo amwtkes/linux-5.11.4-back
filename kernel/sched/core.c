@@ -4530,7 +4530,7 @@ unsigned long long task_sched_runtime(struct task_struct *p)
 	return ns;
 }
 
-/*
+/* xiaojin -- timer interrupt
 	一个tick就是1ms
 	1ms调一次这个方法 看看哪些进程要need_resched？
  * This function gets called by the timer code, with HZ frequency.
@@ -4924,7 +4924,8 @@ restart:
 	BUG();
 }
 
-/*
+/* xiaojin - schedule - ***
+
  * __schedule() is the main scheduler function.
  *
  * The main means of driving the scheduler and thus entering this function are:
