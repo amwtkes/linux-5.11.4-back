@@ -1005,6 +1005,11 @@ thread_info可以放在内核栈的栈顶部位，
 
 	/* Signal handlers: */
 	struct signal_struct		*signal;
+	
+	/* xiaojin-rcu-sighand
+	# define __rcu		__attribute__((noderef, address_space(__rcu)))
+	https://app.yinxiang.com/shard/s65/nl/15273355/62f4d1cd-f467-4139-b707-f8aa3d658b58/
+	*/
 	struct sighand_struct __rcu		*sighand;
 	sigset_t			blocked;
 	sigset_t			real_blocked;

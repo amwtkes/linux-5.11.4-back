@@ -155,6 +155,7 @@ static unsigned long exit_to_user_mode_loop(struct pt_regs *regs,
 	 * Before returning to user space ensure that all pending work
 	 * items have been completed.
 	 */
+	/*search xiaojin-TIF*/
 	while (ti_work & EXIT_TO_USER_MODE_WORK) {
 
 		/* 打开中断标记位
