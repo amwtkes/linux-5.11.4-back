@@ -1844,7 +1844,7 @@ static inline unsigned long wait_task_inactive(struct task_struct *p, long match
 }
 #endif
 
-/*
+/*xiaojin-set_tsk_thread_flag 设置TIF的代码
  * Set thread flags in other task's structures.
  * See asm/thread_info.h for TIF_xxxx flags available:
  */
