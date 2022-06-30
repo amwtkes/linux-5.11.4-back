@@ -990,10 +990,12 @@ static inline bool wants_signal(int sig, struct task_struct *p)
 	return task_curr(p) || !task_sigpending(p);
 }
 
+/* xiaojin 1. 找一个可以处理这个信号的进程 2. wakeup这个进程去处理。
+*/
 static void complete_signal(int sig, struct task_struct *p, enum pid_type type)
 {
 	struct signal_struct *signal = p->signal;
-	struct task_struct *t;
+	struct task_struct *t; /*找到的可以用来处理信号的进程*/
 
 	/*
 	 * Now find a thread we can wake up to take the signal off the queue.
@@ -1062,6 +1064,8 @@ static void complete_signal(int sig, struct task_struct *p, enum pid_type type)
 	 * The signal is already in the shared-pending queue.
 	 * Tell the chosen thread to wake up and dequeue it.
 	 */
+	/*就是设置这个进程的TIF实现通知
+	异步的性能好*/
 	signal_wake_up(t, sig == SIGKILL);
 	return;
 }
