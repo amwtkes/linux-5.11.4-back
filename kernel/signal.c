@@ -757,6 +757,9 @@ still_pending:
  * No need to set need_resched since signal event passing
  * goes through ->blocked
  */
+/*xiaojin-signal_wake_up_state 最终通知进程有信号的函数
+主要通过设置目标进程的TIF为TIF_SIGPENDING 
+exit_to_user_mode_loop里面会使用*/
 void signal_wake_up_state(struct task_struct *t, unsigned int state)
 {
 	set_tsk_thread_flag(t, TIF_SIGPENDING);
@@ -1068,6 +1071,7 @@ static inline bool legacy_queue(struct sigpending *signals, int sig)
 	return (sig < SIGRTMIN) && sigismember(&signals->signal, sig);
 }
 
+/*xiaojin-__send_signal 发送信号的核心函数*/
 static int __send_signal(int sig, struct kernel_siginfo *info, struct task_struct *t,
 			enum pid_type type, bool force)
 {
@@ -1177,7 +1181,7 @@ out_set:
 			sigaddset(signal, sig);
 		}
 	}
-
+/*xiaojin-complete_signal 这里就要通知目标进程有信号要处理嘞*/
 	complete_signal(sig, t, type);
 ret:
 	trace_signal_generate(sig, info, t, type != PIDTYPE_PID, result);
@@ -3990,15 +3994,17 @@ void __weak sigaction_compat_abi(struct k_sigaction *act,
 {
 }
 
+/*xiaojin-do_sigaction 发送信号的核心函数*/
 int do_sigaction(int sig, struct k_sigaction *act, struct k_sigaction *oact)
 {
 	struct task_struct *p = current, *t;
-	struct k_sigaction *k;
+	struct k_sigaction *k; /* 从用户态拷贝过来的函数地址*/
 	sigset_t mask;
 
 	if (!valid_signal(sig) || sig < 1 || (act && sig_kernel_only(sig)))
 		return -EINVAL;
 
+	/*sighand就是每个进程记录-信号处理函数的结构。每个进程都不同*/
 	k = &p->sighand->action[sig-1];
 
 	spin_lock_irq(&p->sighand->siglock);
@@ -4023,6 +4029,7 @@ int do_sigaction(int sig, struct k_sigaction *act, struct k_sigaction *oact)
 
 	sigaction_compat_abi(act, oact);
 
+	/*保存用户态传过来的信号处理函数地址到sighand中*/
 	if (act) {
 		sigdelsetmask(&act->sa.sa_mask,
 			      sigmask(SIGKILL) | sigmask(SIGSTOP));
@@ -4285,6 +4292,7 @@ SYSCALL_DEFINE3(sigprocmask, int, how, old_sigset_t __user *, nset,
  *  @oact: used to save the previous sigaction
  *  @sigsetsize: size of sigset_t type
  */
+/*xiaojin-rt_sigaction 发送信号的系统调用*/
 SYSCALL_DEFINE4(rt_sigaction, int, sig,
 		const struct sigaction __user *, act,
 		struct sigaction __user *, oact,
@@ -4297,6 +4305,7 @@ SYSCALL_DEFINE4(rt_sigaction, int, sig,
 	if (sigsetsize != sizeof(sigset_t))
 		return -EINVAL;
 
+/*将用户态传过来的sigaction就是处理函数这个结构，拷贝到内核态的k_sigaction中*/
 	if (act && copy_from_user(&new_sa.sa, act, sizeof(new_sa.sa)))
 		return -EFAULT;
 

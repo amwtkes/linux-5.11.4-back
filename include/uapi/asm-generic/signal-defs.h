@@ -79,6 +79,7 @@
 
 #ifndef __ASSEMBLY__
 typedef void __signalfn_t(int);
+/*xiaojin-__user 表示要sparse工具去检测这个地址是否是用户态的地址。*/
 typedef __signalfn_t __user *__sighandler_t;
 
 typedef void __restorefn_t(void);
