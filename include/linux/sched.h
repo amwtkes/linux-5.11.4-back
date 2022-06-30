@@ -646,8 +646,9 @@ struct kmap_ctrl {
 #endif
 };
 
+/*xiaojin-task_struct*/
 struct task_struct {
-/*
+/* xiaojin-thread_info
 thread_info可以放在内核栈的栈顶部位，
 这里可以看到，如果thread_info包含在task_struct中的，它在第一个位置，而且不被打乱，可以看后面，都被打乱了
 原因是可以通过拿到thread_info的地址，就拿到了task_struct的地址。
@@ -660,7 +661,7 @@ thread_info可以放在内核栈的栈顶部位，
 	struct thread_info		thread_info;
 #endif
 	/* xioajin C C++的volatile是禁止编译器GCC对其进行优化*/
-	
+
 	/* -1 unrunnable, 0 runnable, >0 stopped: */
 	volatile long			state;
 

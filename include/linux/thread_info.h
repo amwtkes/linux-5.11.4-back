@@ -66,6 +66,7 @@ enum syscall_work_bit {
 #define THREADINFO_GFP		(GFP_KERNEL_ACCOUNT | __GFP_ZERO)
 
 /*
+xiaojin-TIF flag set
  * flag set/clear/test wrappers
  * - pass TIF_xxxx constants to these functions
  */

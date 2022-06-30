@@ -147,6 +147,7 @@ static void handle_signal_work(struct pt_regs *regs, unsigned long ti_work)
 	arch_do_signal_or_restart(regs, ti_work & _TIF_SIGPENDING);
 }
 
+/* xiaojin - 返回用户态 -- exit_to_user_mode_loop*/
 static unsigned long exit_to_user_mode_loop(struct pt_regs *regs,
 					    unsigned long ti_work)
 {
@@ -156,6 +157,9 @@ static unsigned long exit_to_user_mode_loop(struct pt_regs *regs,
 	 */
 	while (ti_work & EXIT_TO_USER_MODE_WORK) {
 
+		/* 打开中断标记位
+		https://app.yinxiang.com/shard/s65/nl/15273355/d05f4e5f-e840-4562-9b4b-fae25c5c57aa/
+		*/
 		local_irq_enable_exit_to_user(ti_work);
 
 		if (ti_work & _TIF_NEED_RESCHED)
