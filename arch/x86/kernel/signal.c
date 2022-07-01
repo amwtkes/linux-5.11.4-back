@@ -447,6 +447,12 @@ static int __setup_rt_frame(int sig, struct ksignal *ksig,
 	if (!(ksig->ka.sa.sa_flags & SA_RESTORER))
 		return -EFAULT;
 
+/*xiaojin-get_sigframe get_sigframe 我们在 get_sigframe 中会得到 pt_regs 的 sp 变量，
+也就是原来这个程序在用户态的栈顶指针，然后 get_sigframe 中，我们会将 sp 减去 sizeof(struct rt_sigframe)，
+也就是把这个栈帧塞到了栈里面，然后我们又在 __setup_rt_frame 中把 regs->sp 设置成等于 frame。
+这就相当于强行在程序原来的用户态的栈里面插入了一个栈帧，并在最后将 regs->ip 设置为用户定义的信号处理函数 sa_handler。
+这意味着，本来返回用户态应该接着原来的代码执行的，现在不了，要执行 sa_handler 了。
+那执行完了以后呢？按照函数栈的规则，弹出上一个栈帧来，也就是弹出了 frame。*/
 	frame = get_sigframe(&ksig->ka, regs, sizeof(struct rt_sigframe), &fp);
 	uc_flags = frame_uc_flags(regs);
 
