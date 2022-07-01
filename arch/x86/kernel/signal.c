@@ -229,6 +229,7 @@ static unsigned long align_sigframe(unsigned long sp)
 	return sp;
 }
 
+/*xiaojin-get_sigframe 插入了一个sigframe*/
 static void __user *
 get_sigframe(struct k_sigaction *ka, struct pt_regs *regs, size_t frame_size,
 	     void __user **fpstate)
@@ -439,7 +440,7 @@ static unsigned long frame_uc_flags(struct pt_regs *regs)
 static int __setup_rt_frame(int sig, struct ksignal *ksig,
 			    sigset_t *set, struct pt_regs *regs)
 {
-	struct rt_sigframe __user *frame;
+	struct rt_sigframe __user *frame; /*注意这个frame是在user空间，从regs->sp来的*/
 	void __user *fp = NULL;
 	unsigned long uc_flags;
 
@@ -453,13 +454,18 @@ static int __setup_rt_frame(int sig, struct ksignal *ksig,
 这就相当于强行在程序原来的用户态的栈里面插入了一个栈帧，并在最后将 regs->ip 设置为用户定义的信号处理函数 sa_handler。
 这意味着，本来返回用户态应该接着原来的代码执行的，现在不了，要执行 sa_handler 了。
 那执行完了以后呢？按照函数栈的规则，弹出上一个栈帧来，也就是弹出了 frame。*/
+
+	/*这个frame就是新扩出来的栈栈底*/
 	frame = get_sigframe(&ksig->ka, regs, sizeof(struct rt_sigframe), &fp);
 	uc_flags = frame_uc_flags(regs);
 
 	if (!user_access_begin(frame, sizeof(*frame)))
 		return -EFAULT;
 
-	/* Create the ucontext.  */
+	/* Create the ucontext.  
+	因为frame在用户态，uc_flag这些值在内核，所以需要调用put_user来实现拷贝。
+	这段函数的作用相当于填充新开好的栈frame。
+	*/
 	unsafe_put_user(uc_flags, &frame->uc.uc_flags, Efault);
 	unsafe_put_user(0, &frame->uc.uc_link, Efault);
 	unsafe_save_altstack(&frame->uc.uc_stack, regs->sp, Efault);

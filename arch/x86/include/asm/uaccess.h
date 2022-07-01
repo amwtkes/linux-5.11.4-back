@@ -271,6 +271,8 @@ extern void __put_user_nocheck_8(void);
  *
  * Return: zero on success, or -EFAULT on error.
  */
+
+/*xiaojin- __put_user x86的定义*/
 #define __put_user(x, ptr) do_put_user_call(put_user_nocheck,x,ptr)
 
 #define __put_user_size(x, ptr, size, label)				\
