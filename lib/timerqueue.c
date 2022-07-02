@@ -14,7 +14,7 @@
 #include <linux/rbtree.h>
 #include <linux/export.h>
 
-/**
+/**xiaojin- sleep 红黑树 管理。
  * timerqueue_add - Adds timer to timerqueue.
  *
  * @head: head of timerqueue

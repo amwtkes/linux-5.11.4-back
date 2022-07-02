@@ -1102,7 +1102,7 @@ static int __hrtimer_start_range_ns(struct hrtimer *timer, ktime_t tim,
 	return enqueue_hrtimer(timer, new_base, mode);
 }
 
-/**
+/** xiaojin- sleep的定时器注册地方
  * hrtimer_start_range_ns - (re)start an hrtimer
  * @timer:	the timer to be added
  * @tim:	expiry time
@@ -1759,7 +1759,7 @@ void hrtimer_run_queues(void)
 	raw_spin_unlock_irqrestore(&cpu_base->lock, flags);
 }
 
-/*
+/* xiaojin- sleep函数的计时器回调函数
  * Sleep related functions:
  */
 static enum hrtimer_restart hrtimer_wakeup(struct hrtimer *timer)
