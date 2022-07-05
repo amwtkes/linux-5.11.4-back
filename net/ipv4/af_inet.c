@@ -192,6 +192,7 @@ static int inet_autobind(struct sock *sk)
 
 /*
  *	Move a socket into listening state.
+ xiaojin-socket listen的函数
  */
 int inet_listen(struct socket *sock, int backlog)
 {
