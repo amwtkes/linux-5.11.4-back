@@ -6,6 +6,7 @@
 #include <asm/percpu.h>
 #include <linux/thread_info.h>
 
+/*xiaojin- __preempt_count percpu*/
 DECLARE_PER_CPU(int, __preempt_count);
 
 /* We use the MSB mostly because its available */
