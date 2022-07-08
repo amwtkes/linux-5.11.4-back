@@ -79,7 +79,7 @@ int tick_is_oneshot_available(void)
 	return tick_broadcast_oneshot_available();
 }
 
-/* xiaojin- time_interrupt-1
+/* xiaojin- time_interrupt-1 tick_periodic(int cpu)
  * Periodic tick
  */
 static void tick_periodic(int cpu)
@@ -102,7 +102,7 @@ static void tick_periodic(int cpu)
 }
 
 /*
-	xiaojin - interrupt -- timer 1
+	xiaojin - interrupt -- timer 1 tick_handle_periodic
 
  * Event handler for periodic ticks
  */
