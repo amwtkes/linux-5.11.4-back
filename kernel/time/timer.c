@@ -1768,6 +1768,7 @@ static void run_local_timers(void)
 
 /*
 	xiaojin - interrupt -- timer
+	xiaojin- time_interrupt-2
 	1ms一次
  * Called from the timer interrupt handler to charge one tick to the current
  * process.  user_tick is 1 if the tick is user time, 0 for system.

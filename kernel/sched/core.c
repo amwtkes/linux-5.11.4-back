@@ -4530,7 +4530,8 @@ unsigned long long task_sched_runtime(struct task_struct *p)
 	return ns;
 }
 
-/* xiaojin -- timer interrupt scheduler tick  scheduler_tick
+/* xiaojin- time_interrupt-3
+   xiaojin -- timer interrupt scheduler tick  scheduler_tick
 	一个tick就是1ms
 	1ms调一次这个方法 看看哪些进程要need_resched？
  * This function gets called by the timer code, with HZ frequency.
