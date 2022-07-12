@@ -21,14 +21,23 @@ void wakeme_after_rcu(struct rcu_head *head);
 void __wait_rcu_gp(bool checktiny, int n, call_rcu_func_t *crcu_array,
 		   struct rcu_synchronize *rs_array);
 
+/*checktiny == false 
+void call_rcu(struct rcu_head *head, rcu_callback_t func)
+
+typedef void (*call_rcu_func_t)(struct rcu_head *head, rcu_callback_t func);
+*/
 #define _wait_rcu_gp(checktiny, ...) \
 do {									\
-	call_rcu_func_t __crcu_array[] = { __VA_ARGS__ };		\
+	call_rcu_func_t __crcu_array[] = { __VA_ARGS__ };/*只有一个元素call_rcu*/		\
 	struct rcu_synchronize __rs_array[ARRAY_SIZE(__crcu_array)];	\
 	__wait_rcu_gp(checktiny, ARRAY_SIZE(__crcu_array),		\
 			__crcu_array, __rs_array);			\
 } while (0)
 
+/*xiaojin-rcu 0 wait_rcu_gp 
+... is call_rcu
+wait_rcu_gp(call_rcu);
+-- void call_rcu(struct rcu_head *head, rcu_callback_t func)*/
 #define wait_rcu_gp(...) _wait_rcu_gp(false, __VA_ARGS__)
 
 /**

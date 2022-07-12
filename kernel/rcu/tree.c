@@ -2989,6 +2989,7 @@ static void check_cb_ovld(struct rcu_data *rdp)
 }
 
 /* Helper function for call_rcu() and friends.  */
+/*xiaojin-rcu __call_rcu*/
 static void
 __call_rcu(struct rcu_head *head, rcu_callback_t func)
 {
@@ -3084,6 +3085,7 @@ __call_rcu(struct rcu_head *head, rcu_callback_t func)
  * if CPU A and CPU B are the same CPU (but again only if the system has
  * more than one CPU).
  */
+/*xiaojin-rcu call_rcu*/
 void call_rcu(struct rcu_head *head, rcu_callback_t func)
 {
 	__call_rcu(head, func);
@@ -3735,9 +3737,11 @@ void synchronize_rcu(void)
 			 lock_is_held(&rcu_lock_map) ||
 			 lock_is_held(&rcu_sched_lock_map),
 			 "Illegal synchronize_rcu() in RCU read-side critical section");
-	if (rcu_blocking_is_gp())
+	/*rcu_state.n_online_cpus) <= 1 小于等于1个CPU的时候直接退出。因为如果是单CPU，执行到这里说明已经执行完了
+	rcu_lock与unlock的临界区，因为不运行抢占又在一个CPU，所以肯定已经执行完了*/		 
+	if (rcu_blocking_is_gp()) 
 		return;  // Context allows vacuous grace periods.
-	if (rcu_gp_is_expedited())
+	if (rcu_gp_is_expedited()) //加急？
 		synchronize_rcu_expedited();
 	else
 		/*xiaojin-rcu 在这里等 synchronize_rcu*/
