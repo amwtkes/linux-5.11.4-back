@@ -6677,9 +6677,11 @@ SYSCALL_DEFINE0(sched_yield)
 	return 0;
 }
 
+/*xiaojin should_resched(0) preempt _cond_resched 判断是否可以进行抢占*/
 #ifndef CONFIG_PREEMPTION
 int __sched _cond_resched(void)
 {
+	/*xiaojin raw_cpu_read_4(__preempt_count) == 0 看看__preempt_count是否等于0*/
 	if (should_resched(0)) {
 		preempt_schedule_common();
 		return 1;
