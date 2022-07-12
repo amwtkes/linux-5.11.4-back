@@ -3740,6 +3740,7 @@ void synchronize_rcu(void)
 	if (rcu_gp_is_expedited())
 		synchronize_rcu_expedited();
 	else
+		/*xiaojin-rcu 在这里等 synchronize_rcu*/
 		wait_rcu_gp(call_rcu);
 }
 EXPORT_SYMBOL_GPL(synchronize_rcu);
