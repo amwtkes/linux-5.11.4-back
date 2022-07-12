@@ -5252,7 +5252,7 @@ static void __sched notrace preempt_schedule_common(void)
 		 * Check again in case we missed a preemption opportunity
 		 * between schedule and now.
 		 */
-	} while (need_resched());
+	} while (need_resched()); //check task_struct.thread_info.flag是否等于TIF_NEED_SCHEDULE
 }
 
 #ifdef CONFIG_PREEMPTION
