@@ -389,7 +389,8 @@ static inline void rcu_preempt_sleep_check(void) { }
  */
 #define RCU_INITIALIZER(v) (typeof(*(v)) __force __rcu *)(v)
 
-/**
+/** xiaojin-rcu-api rcu_assign_pointer
+ * 
  * rcu_assign_pointer() - assign to RCU-protected pointer
  * @p: pointer to assign to
  * @v: value to assign (publish)
