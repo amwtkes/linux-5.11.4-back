@@ -3698,7 +3698,7 @@ static int rcu_blocking_is_gp(void)
 	return ret;
 }
 
-/** xiaojin-rcu synchronize_rcu
+/** xiaojin-rcu-api synchronize_rcu
  * synchronize_rcu - wait until a grace period has elapsed.
  *
  * Control will return to the caller some time after a full grace
