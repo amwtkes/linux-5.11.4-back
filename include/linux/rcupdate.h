@@ -644,7 +644,7 @@ do {									      \
  * read-side critical sections may be preempted and they may also block, but
  * only when acquiring spinlocks that are subject to priority inheritance.
  */
-/*xiaojin-RCU rcu_read_lock*/
+/*xiaojin-RCU-api rcu_read_lock*/
 static __always_inline void rcu_read_lock(void)
 {
 	__rcu_read_lock();
@@ -697,6 +697,7 @@ static __always_inline void rcu_read_lock(void)
  *
  * See rcu_read_lock() for more information.
  */
+/*xiaojin-rcu-api rcu_read_unlock */
 static inline void rcu_read_unlock(void)
 {
 	RCU_LOCKDEP_WARN(!rcu_is_watching(),
