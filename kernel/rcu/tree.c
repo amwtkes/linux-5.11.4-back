@@ -79,6 +79,7 @@
 #define RCU_DYNTICK_CTRL_MASK 0x1
 #define RCU_DYNTICK_CTRL_CTR  (RCU_DYNTICK_CTRL_MASK + 1)
 
+/*xiaojin-rcu percpu rcu_data 原来定义在这里*/
 static DEFINE_PER_CPU_SHARED_ALIGNED(struct rcu_data, rcu_data) = {
 	.dynticks_nesting = 1,
 	.dynticks_nmi_nesting = DYNTICK_IRQ_NONIDLE,
@@ -4591,7 +4592,7 @@ static void __init kfree_rcu_batch_init(void)
 	if (register_shrinker(&kfree_rcu_shrinker))
 		pr_err("Failed to register kfree_rcu() shrinker!\n");
 }
-
+/*xiaojin-rcu  rcu_init*/
 void __init rcu_init(void)
 {
 	int cpu;
