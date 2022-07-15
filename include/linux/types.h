@@ -213,6 +213,7 @@ struct ustat {
  *    which encode PageTail() in bit 0. The guarantee is needed to avoid
  *    false-positive PageTail().
  */
+/*xiaojin-rcu rcu_head*/
 struct callback_head {
 	struct callback_head *next;
 	void (*func)(struct callback_head *head);
