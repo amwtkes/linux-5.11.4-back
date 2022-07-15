@@ -35,7 +35,7 @@ do {									\
 } while (0)
 
 /*xiaojin-rcu 0 wait_rcu_gp 
-... is call_rcu
+... is call_rcu(__VA_ARGS__编译器标记代表...的内容)
 wait_rcu_gp(call_rcu);
 -- void call_rcu(struct rcu_head *head, rcu_callback_t func)*/
 #define wait_rcu_gp(...) _wait_rcu_gp(false, __VA_ARGS__)
