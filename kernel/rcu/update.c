@@ -357,6 +357,8 @@ EXPORT_SYMBOL_GPL(rcu_read_lock_any_held);
  *
  * Awaken the corresponding task now that a grace period has elapsed.
  */
+
+/*xiaojin-rcu wakeme_after_rcu synchronize_rcu的唤醒函数，是在回调中的。*/
 void wakeme_after_rcu(struct rcu_head *head)
 {
 	struct rcu_synchronize *rcu;

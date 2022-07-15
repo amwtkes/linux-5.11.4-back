@@ -2992,7 +2992,7 @@ static void check_cb_ovld(struct rcu_data *rdp)
 }
 
 /* Helper function for call_rcu() and friends.  */
-/*xiaojin-rcu __call_rcu*/
+/*xiaojin-rcu __call_rcu func函数是 wakeme_after_rcu */
 static void
 __call_rcu(struct rcu_head *head, rcu_callback_t func)
 {
