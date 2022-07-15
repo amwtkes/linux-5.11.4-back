@@ -2900,6 +2900,7 @@ early_initcall(rcu_spawn_core_kthreads);
 /*
  * Handle any core-RCU processing required by a call_rcu() invocation.
  */
+/*xiaojin-rcu  __call_rcu_core */
 static void __call_rcu_core(struct rcu_data *rdp, struct rcu_head *head,
 			    unsigned long flags)
 {
