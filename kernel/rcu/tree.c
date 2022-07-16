@@ -3036,6 +3036,8 @@ __call_rcu(struct rcu_head *head, rcu_callback_t func)
 	if (rcu_nocb_try_bypass(rdp, head, &was_alldone, flags))
 		return; // Enqueued onto ->nocb_bypass, so just leave.
 	// If no-CBs CPU gets here, rcu_nocb_try_bypass() acquired ->nocb_lock.
+
+	/*xiaojin-rcu rcu_segcblist_enqueue-0 加入rcu_data的callback list */
 	rcu_segcblist_enqueue(&rdp->cblist, head);
 	if (__is_kvfree_rcu_offset((unsigned long)func))
 		trace_rcu_kvfree_callback(rcu_state.name, head,
