@@ -2900,7 +2900,7 @@ early_initcall(rcu_spawn_core_kthreads);
 /*
  * Handle any core-RCU processing required by a call_rcu() invocation.
  */
-/*xiaojin-rcu  __call_rcu_core */
+/*xiaojin-rcu_call-3  __call_rcu_core */
 static void __call_rcu_core(struct rcu_data *rdp, struct rcu_head *head,
 			    unsigned long flags)
 {
@@ -2993,7 +2993,7 @@ static void check_cb_ovld(struct rcu_data *rdp)
 }
 
 /* Helper function for call_rcu() and friends.  */
-/*xiaojin-rcu __call_rcu func函数是 wakeme_after_rcu */
+/*xiaojin-rcu_call-2 __call_rcu func函数是 wakeme_after_rcu */
 static void
 __call_rcu(struct rcu_head *head, rcu_callback_t func)
 {
@@ -3089,7 +3089,7 @@ __call_rcu(struct rcu_head *head, rcu_callback_t func)
  * if CPU A and CPU B are the same CPU (but again only if the system has
  * more than one CPU).
  */
-/*xiaojin-rcu call_rcu*/
+/*xiaojin-rcu_call-1 call_rcu*/
 void call_rcu(struct rcu_head *head, rcu_callback_t func)
 {
 	__call_rcu(head, func);
