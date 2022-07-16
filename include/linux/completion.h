@@ -23,6 +23,7 @@
  * reinit_completion(), and macros DECLARE_COMPLETION(),
  * DECLARE_COMPLETION_ONSTACK().
  */
+/* xiaojin-rcu struct completion rcu的等待结构 */
 struct completion {
 	unsigned int done;
 	struct swait_queue_head wait;

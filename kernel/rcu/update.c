@@ -368,7 +368,9 @@ void wakeme_after_rcu(struct rcu_head *head)
 }
 EXPORT_SYMBOL_GPL(wakeme_after_rcu);
 
-/*xiaojin-rcu 1 __wait_rcu_gp 正式的wait synchronize_rcu*/
+/*xiaojin-rcu 1 __wait_rcu_gp 正式的wait synchronize_rcu
+两个数组都只有一个元素了都是 call_rcu
+*/
 void __wait_rcu_gp(bool checktiny, int n, call_rcu_func_t *crcu_array,
 		   struct rcu_synchronize *rs_array)
 {
@@ -386,8 +388,9 @@ void __wait_rcu_gp(bool checktiny, int n, call_rcu_func_t *crcu_array,
 			if (crcu_array[j] == crcu_array[i])
 				break;
 		if (j == i) {
-			/* 设置回调函数 */
+			/* 好像用于debug*/
 			init_rcu_head_on_stack(&rs_array[i].head);
+			/* 初始化complete结构，用来通知完成的信息 线程会阻塞在completion这个结构上 用wakeme_after_rcu函数来唤醒。结束GP。*/
 			init_completion(&rs_array[i].completion);
 			/*xiaojin-rcu_call-0 调用call_rcu的地方*/
 			(crcu_array[i])(&rs_array[i].head, wakeme_after_rcu);
