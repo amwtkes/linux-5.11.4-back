@@ -2907,6 +2907,12 @@ static int __init rcu_spawn_core_kthreads(void)
 		__attribute__((__section__(#__sec ".init"))) = rcu_spawn_core_kthreads;
 */
 early_initcall(rcu_spawn_core_kthreads);
+/* eary_initcall 见
+main.c->do_basic_setup->do_initcalls->initcall_levels数组就是.init节中的init函数->do_initcall_level调起每个init函数
+rcu_spawn_core_kthreads 为创建内核线程。
+*/
+
+
 
 /*
  * Handle any core-RCU processing required by a call_rcu() invocation.
