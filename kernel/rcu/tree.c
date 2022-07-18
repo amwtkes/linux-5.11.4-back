@@ -2737,6 +2737,7 @@ static void strict_work_handler(struct work_struct *work)
 }
 
 /* Perform RCU core processing work for the current CPU.  */
+/* xiaojin-rcu rcu_core(void) */
 static __latent_entropy void rcu_core(void)
 {
 	unsigned long flags;
