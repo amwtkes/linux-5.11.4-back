@@ -2843,7 +2843,8 @@ static int rcu_cpu_kthread_should_run(unsigned int cpu)
  * priority boosting.
  */
 
-/*xiaojin-rcu 1 rcu_cpu_kthread_task rcu_cpu_kthread Per-CPU kernel thread that invokes RCU callbacks*/
+/*xiaojin-rcu 1 rcu_cpu_kthread_task rcu_cpu_kthread Per-CPU kernel thread that invokes RCU 
+rcu callback函数 --- 内核线程的启动函数 percpu的线程*/
 static void rcu_cpu_kthread(unsigned int cpu)
 {
 	unsigned int *statusp = this_cpu_ptr(&rcu_data.rcu_cpu_kthread_status);
@@ -2900,6 +2901,11 @@ static int __init rcu_spawn_core_kthreads(void)
 		  "%s: Could not start rcuc kthread, OOM is now expected behavior\n", __func__);
 	return 0;
 }
+/* 定义了一个initcall_t 变量：__initcall_rcu_spawn_core_kthreadsearly 并给他付了值=rcu_spawn_core_kthreads
+叫GCC编译到.init段中
+	static initcall_t __initcall_rcu_spawn_core_kthreadsearly __used \
+		__attribute__((__section__(#__sec ".init"))) = rcu_spawn_core_kthreads;
+*/
 early_initcall(rcu_spawn_core_kthreads);
 
 /*
