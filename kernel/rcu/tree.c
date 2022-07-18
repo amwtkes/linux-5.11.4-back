@@ -2842,6 +2842,8 @@ static int rcu_cpu_kthread_should_run(unsigned int cpu)
  * the RCU softirq used in configurations of RCU that do not support RCU
  * priority boosting.
  */
+
+/*xiaojin-rcu 1 rcu_cpu_kthread_task rcu_cpu_kthread Per-CPU kernel thread that invokes RCU callbacks*/
 static void rcu_cpu_kthread(unsigned int cpu)
 {
 	unsigned int *statusp = this_cpu_ptr(&rcu_data.rcu_cpu_kthread_status);
@@ -2872,6 +2874,7 @@ static void rcu_cpu_kthread(unsigned int cpu)
 	*statusp = RCU_KTHREAD_WAITING;
 }
 
+/*xiaojin-rcu 0 rcu_cpu_kthread_task 被封装到了这里*/
 static struct smp_hotplug_thread rcu_cpu_thread_spec = {
 	.store			= &rcu_data.rcu_cpu_kthread_task,
 	.thread_should_run	= rcu_cpu_kthread_should_run,
@@ -2884,6 +2887,7 @@ static struct smp_hotplug_thread rcu_cpu_thread_spec = {
 /*
  * Spawn per-CPU RCU core processing kthreads.
  */
+/*xiaojin-rcu 2 rcu_spawn_core_kthreads 在这里初始化 rcu_cpu_kthread内核线程。 rcu_cpu_kthread_task 初始化 */
 static int __init rcu_spawn_core_kthreads(void)
 {
 	int cpu;
