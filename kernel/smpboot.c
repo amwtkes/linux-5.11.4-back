@@ -287,6 +287,7 @@ static void smpboot_destroy_threads(struct smp_hotplug_thread *ht)
  *
  * Creates and starts the threads on all online cpus.
  */
+/*xiaojin-rcu 3 rcu_cpu_kthread内核线程。 smpboot_register_percpu_thread */
 int smpboot_register_percpu_thread(struct smp_hotplug_thread *plug_thread)
 {
 	unsigned int cpu;
