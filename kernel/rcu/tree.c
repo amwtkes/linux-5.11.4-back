@@ -2904,6 +2904,7 @@ static int __init rcu_spawn_core_kthreads(void)
 	return 0;
 }
 early_initcall(rcu_spawn_core_kthreads);
+/*xiaojin-rcu early rcu_spawn_core_kthreads nocb模式 tickless模式 percpu kthread*/
 /* 定义了一个initcall_t 变量：__initcall_rcu_spawn_core_kthreadsearly 并给他付了值=rcu_spawn_core_kthreads
 叫GCC编译到.init段中
 	static initcall_t __initcall_rcu_spawn_core_kthreadsearly __used \
@@ -4389,6 +4390,7 @@ static int __init rcu_spawn_gp_kthread(void)
 	return 0;
 }
 early_initcall(rcu_spawn_gp_kthread);
+/*xiaojin-rcu early rcu_spawn_gp_kthread rcu_state的rcu gp处理核心线程*/
 
 /*
  * This function is invoked towards the end of the scheduler's
