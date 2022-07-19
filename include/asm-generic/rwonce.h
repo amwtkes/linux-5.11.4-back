@@ -41,6 +41,7 @@
  * atomicity. Note that this may result in tears!
  */
 #ifndef __READ_ONCE
+/*xiaojin read_once 主要是引入volatile的关键词禁止编译器优化 禁止从寄存器读写数据		*/
 #define __READ_ONCE(x)	(*(const volatile __unqual_scalar_typeof(x) *)&(x))
 #endif
 
@@ -50,6 +51,7 @@
 	__READ_ONCE(x);							\
 })
 
+/*xiaojin write_once 主要是引入volatile的关键词禁止编译器优化 禁止从寄存器读写数据*/
 #define __WRITE_ONCE(x, val)						\
 do {									\
 	*(volatile typeof(x) *)&(x) = (val);				\
