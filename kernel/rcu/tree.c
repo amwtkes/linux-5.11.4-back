@@ -2901,12 +2901,12 @@ static int __init rcu_spawn_core_kthreads(void)
 		  "%s: Could not start rcuc kthread, OOM is now expected behavior\n", __func__);
 	return 0;
 }
+early_initcall(rcu_spawn_core_kthreads);
 /* 定义了一个initcall_t 变量：__initcall_rcu_spawn_core_kthreadsearly 并给他付了值=rcu_spawn_core_kthreads
 叫GCC编译到.init段中
 	static initcall_t __initcall_rcu_spawn_core_kthreadsearly __used \
 		__attribute__((__section__(#__sec ".init"))) = rcu_spawn_core_kthreads;
 */
-early_initcall(rcu_spawn_core_kthreads);
 /* eary_initcall 见
 main.c->do_basic_setup->do_initcalls->initcall_levels数组就是.init节中的init函数->do_initcall_level调起每个init函数
 rcu_spawn_core_kthreads 为创建内核线程。
