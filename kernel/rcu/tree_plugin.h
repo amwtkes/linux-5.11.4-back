@@ -857,6 +857,7 @@ EXPORT_SYMBOL_GPL(rcu_all_qs);
 
 /*
  * Note a PREEMPTION=n context switch. The caller must have disabled interrupts.
+ xiaojin-cru rcu_note_context_switch
  */
 void rcu_note_context_switch(bool preempt)
 {
