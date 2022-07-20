@@ -35,7 +35,7 @@ static inline int preempt_count(void)
 	return preempt_disable_count;
 }
 
-static inline bool rcu_note_context_switchpreemptible(void)
+static inline bool preemptible(void)
 {
 	return !preempt_count();
 }
