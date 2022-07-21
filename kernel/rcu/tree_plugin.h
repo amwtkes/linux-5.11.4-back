@@ -813,6 +813,10 @@ static void __init rcu_bootup_announce(void)
  */
 static void rcu_qs(void)
 {
+	/* xiaojin preemptible() 含义
+	#define preemptible()	(preempt_count() == 0 && !irqs_disabled())
+	如果preempt_count() == 0 表示可以被抢占
+	*/ 
 	RCU_LOCKDEP_WARN(preemptible(), "rcu_qs() invoked with preemption enabled!!!");
 	if (!__this_cpu_read(rcu_data.cpu_no_qs.s))
 		return;
