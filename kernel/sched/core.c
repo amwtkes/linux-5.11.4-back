@@ -4984,6 +4984,8 @@ static void __sched notrace __schedule(bool preempt)
 		hrtick_clear(rq);
 
 	local_irq_disable();
+	/*xiaojin rcu_note_context_switch 一旦进入context_switch就可以说明已经进入QS了
+	所以要记录一下*/
 	rcu_note_context_switch(preempt);
 
 	/*

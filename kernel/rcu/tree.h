@@ -141,7 +141,10 @@ struct rcu_node {
  */
 union rcu_noqs {
 	struct {
+		/*xiaojin rcu_noqs.b.norm 用户调用call_rcu()或synchronize_rcu()所开启的宽限期*/
 		u8 norm;
+		
+		/*xiaojin rcu_noqs.b.exp 用户调用synchronize_rcu_expedited()会触发一个加速宽限期或是将进行中的普通宽限期标记为一个加速宽限期。所谓加速宽限期主要的执行流程跟普通宽限期是一样的，只是会比普通宽限期多出一些QS的上报点，用来减少宽限期中不必要的延时。此接口会为系统带来一些额外的overhead，作者Paul建议少用。*/
 		u8 exp;
 	} b; /* Bits. */
 	u16 s; /* Set of bits, aggregate OR here. */
