@@ -866,6 +866,7 @@ EXPORT_SYMBOL_GPL(rcu_all_qs);
 void rcu_note_context_switch(bool preempt)
 {
 	trace_rcu_utilization(TPS("Start context switch"));
+	/* xiaojin rcu_data.cpu_no_qs.b.norm, false 设置norm的标志是false */
 	rcu_qs();
 	/* Load rcu_urgent_qs before other flags. */
 	if (!smp_load_acquire(this_cpu_ptr(&rcu_data.rcu_urgent_qs)))
