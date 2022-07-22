@@ -628,6 +628,7 @@ EXPORT_SYMBOL_GPL(rcutorture_get_gp_data);
  * the possibility of usermode upcalls having messed up our count
  * of interrupt nesting level during the prior busy period.
  */
+/*xiaojin-rcu eqs enter extended QS的处理！*/
 static noinstr void rcu_eqs_enter(bool user)
 {
 	struct rcu_data *rdp = this_cpu_ptr(&rcu_data);
@@ -2138,6 +2139,7 @@ static void rcu_gp_cleanup(void)
 /*
  * Body of kthread that handles grace periods.
  */
+/*xiaojin-rcu rcu_gp_kthread-1 定义*/
 static int __noreturn rcu_gp_kthread(void *unused)
 {
 	rcu_bind_gp_kthread();
@@ -4346,6 +4348,7 @@ static int rcu_pm_notify(struct notifier_block *self,
 /*
  * Spawn the kthreads that handle RCU's grace periods.
  */
+/*xiaojin-rcu rcu_gp_kthread-0线程的产生*/
 static int __init rcu_spawn_gp_kthread(void)
 {
 	unsigned long flags;
