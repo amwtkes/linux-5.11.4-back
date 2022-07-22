@@ -2737,7 +2737,7 @@ static void strict_work_handler(struct work_struct *work)
 }
 
 /* Perform RCU core processing work for the current CPU.  */
-/* xiaojin-rcu rcu_core(void) */
+/* xiaojin-rcu softirq-1 rcu_core(void) */
 static __latent_entropy void rcu_core(void)
 {
 	unsigned long flags;
@@ -4632,7 +4632,7 @@ void __init rcu_init(void)
 	if (dump_tree)
 		rcu_dump_rcu_node_tree();
 	if (use_softirq)
-		/*xiaojin-rcu open_softirq()*/
+		/*xiaojin-rcu softirq-0 open_softirq()*/
 		open_softirq(RCU_SOFTIRQ, rcu_core_si);
 
 	/*
