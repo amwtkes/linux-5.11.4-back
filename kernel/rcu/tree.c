@@ -4632,6 +4632,7 @@ void __init rcu_init(void)
 	if (dump_tree)
 		rcu_dump_rcu_node_tree();
 	if (use_softirq)
+		/*xiaojin-rcu open_softirq()*/
 		open_softirq(RCU_SOFTIRQ, rcu_core_si);
 
 	/*

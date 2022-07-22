@@ -482,7 +482,7 @@ void __raise_softirq_irqoff(unsigned int nr)
 	trace_softirq_raise(nr);
 	or_softirq_pending(1UL << nr);
 }
-
+/*xiaojin open_softirq函数*/
 void open_softirq(int nr, void (*action)(struct softirq_action *))
 {
 	softirq_vec[nr].action = action;
