@@ -648,8 +648,8 @@ do {									      \
 static __always_inline void rcu_read_lock(void)
 {
 	__rcu_read_lock();
-	__acquire(RCU);
-	rcu_lock_acquire(&rcu_lock_map);
+	__acquire(RCU); //调试代码
+	rcu_lock_acquire(&rcu_lock_map);//调试代码
 	RCU_LOCKDEP_WARN(!rcu_is_watching(),
 			 "rcu_read_lock() used illegally while idle");
 }
@@ -702,8 +702,10 @@ static inline void rcu_read_unlock(void)
 {
 	RCU_LOCKDEP_WARN(!rcu_is_watching(),
 			 "rcu_read_unlock() used illegally while idle");
-	__release(RCU);
+	__release(RCU); //xiaojin sparse 调试代码 防止死锁
 	__rcu_read_unlock();
+
+	/*xiaojin lock validator 也是调试代码检测跟踪锁的调用防止死锁的*/
 	rcu_lock_release(&rcu_lock_map); /* Keep acq info for rls diags. */
 }
 
