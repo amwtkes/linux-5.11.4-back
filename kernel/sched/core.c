@@ -6683,7 +6683,9 @@ SYSCALL_DEFINE0(sched_yield)
 #ifndef CONFIG_PREEMPTION
 int __sched _cond_resched(void)
 {
-	/*xiaojin raw_cpu_read_4(__preempt_count) == 0 看看__preempt_count是否等于0*/
+	/*xiaojin raw_cpu_read_4(__preempt_count) == 0 看看__preempt_count是否等于0
+	只要PREEMPT为0时才允许内核态抢占.
+	*/
 	if (should_resched(0)) {
 		preempt_schedule_common();
 		return 1;
