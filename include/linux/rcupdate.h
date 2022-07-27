@@ -389,7 +389,7 @@ static inline void rcu_preempt_sleep_check(void) { }
  */
 #define RCU_INITIALIZER(v) (typeof(*(v)) __force __rcu *)(v)
 
-/** xiaojin-rcu-api rcu_assign_pointer
+/** 
  * 
  * rcu_assign_pointer() - assign to RCU-protected pointer
  * @p: pointer to assign to
@@ -421,6 +421,7 @@ static inline void rcu_preempt_sleep_check(void) { }
  * please be careful when making changes to rcu_assign_pointer() and the
  * other macros that it invokes.
  */
+/* xiaojin-rcu-api rcu_assign_pointer */
 #define rcu_assign_pointer(p, v)					      \
 do {									      \
 	uintptr_t _r_a_p__v = (uintptr_t)(v);				      \
@@ -469,6 +470,7 @@ do {									      \
  * when tearing down multi-linked structures after a grace period
  * has elapsed.
  */
+/*xiaojin-rcu-api rcu_access_pointer*/
 #define rcu_access_pointer(p) __rcu_access_pointer((p), __rcu)
 
 /**
@@ -563,6 +565,7 @@ do {									      \
  *
  * This is a simple wrapper around rcu_dereference_check().
  */
+/*xiaojin-rcu-api rcu_dereference*/
 #define rcu_dereference(p) rcu_dereference_check(p, 0)
 
 /**
