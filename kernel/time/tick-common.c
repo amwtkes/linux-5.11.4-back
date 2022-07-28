@@ -82,6 +82,7 @@ int tick_is_oneshot_available(void)
 /* xiaojin- time_interrupt-1 tick_periodic(int cpu)
  * Periodic tick
  */
+/*xiaojin-rcu tick interrupt -0*/
 static void tick_periodic(int cpu)
 {
 	if (tick_do_timer_cpu == cpu) {
