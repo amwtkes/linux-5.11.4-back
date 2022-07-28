@@ -153,25 +153,44 @@ union rcu_noqs {
 /* Per-CPU data for read-copy update. */
 struct rcu_data {
 	/* 1) quiescent-state and grace-period handling : */
+	/* cpu当前的gp编号，以及低两位表示gp的状态 */
 	unsigned long	gp_seq;		/* Track rsp->gp_seq counter. */
 	unsigned long	gp_seq_needed;	/* Track furthest future GP request. */
+
+	/* 表示cpu是否未度过norm或exp静止态，例：进程切换时会调用union成员rcu_qs设为false*/
 	union rcu_noqs	cpu_no_qs;	/* No QSes yet for this CPU. */
+
+ 	/* 表示RCU是否需要此cpu上报QS状态*/
 	bool		core_needs_qs;	/* Core waits for quiesc state. */
+
+	/*cpu最近的一次状态是online*/
 	bool		beenonline;	/* CPU online at least once. */
+
+	/* gp_seq溢出后，此变量会置为true */
 	bool		gpwrap;		/* Possible ->gp_seq wrap. */
+
+	/*当前cpu是否在等待一个deferred QS*/
 	bool		exp_deferred_qs; /* This CPU awaiting a deferred QS? */
 	bool		cpu_started;	/* RCU watching this onlining CPU. */
+
+	/* 指向cpu对应的rcu_node*/
 	struct rcu_node *mynode;	/* This CPU's leaf of hierarchy */
+
+	/* 此cpu对应rcu_node中的掩码位，rcu_node->qsmask表示node中的cpu的qs情况 */
 	unsigned long grpmask;		/* Mask to apply to leaf qsmask. */
+
+	/*当前gp已经历过多少个tick中断，每个tick中断中都会对它加1*/
 	unsigned long	ticks_this_gp;	/* The number of scheduling-clock */
 					/*  ticks this CPU has handled */
 					/*  during and after the last grace */
 					/* period it is aware of. */
+					
 	struct irq_work defer_qs_iw;	/* Obtain later scheduler attention. */
 	bool defer_qs_iw_pending;	/* Scheduler attention pending? */
 	struct work_struct strict_work;	/* Schedule readers for strict GPs. */
 
 	/* 2) batch handling */
+	/* 分段链表，存放当前cpu上的callback */
 	struct rcu_segcblist cblist;	/* Segmented callback list, with */
 					/* different callbacks waiting for */
 					/* different grace periods. */
