@@ -107,7 +107,7 @@ struct rcu_node {
 				/* Tasks blocked in RCU read-side critical */
 				/*  section.  Tasks are placed at the head */
 				/*  of this list and age towards the tail. */
-				
+
 	/*指向blkd_tasks中阻塞当前宽限期的第一个进程，当前node度过qs时，此成员必须为NULL*/			
 	struct list_head *gp_tasks;
 				/* Pointer to the first task blocking the */
@@ -338,23 +338,36 @@ do {									\
  * consisting of a single rcu_node.
  */
 struct rcu_state {
+	/* 存放了系统中所有rcu_node实体 */
 	struct rcu_node node[NUM_RCU_NODES];	/* Hierarchy. */
+
+	/* 树中每level的起始rcu_node指针(+1是为了消除编译警告) */
 	struct rcu_node *level[RCU_NUM_LVLS + 1];
 						/* Hierarchy levels (+1 to */
 						/*  shut bogus gcc warning) */
+	/* 总的cpu的数量 */					
 	int ncpus;				/* # CPUs seen so far. */
+	/* online的cpu数量 */
 	int n_online_cpus;			/* # CPUs online for RCU. */
 
 	/* The following fields are guarded by the root rcu_node's lock. */
 
 	u8	boost ____cacheline_internodealigned_in_smp;
 						/* Subject to priority boost. */
+	/* 当前宽限期的编号，低两位表示状态 */					
 	unsigned long gp_seq;			/* Grace-period sequence #. */
+	
+	/* 目前系统上经历过的最长的gp的时间(jiffies) */
 	unsigned long gp_max;			/* Maximum GP duration in */
 						/*  jiffies. */
+	/* 指向 rcu_gp_kthread 内核线程 */
 	struct task_struct *gp_kthread;		/* Task for grace periods. */
+	
+	/*wait queue数据结构，gp线程中会用到*/
 	struct swait_queue_head gp_wq;		/* Where GP task waits. */
+	/* 用来控制gp线程行为的标志位,可以通知进行FQS或开启新的GP */
 	short gp_flags;				/* Commands for GP task. */
+	/* rcu_gp_kthread线程的状态 */
 	short gp_state;				/* GP kthread sleep state. */
 	unsigned long gp_wake_time;		/* Last GP kthread wake. */
 	unsigned long gp_wake_seq;		/* ->gp_seq at ^^^. */
@@ -374,6 +387,7 @@ struct rcu_state {
 	atomic_t expedited_need_qs;		/* # CPUs left to check in. */
 	struct swait_queue_head expedited_wq;	/* Wait for check-ins. */
 	int ncpus_snap;				/* # CPUs seen last time. */
+	/*当前系统的callback是否堆积过多*/
 	u8 cbovld;				/* Callback overload now? */
 	u8 cbovldnext;				/* ^        ^  next time? */
 
