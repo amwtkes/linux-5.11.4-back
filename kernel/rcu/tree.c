@@ -3726,7 +3726,7 @@ static int rcu_blocking_is_gp(void)
 	return ret;
 }
 
-/** xiaojin-rcu-api synchronize_rcu
+/**
  * synchronize_rcu - wait until a grace period has elapsed.
  *
  * Control will return to the caller some time after a full grace
@@ -3772,7 +3772,7 @@ void synchronize_rcu(void)
 	if (rcu_gp_is_expedited()) //加急？
 		synchronize_rcu_expedited();
 	else
-		/*xiaojin-rcu 在这里等 synchronize_rcu*/
+		/*xiaojin-rcu synchronize_rcu-0*/
 		wait_rcu_gp(call_rcu);
 }
 EXPORT_SYMBOL_GPL(synchronize_rcu);

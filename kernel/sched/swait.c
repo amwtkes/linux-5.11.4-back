@@ -19,6 +19,7 @@ EXPORT_SYMBOL(__init_swait_queue_head);
  * If for some reason it would return 0, that means the previously waiting
  * task is already running, so it will observe condition true (or has already).
  */
+/*xiaojin-rcu synchronize_rcu --5.2*/
 void swake_up_locked(struct swait_queue_head *q)
 {
 	struct swait_queue *curr;

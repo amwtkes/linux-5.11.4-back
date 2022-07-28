@@ -26,6 +26,7 @@ void call_rcu(struct rcu_head *head, rcu_callback_t func)
 
 typedef void (*call_rcu_func_t)(struct rcu_head *head, rcu_callback_t func);
 */
+/*xiaojin-rcu synchronize_rcu-2 */
 #define _wait_rcu_gp(checktiny, ...) \
 do {									\
 	call_rcu_func_t __crcu_array[] = { __VA_ARGS__ };/*只有一个元素call_rcu*/		\
@@ -34,7 +35,7 @@ do {									\
 			__crcu_array, __rs_array);			\
 } while (0)
 
-/*xiaojin-rcu 0 wait_rcu_gp  synchronize_rcu
+/*xiaojin-rcu synchronize_rcu-1
 ... is call_rcu(__VA_ARGS__编译器标记代表...的内容)
 wait_rcu_gp(call_rcu);
 -- void call_rcu(struct rcu_head *head, rcu_callback_t func)*/

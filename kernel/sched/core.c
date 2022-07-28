@@ -3309,6 +3309,8 @@ static void ttwu_queue(struct task_struct *p, int cpu, int wake_flags)
  * Return: %true if @p->state changes (an actual wakeup was done),
  *	   %false otherwise.
  */
+
+/*xiaojin-rcu synchronize_rcu --5.4*/
 static int
 try_to_wake_up(struct task_struct *p, unsigned int state, int wake_flags)
 {
@@ -3530,6 +3532,7 @@ bool try_invoke_on_locked_down_task(struct task_struct *p, bool (*func)(struct t
  *
  * This function executes a full memory barrier before accessing the task state.
  */
+/*xiaojin-rcu synchronize_rcu --5.3*/
 int wake_up_process(struct task_struct *p)
 {
 	return try_to_wake_up(p, TASK_NORMAL, 0);
