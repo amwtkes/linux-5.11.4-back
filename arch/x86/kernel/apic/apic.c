@@ -613,6 +613,7 @@ static __init bool apic_validate_deadline_timer(void)
  * Setup the local APIC timer for this CPU. Copy the initialized values
  * of the boot CPU and register the clock event in the framework.
  */
+/*xiaojin apic timer code time_interrupt-0*/
 static void setup_APIC_timer(void)
 {
 	struct clock_event_device *levt = this_cpu_ptr(&lapic_events);

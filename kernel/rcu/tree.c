@@ -2619,6 +2619,8 @@ static void rcu_do_batch(struct rcu_data *rdp)
  * it will ask the scheduler to manufacture a context switch for the sole
  * purpose of providing a providing the needed quiescent state.
  */
+/*xiaojin-rcu tick interrupt -2
+rcu_sched_clock_irq 非进程切换QS处理。non-context-switch quiescent state*/
 void rcu_sched_clock_irq(int user)
 {
 	trace_rcu_utilization(TPS("Start scheduler-tick"));

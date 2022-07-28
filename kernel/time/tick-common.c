@@ -111,6 +111,7 @@ void tick_handle_periodic(struct clock_event_device *dev)
 	int cpu = smp_processor_id();
 	ktime_t next = dev->next_event;
 
+/*xiaojin time_interrupt -0.7*/
 	tick_periodic(cpu);
 
 #if defined(CONFIG_HIGH_RES_TIMERS) || defined(CONFIG_NO_HZ_COMMON)
@@ -153,6 +154,7 @@ void tick_handle_periodic(struct clock_event_device *dev)
  */
 void tick_setup_periodic(struct clock_event_device *dev, int broadcast)
 {
+	/*xiaojin time_interrupt -0.5*/
 	tick_set_periodic_handler(dev, broadcast);
 
 	/* Broadcast setup ? */
@@ -269,7 +271,7 @@ static void tick_setup_device(struct tick_device *td,
 	 */
 	if (tick_device_uses_broadcast(newdev, cpu))
 		return;
-
+/*xiaojin time_interrupt -0.4*/
 	if (td->mode == TICKDEV_MODE_PERIODIC)
 		tick_setup_periodic(newdev, 0);
 	else
@@ -371,6 +373,7 @@ void tick_check_new_device(struct clock_event_device *newdev)
 		curdev = NULL;
 	}
 	clockevents_exchange_device(curdev, newdev);
+	/*xiaojin time_interrupt -0.3*/
 	tick_setup_device(td, newdev, cpu, cpumask_of(cpu));
 	if (newdev->features & CLOCK_EVT_FEAT_ONESHOT)
 		tick_oneshot_notify();

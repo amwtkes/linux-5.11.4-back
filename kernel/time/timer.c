@@ -1773,6 +1773,7 @@ static void run_local_timers(void)
  * Called from the timer interrupt handler to charge one tick to the current
  * process.  user_tick is 1 if the tick is user time, 0 for system.
  */
+/*xiaojin-rcu tick interrupt -1*/
 void update_process_times(int user_tick)
 {
 	struct task_struct *p = current;
