@@ -38,26 +38,38 @@ struct rcu_exp_work {
  * Definition for node within the RCU grace-period-detection hierarchy.
  */
 struct rcu_node {
+	/*保护此node的spinlock*/
 	raw_spinlock_t __private lock;	/* Root rcu_node's lock protects */
 					/*  some rcu_state fields as well as */
 					/*  following. */
+	/* 本节点当前宽限期的编号,低两位表示状态 */
 	unsigned long gp_seq;	/* Track rsp->gp_seq. */
 	unsigned long gp_seq_needed; /* Track furthest future GP request. */
+
+	/*当前node已经度过所有的QS，且gp_tasks指针为NULL*/
 	unsigned long completedqs; /* All QSes done for this node. */
+
+	/* 记录当前node中的cpu或子node的QS情况，经历过为0*/
 	unsigned long qsmask;	/* CPUs or groups that need to switch in */
 				/*  order for current grace period to proceed.*/
-				/*  In leaf rcu_node, each bit corresponds to */
+				/*  In leaf rcu_node, each bit corresponds to 每个为代表一个下层的子节点 共可以带64个rcu_data */
 				/*  an rcu_data structure, otherwise, each */
 				/*  bit corresponds to a child rcu_node */
 				/*  structure. */
 	unsigned long rcu_gp_init_mask;	/* Mask of offline CPUs at GP init. */
+	
+	/* 每个GP开始时的初值，从qsmaskinitnext中获取，用来赋给qsmask */
 	unsigned long qsmaskinit;
 				/* Per-GP initial value for qsmask. */
 				/*  Initialized from ->qsmaskinitnext at the */
 				/*  beginning of each grace period. */
+
+	/* 下一个宽限期开始时的静止态位图，因为可能有些cpu下线了*/			
 	unsigned long qsmaskinitnext;
 	unsigned long ofl_seq;	/* CPU-hotplug operation sequence count. */
 				/* Online CPUs for next grace period. */
+
+	/* 类似于qsmask，用来记录加速宽限期的位图*/
 	unsigned long expmask;	/* CPUs or groups that need to check in */
 				/*  to allow the current expedited GP */
 				/*  to complete. */
@@ -72,21 +84,31 @@ struct rcu_node {
 	unsigned long cbovldmask;
 				/* CPUs experiencing callback overload. */
 	unsigned long ffmask;	/* Fully functional CPUs. */
+
+	/*此node对应父node的qsmask的哪个bit*/
 	unsigned long grpmask;	/* Mask to apply to parent qsmask. */
 				/*  Only one bit will be set in this mask. */
+	/* node中最小的处理器编号 */
 	int	grplo;		/* lowest-numbered CPU here. */
+	/* node中最大的处理器编号 */
 	int	grphi;		/* highest-numbered CPU here. */
+	/* node在上一层node中的编号 */
 	u8	grpnum;		/* group number for next level up. */
+	/* node在tree中的level，root node为0 */
 	u8	level;		/* root is at level 0. */
 	bool	wait_blkd_tasks;/* Necessary to wait for blocked tasks to */
 				/*  exit RCU read-side critical sections */
 				/*  before propagating offline up the */
 				/*  rcu_node tree? */
 	struct rcu_node *parent;
+
+	/*读临界区中被抢占的进程，都会被挂如此链表*/
 	struct list_head blkd_tasks;
 				/* Tasks blocked in RCU read-side critical */
 				/*  section.  Tasks are placed at the head */
 				/*  of this list and age towards the tail. */
+				
+	/*指向blkd_tasks中阻塞当前宽限期的第一个进程，当前node度过qs时，此成员必须为NULL*/			
 	struct list_head *gp_tasks;
 				/* Pointer to the first task blocking the */
 				/*  current grace period, or NULL if there */
@@ -184,7 +206,7 @@ struct rcu_data {
 					/*  ticks this CPU has handled */
 					/*  during and after the last grace */
 					/* period it is aware of. */
-					
+
 	struct irq_work defer_qs_iw;	/* Obtain later scheduler attention. */
 	bool defer_qs_iw_pending;	/* Scheduler attention pending? */
 	struct work_struct strict_work;	/* Schedule readers for strict GPs. */
