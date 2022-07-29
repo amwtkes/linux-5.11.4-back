@@ -155,6 +155,9 @@ extern void __finish_swait(struct swait_queue_head *q, struct swait_queue *wait)
 extern void finish_swait(struct swait_queue_head *q, struct swait_queue *wait);
 
 /* as per ___wait_event() but for swait, therefore "exclusive == 1" */
+/*xiaojin ___swait_event -1 
+cmd == schedule()
+*/
 #define ___swait_event(wq, condition, state, ret, cmd)			\
 ({									\
 	__label__ __out;						\

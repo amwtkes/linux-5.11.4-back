@@ -2,3 +2,4 @@ xiaojin.*time_interrupt -- 时间中断相关的代码
 xiaojin-rcu.*interrupt -- rcu在时间中断的代码
 rcu_qs -- 上报qs的各个情况
 rcu_gp_kthread -- 概念澄清一段已经介绍了宽限期的处理由内核线程rcu_gp_kthread全权负责，现在一起来分析下此线程的逻辑。
+___swait_event --- rcu_gp_kthread的休眠宏

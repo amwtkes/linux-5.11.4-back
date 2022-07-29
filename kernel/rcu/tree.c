@@ -633,7 +633,7 @@ do_idle
   ...
     ->rcu_idle_enter
       ->rcu_eqs_enter
-	  
+
 为什么要有EQS呢？主要是为了动态时钟的场景，若系统开启了NO_HZ_IDLE，在运行idle进程的情况下CPU是不响应tick中断的
 若开启NO_HZ_FULL，不仅CPU Idle时不响应tick，在CPU只有一个running状态的进程时也不响应tick中断。前面我们讲tick中断时已经说到它的功能包括检查QS，以及唤醒RCU软中断。那在没有的tick的情况下CPU如何上报QS呢？
 看上面的函数分析，进入EQS时会调用rcu_eqs_enter()->rcu_dynticks_eqs_enter()将当前CPU的rdp->dynticks的bit1加1变为奇数，表示处于动态时钟模式，而gp线程在处理强制静止态force qs的操作中会搜集所有的处于EQS的CPU，并替它们上报QS。
@@ -2159,7 +2159,20 @@ static int __noreturn rcu_gp_kthread(void *unused)
 		for (;;) {
 			trace_rcu_grace_period(rcu_state.name, rcu_state.gp_seq,
 					       TPS("reqwait"));
+			//设置gp线程的状态为Wait for grace-period start。
 			rcu_state.gp_state = RCU_GP_WAIT_GPS;
+
+			/*
+				#define RCU_GP_FLAG_INIT 0x1	Need grace-period initialization. 
+				#define RCU_GP_FLAG_FQS  0x2	 Need grace-period quiescent-state forcing. 
+				#define RCU_GP_FLAG_OVLD 0x4	 Experiencing callback overload. 
+			*/
+			/*xiaojin ___swait_event -0
+			就是在这里等待，直到开启一个新的GP
+			RCU_GP_FLAG_INIT == rcu_state.gp_flags 的时候停止等待。
+
+			所以开启一个新的gp只要把gp_flags设置为RCU_GP_FLAG_INIT就行了。
+			*/
 			swait_event_idle_exclusive(rcu_state.gp_wq,
 					 READ_ONCE(rcu_state.gp_flags) &
 					 RCU_GP_FLAG_INIT);
