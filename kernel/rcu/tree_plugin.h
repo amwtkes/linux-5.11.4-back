@@ -811,7 +811,7 @@ static void __init rcu_bootup_announce(void)
  * the start of the grace period, this just sets a flag.  The caller must
  * have disabled preemption.
  */
-/*xiaojin-rcu 上报qs*/
+/*xiaojin-rcu 上报qs的函数*/
 static void rcu_qs(void)
 {
 	/* xiaojin preemptible() 含义
@@ -869,7 +869,8 @@ EXPORT_SYMBOL_GPL(rcu_all_qs);
 void rcu_note_context_switch(bool preempt)
 {
 	trace_rcu_utilization(TPS("Start context switch"));
-	/* xiaojin rcu_data.cpu_no_qs.b.norm, false 设置norm的标志是false */
+	/* xiaojin-rcu rcu_qs-0 从context switch进入qs的情况。
+	rcu_data.cpu_no_qs.b.norm, false 设置norm的标志是false */
 	rcu_qs();
 	/* Load rcu_urgent_qs before other flags. */
 	if (!smp_load_acquire(this_cpu_ptr(&rcu_data.rcu_urgent_qs)))
@@ -941,7 +942,9 @@ static void rcu_flavor_sched_clock_irq(int user)
 		 * neither access nor modify, at least not while the
 		 * corresponding CPU is online.
 		 */
-
+/*xiaojin-rcu rcu_qs-1 这里是从用户态或者idle loop进入时钟tick中断而需要上报qs
+的情况。
+*/
 		rcu_qs();
 	}
 }
