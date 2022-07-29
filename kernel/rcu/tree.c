@@ -2624,6 +2624,7 @@ rcu_sched_clock_irq 非进程切换QS处理。non-context-switch quiescent state
 void rcu_sched_clock_irq(int user)
 {
 	trace_rcu_utilization(TPS("Start scheduler-tick"));
+	//cpu上的rcu_data每次时钟中断都会加1
 	raw_cpu_inc(rcu_data.ticks_this_gp);
 	/* The load-acquire pairs with the store-release setting to true. */
 	if (smp_load_acquire(this_cpu_ptr(&rcu_data.rcu_urgent_qs))) {

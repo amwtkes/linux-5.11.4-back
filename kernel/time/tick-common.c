@@ -99,6 +99,7 @@ static void tick_periodic(int cpu)
 		update_wall_time();
 	}
 
+	/*xiaojin user_mode(get_irq_regs()) 根据栈上保留的寄存器信息，判断这个中断是从用户态还是从内核态跳过来的*/
 	update_process_times(user_mode(get_irq_regs()));
 	profile_tick(CPU_PROFILING);
 }
