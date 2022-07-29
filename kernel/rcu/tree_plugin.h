@@ -811,6 +811,7 @@ static void __init rcu_bootup_announce(void)
  * the start of the grace period, this just sets a flag.  The caller must
  * have disabled preemption.
  */
+/*xiaojin-rcu 上报qs*/
 static void rcu_qs(void)
 {
 	/* xiaojin preemptible() 含义
@@ -822,6 +823,8 @@ static void rcu_qs(void)
 		return;
 	trace_rcu_grace_period(TPS("rcu_sched"),
 			       __this_cpu_read(rcu_data.gp_seq), TPS("cpuqs"));
+
+	//设置cpu_no_qs=false表示已经进入qs。
 	__this_cpu_write(rcu_data.cpu_no_qs.b.norm, false);
 	if (!__this_cpu_read(rcu_data.cpu_no_qs.b.exp))
 		return;
@@ -921,8 +924,10 @@ static void rcu_preempt_check_blocked_tasks(struct rcu_node *rnp)
  * Check to see if this CPU is in a non-context-switch quiescent state,
  * namely user mode and idle loop.
  */
+/*xiaojin-rcu time interrupt -3  rcu_flavor_sched_clock_irq*/
 static void rcu_flavor_sched_clock_irq(int user)
 {
+	//在时间中断中判断，如果是从用户态或者idle线程过来的，就说明已经进入qs了。要上报。
 	if (user || rcu_is_cpu_rrupt_from_idle()) {
 
 		/*
