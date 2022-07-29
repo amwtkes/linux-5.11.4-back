@@ -869,7 +869,8 @@ EXPORT_SYMBOL_GPL(rcu_all_qs);
 void rcu_note_context_switch(bool preempt)
 {
 	trace_rcu_utilization(TPS("Start context switch"));
-	/* xiaojin-rcu rcu_qs-0 从context switch进入qs的情况。
+	/* xiaojin-rcu rcu_qs-context-switch
+	从context switch进入qs的情况。
 	rcu_data.cpu_no_qs.b.norm, false 设置norm的标志是false */
 	rcu_qs();
 	/* Load rcu_urgent_qs before other flags. */
@@ -942,8 +943,8 @@ static void rcu_flavor_sched_clock_irq(int user)
 		 * neither access nor modify, at least not while the
 		 * corresponding CPU is online.
 		 */
-/*xiaojin-rcu rcu_qs-1 这里是从用户态或者idle loop进入时钟tick中断而需要上报qs
-的情况。
+/*xiaojin-rcu rcu_qs-tick
+这里是从用户态或者idle loop进入时钟tick中断而需要上报qs的情况。
 */
 		rcu_qs();
 	}
