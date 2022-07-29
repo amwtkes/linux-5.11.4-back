@@ -2151,6 +2151,7 @@ static void rcu_gp_cleanup(void)
 /*xiaojin-rcu rcu_gp_kthread-1 定义*/
 static int __noreturn rcu_gp_kthread(void *unused)
 {
+	//设置这个线程在固定的CPU上跑
 	rcu_bind_gp_kthread();
 	for (;;) {
 
