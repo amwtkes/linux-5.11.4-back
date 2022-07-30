@@ -2168,8 +2168,10 @@ static int __noreturn rcu_gp_kthread(void *unused)
 				#define RCU_GP_FLAG_OVLD 0x4	 Experiencing callback overload. 
 			*/
 			/*xiaojin ___swait_event -0
-			就是在这里等待，直到开启一个新的GP
-			RCU_GP_FLAG_INIT == rcu_state.gp_flags 的时候停止等待。
+			就是在这里等待，直到开启一个新的GP:
+			唤醒rcu_gp_kthead的过程：
+			1/RCU_GP_FLAG_INIT == rcu_state.gp_flags
+			2、调用方法将其唤醒。
 
 			所以开启一个新的gp只要把gp_flags设置为RCU_GP_FLAG_INIT就行了。
 			*/
