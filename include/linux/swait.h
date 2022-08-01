@@ -167,7 +167,11 @@ cmd == schedule()
 	INIT_LIST_HEAD(&__wait.task_list);				\
 	for (;;) {							\
 		long __int = prepare_to_swait_event(&wq, &__wait, state);\
-									\
+		/*如果condition满足就会退出等待
+		需要外部的力量将其唤醒，然后判断是否条件满足。
+		所以一般是先设置条件满足
+		然后唤醒线程。
+		*/							\
 		if (condition)						\
 			break;						\
 									\

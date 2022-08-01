@@ -2178,8 +2178,8 @@ static int __noreturn rcu_gp_kthread(void *unused)
 			swait_event_idle_exclusive(rcu_state.gp_wq,
 					 READ_ONCE(rcu_state.gp_flags) &
 					 RCU_GP_FLAG_INIT);
-			rcu_gp_torture_wait();
-			rcu_state.gp_state = RCU_GP_DONE_GPS;
+			rcu_gp_torture_wait(); //要开启这个才起作用CONFIG_RCU_TORTURE_TEST
+			rcu_state.gp_state = RCU_GP_DONE_GPS; //此时已经唤醒。
 			/* Locking provides needed memory barrier. */
 			if (rcu_gp_init())
 				break;
