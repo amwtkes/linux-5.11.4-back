@@ -231,6 +231,7 @@ static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
  * even when this tracepoint is off. This code has no purpose other than
  * poking RCU a bit.
  */
+/*xiaojin-tracepoint -3 __DECLARE_TRACE*/
 #define __DECLARE_TRACE(name, proto, args, cond, data_proto, data_args) \
 	extern int __traceiter_##name(data_proto);			\
 	DECLARE_STATIC_CALL(tp_func_##name, __traceiter_##name);	\
@@ -535,6 +536,7 @@ static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
 
 #define DECLARE_EVENT_CLASS(name, proto, args, tstruct, assign, print)
 #define DEFINE_EVENT(template, name, proto, args)		\
+/*xiaojin-tracepoint -2 DECLARE_TRACE*/
 	DECLARE_TRACE(name, PARAMS(proto), PARAMS(args))
 #define DEFINE_EVENT_FN(template, name, proto, args, reg, unreg)\
 	DECLARE_TRACE(name, PARAMS(proto), PARAMS(args))

@@ -169,6 +169,7 @@ DECLARE_EVENT_CLASS(sched_wakeup_template,
  * Tracepoint called when waking a task; this tracepoint is guaranteed to be
  * called from the waking context.
  */
+/*xiaojin-tracepoint -1 DEFINE_EVENT*/
 DEFINE_EVENT(sched_wakeup_template, sched_waking,
 	     TP_PROTO(struct task_struct *p),
 	     TP_ARGS(p));

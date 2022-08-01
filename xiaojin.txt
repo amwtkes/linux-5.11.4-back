@@ -5,3 +5,4 @@ rcu_gp_kthread -- 概念澄清一段已经介绍了宽限期的处理由内核�
 ___swait_event --- rcu_gp_kthread的休眠宏
 xiaojin-lib  --- linux自己的库。跟libc对等的库，可以用于moudle的开发。因为module不能使用第三方库，由linux的模块自己做链接。
 xiaojin-lock --- linux的原子指令
+xiaojin-tracepoint -- trace_sched_waking这些监测点的宏跟踪，perf list | grep sched: 列出所有的监测点perf
