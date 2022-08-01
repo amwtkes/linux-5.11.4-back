@@ -61,6 +61,8 @@ static inline unsigned long array_index_mask_nospec(unsigned long index,
 #endif
 #define __smp_rmb()	dma_rmb()
 #define __smp_wmb()	barrier()
+/*xiaojin-lock __smp_store_mb 原子指令
+用于在多核cpu中设置某些关键的值*/
 #define __smp_store_mb(var, value) do { (void)xchg(&var, value); } while (0)
 
 #define __smp_store_release(p, v)					\
