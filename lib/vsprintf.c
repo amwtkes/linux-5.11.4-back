@@ -2546,6 +2546,7 @@ set_precision(struct printf_spec *spec, int prec)
  *
  * If you're not already dealing with a va_list consider using snprintf().
  */
+/*xiaojin-lib vsnprintf -> printk*/
 int vsnprintf(char *buf, size_t size, const char *fmt, va_list args)
 {
 	unsigned long long num;
