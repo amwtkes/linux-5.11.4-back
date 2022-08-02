@@ -12,6 +12,7 @@
 /*
  * Structure allowing asynchronous waiting on RCU.
  */
+/*xiaojin-rcu synchronize_rcu -2.1 rcu_synchronize */
 struct rcu_synchronize {
 	struct rcu_head head;
 	struct completion completion;
