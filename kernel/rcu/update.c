@@ -359,7 +359,15 @@ EXPORT_SYMBOL_GPL(rcu_read_lock_any_held);
  */
 
 /*xiaojin-rcu synchronize_rcu-5 
-synchronize_rcu()的唤醒函数，是在回调中的。*/
+synchronize_rcu()的唤醒函数，是在回调中的。
+将completion上面等待的线程唤醒。通常只会等待一个线程。
+当
+struct completion {
+	unsigned int done;
+	struct swait_queue_head wait;
+};
+done==
+*/
 void wakeme_after_rcu(struct rcu_head *head)
 {
 	struct rcu_synchronize *rcu;

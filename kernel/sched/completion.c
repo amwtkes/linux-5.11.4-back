@@ -94,14 +94,18 @@ do_wait_for_common(struct completion *x,
 			};
 			的wait中。
 			采用的的是头插法。在head之前插入。
+
+			只在队列是空的时候才插入。
 			*/
 			__prepare_to_swait(&x->wait, &wait);
 			__set_current_state(state);
 			raw_spin_unlock_irq(&x->wait.lock);
-			/*schedule_timeout的调用*/
+			/*schedule_timeout的调用
+			在这里等待。
+			*/
 			timeout = action(timeout);
-			raw_spin_lock_irq(&x->wait.lock);
-		} while (!x->done && timeout);
+			raw_spin_lock_irq(&x->wait.lock); 
+		} while (!x->done && timeout);// done>0的时候就可以停止了
 		__finish_swait(&x->wait, &wait);
 		if (!x->done)
 			return timeout;
