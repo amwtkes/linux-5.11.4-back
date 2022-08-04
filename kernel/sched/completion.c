@@ -98,6 +98,7 @@ do_wait_for_common(struct completion *x,
 			__prepare_to_swait(&x->wait, &wait);
 			__set_current_state(state);
 			raw_spin_unlock_irq(&x->wait.lock);
+			/*schedule_timeout的调用*/
 			timeout = action(timeout);
 			raw_spin_lock_irq(&x->wait.lock);
 		} while (!x->done && timeout);
