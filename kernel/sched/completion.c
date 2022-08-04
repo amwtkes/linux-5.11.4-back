@@ -73,7 +73,7 @@ do_wait_for_common(struct completion *x,
 		   long (*action)(long), long timeout, int state)
 {
 	if (!x->done) {
-		/* xiaojin
+		/* xiaojin do_wait_for_common 只要调这个completion，就会创建新的wait对象挂在这个competion中，等待唤醒。
 		struct swait_queue wait={
 			.task		= current,					
 			.task_list	= LIST_HEAD_INIT((name).task_list),
@@ -86,7 +86,7 @@ do_wait_for_common(struct completion *x,
 				timeout = -ERESTARTSYS;
 				break;
 			}
-			/*xiaojin
+			/*xiaojin do_wait_for_common
 			将前面创建的wait插入到了
 			struct completion {
 				unsigned int done;
