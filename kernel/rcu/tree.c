@@ -3081,7 +3081,10 @@ __call_rcu(struct rcu_head *head, rcu_callback_t func)
 		if (rcu_segcblist_empty(&rdp->cblist))
 			rcu_segcblist_init(&rdp->cblist);
 	}
-
+	/*xiaojin-rcu check_cb_ovld 
+	检查某个cup上的data->cblist是否超过20000个
+	否则就设置node上的相应的标志位
+	*/
 	check_cb_ovld(rdp);
 	if (rcu_nocb_try_bypass(rdp, head, &was_alldone, flags))
 		return; // Enqueued onto ->nocb_bypass, so just leave.
