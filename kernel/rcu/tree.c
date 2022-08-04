@@ -2767,7 +2767,7 @@ static void strict_work_handler(struct work_struct *work)
 }
 
 /* Perform RCU core processing work for the current CPU.  */
-/* xiaojin-rcu softirq-1 rcu_core(void) */
+/* xiaojin-rcu softirq-1 rcu_core(void) RCU_SOFTIRQ*/
 static __latent_entropy void rcu_core(void)
 {
 	unsigned long flags;
@@ -2847,13 +2847,14 @@ static void invoke_rcu_core_kthread(void)
 /*
  * Wake up this CPU's rcuc kthread to do RCU core processing.
  */
+/*xiaojin-rcu invoke_rcu_core 触发软中断代码 RCU_SOFTIRQ*/
 static void invoke_rcu_core(void)
 {
 	if (!cpu_online(smp_processor_id()))
 		return;
 	if (use_softirq)
 		raise_softirq(RCU_SOFTIRQ);
-	else
+	else/*xiaojin nocb*/
 		invoke_rcu_core_kthread();
 }
 
