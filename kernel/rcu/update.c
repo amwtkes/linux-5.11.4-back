@@ -366,7 +366,7 @@ struct completion {
 	unsigned int done;
 	struct swait_queue_head wait;
 };
-done==
+done>0表示结束等待了。
 */
 void wakeme_after_rcu(struct rcu_head *head)
 {
@@ -379,6 +379,13 @@ EXPORT_SYMBOL_GPL(wakeme_after_rcu);
 
 /*xiaojin-rcu synchronize_rcu-3
 两个数组都只有一个元素了都是 call_rcu
+
+struct rcu_synchronize {
+	struct rcu_head head;
+	struct completion completion;
+};
+1 head负责调起回调函数wakeme_after_rcu，唤醒等待的线程
+2 completion结构负责调用sched模块的线程等待与唤醒的机制函数。
 */
 void __wait_rcu_gp(bool checktiny, int n, call_rcu_func_t *crcu_array,
 		   struct rcu_synchronize *rs_array)
