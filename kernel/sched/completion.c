@@ -73,6 +73,12 @@ do_wait_for_common(struct completion *x,
 		   long (*action)(long), long timeout, int state)
 {
 	if (!x->done) {
+		/* xiaojin
+		struct swait_queue wait={
+			.task		= current,					
+			.task_list	= LIST_HEAD_INIT((name).task_list),
+		}	
+		*/
 		DECLARE_SWAITQUEUE(wait);
 
 		do {
@@ -80,6 +86,15 @@ do_wait_for_common(struct completion *x,
 				timeout = -ERESTARTSYS;
 				break;
 			}
+			/*xiaojin
+			将前面创建的wait插入到了
+			struct completion {
+				unsigned int done;
+				struct swait_queue_head wait;
+			};
+			的wait中。
+			采用的的是头插法。在head之前插入。
+			*/
 			__prepare_to_swait(&x->wait, &wait);
 			__set_current_state(state);
 			raw_spin_unlock_irq(&x->wait.lock);
