@@ -396,6 +396,10 @@ void __wait_rcu_gp(bool checktiny, int n, call_rcu_func_t *crcu_array,
 			/*xiaojin-rcu synchronize_rcu-4 
 			(crcu_array[i]) 就是call_rcu()
 			用call_rcu()注册一个回调函数wakeme_after_rcu
+
+			详解：
+			rcu_synchronize.rcu_head注册到rcu_data.cblist里面去。
+			唤醒的时候，调用wakeme_after_rcu回调函数。
 			*/
 			(crcu_array[i])(&rs_array[i].head, wakeme_after_rcu);
 		}
