@@ -422,6 +422,8 @@ void __wait_rcu_gp(bool checktiny, int n, call_rcu_func_t *crcu_array,
 			if (crcu_array[j] == crcu_array[i])
 				break;
 		if (j == i) {
+			/*xiaojin-rcu wait_for_completion 在completion上做循环等待
+			直到done>0为止*/
 			wait_for_completion(&rs_array[i].completion);
 			destroy_rcu_head_on_stack(&rs_array[i].head);
 		}

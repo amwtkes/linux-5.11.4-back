@@ -31,9 +31,10 @@ void complete(struct completion *x)
 	unsigned long flags;
 
 	raw_spin_lock_irqsave(&x->wait.lock, flags);
-
+	//先done+1，使得done>0 <do_wait_for_common>
 	if (x->done != UINT_MAX)
 		x->done++;
+	//然后唤醒线程
 	swake_up_locked(&x->wait);
 	raw_spin_unlock_irqrestore(&x->wait.lock, flags);
 }
