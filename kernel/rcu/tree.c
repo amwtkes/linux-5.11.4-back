@@ -2554,7 +2554,9 @@ static void rcu_do_batch(struct rcu_data *rdp)
 		rdp->qlen_last_fqs_check = rcu_segcblist_n_cbs(&rdp->cblist);
 	rcu_nocb_unlock_irqrestore(rdp, flags);
 
-	/* Invoke callbacks. */
+	/* Invoke callbacks. 
+	xiaojin-rcu callback 调起点
+	*/
 	tick_dep_set_task(current, TICK_DEP_BIT_RCU);
 	rhp = rcu_cblist_dequeue(&rcl);
 	for (; rhp; rhp = rcu_cblist_dequeue(&rcl)) {
