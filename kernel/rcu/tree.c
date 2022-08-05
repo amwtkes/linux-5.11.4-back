@@ -2767,7 +2767,9 @@ static void strict_work_handler(struct work_struct *work)
 }
 
 /* Perform RCU core processing work for the current CPU.  */
-/* xiaojin-rcu softirq-1 rcu_core(void) RCU_SOFTIRQ*/
+/* xiaojin-rcu softirq-1 rcu_core(void) RCU_SOFTIRQ
+软中断或者nocb percpu线程最终到这里。
+*/
 static __latent_entropy void rcu_core(void)
 {
 	unsigned long flags;
@@ -2875,6 +2877,7 @@ static int rcu_cpu_kthread_should_run(unsigned int cpu)
  */
 
 /*xiaojin-rcu 1 rcu_cpu_kthread_task rcu_cpu_kthread Per-CPU kernel thread that invokes RCU 
+nocb的时候启用：代替软中断
 rcu callback函数 --- 内核线程的启动函数 percpu的线程*/
 static void rcu_cpu_kthread(unsigned int cpu)
 {
@@ -3105,6 +3108,7 @@ __call_rcu(struct rcu_head *head, rcu_callback_t func)
 	if (unlikely(rcu_segcblist_is_offloaded(&rdp->cblist))) {
 		__call_rcu_nocb_wake(rdp, was_alldone, flags); /* unlocks */
 	} else {
+		/*xiaojin 发起RCU_SOFTIRQ软中断*/
 		__call_rcu_core(rdp, head, flags);
 		local_irq_restore(flags);
 	}
