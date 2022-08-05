@@ -1523,6 +1523,7 @@ static bool rcu_future_gp_cleanup(struct rcu_node *rnp)
  * pre-sleep check of the awaken condition.  In this case, a wakeup really
  * is required, and is therefore supplied.
  */
+/*xiaojin-rcu rcu_gp_kthread -2 唤醒进程*/
 static void rcu_gp_kthread_wake(void)
 {
 	struct task_struct *t = READ_ONCE(rcu_state.gp_kthread);
@@ -2820,6 +2821,7 @@ static __latent_entropy void rcu_core(void)
 		queue_work_on(rdp->cpu, rcu_gp_wq, &rdp->strict_work);
 }
 
+/*xiaojin-rcu RCU_SOFTIRQ rcu_core_si*/
 static void rcu_core_si(struct softirq_action *h)
 {
 	rcu_core();
