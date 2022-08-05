@@ -2794,6 +2794,7 @@ static __latent_entropy void rcu_core(void)
 	}
 
 	/* Update RCU state based on any recent quiescent states. */
+	/*xiaojin-rcu rcu_gp_kthread-3 这里可以唤醒核心线程*/
 	rcu_check_quiescent_state(rdp);
 
 	/* No grace period and unregistered callbacks? */
