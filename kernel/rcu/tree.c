@@ -2558,7 +2558,7 @@ static void rcu_do_batch(struct rcu_data *rdp)
 	rcu_nocb_unlock_irqrestore(rdp, flags);
 
 	/* Invoke callbacks. 
-	xiaojin-rcu callback 调起点
+	xiaojin-rcu rcu_cblist callback 调起点
 	*/
 	tick_dep_set_task(current, TICK_DEP_BIT_RCU);
 	rhp = rcu_cblist_dequeue(&rcl);
