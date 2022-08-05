@@ -8,3 +8,4 @@ xiaojin-lock --- linux的原子指令
 xiaojin-tracepoint -- trace_sched_waking这些监测点的宏跟踪，perf list | grep sched: 列出所有的监测点perf
 xiaojin-rcu synchronize_rcu --- 进入rcu gp的函数
 xiaojin-rcu rcu_segcblist --- rcu_data中的callback list
+xiaojin-rcu rcu_gp_kthread -- rcu核心线程的过程
