@@ -1734,10 +1734,12 @@ static void note_gp_changes(struct rcu_data *rdp)
 		local_irq_restore(flags);
 		return;
 	}
+	/*xiaojin-rcu rcu_gp_kthread-4 修改RCU_GP_FLAG_INIT在这里？*/
 	needwake = __note_gp_changes(rnp, rdp);
 	raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
 	rcu_strict_gp_check_qs();
 	if (needwake)
+		/*xiaojin-rcu rcu_gp_kthread-5 唤醒，跟4是配套的，缺一不可。*/
 		rcu_gp_kthread_wake();
 }
 
