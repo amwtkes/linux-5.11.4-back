@@ -1,11 +1,16 @@
 xiaojin.*time_interrupt -- 时间中断相关的代码
-xiaojin-rcu.*interrupt -- rcu在时间中断的代码
-rcu_qs -- 上报qs的各个情况
-rcu_gp_kthread -- 概念澄清一段已经介绍了宽限期的处理由内核线程rcu_gp_kthread全权负责，现在一起来分析下此线程的逻辑。
-___swait_event --- rcu_gp_kthread的休眠宏
 xiaojin-lib  --- linux自己的库。跟libc对等的库，可以用于moudle的开发。因为module不能使用第三方库，由linux的模块自己做链接。
 xiaojin-lock --- linux的原子指令
 xiaojin-tracepoint -- trace_sched_waking这些监测点的宏跟踪，perf list | grep sched: 列出所有的监测点perf
+
+========rcu
+___swait_event --- rcu_gp_kthread的休眠宏
+rcu_qs -- 上报qs的各个情况
+rcu_gp_kthread -- 概念澄清一段已经介绍了宽限期的处理由内核线程rcu_gp_kthread全权负责，现在一起来分析下此线程的逻辑。
+xiaojin-rcu.*interrupt -- rcu在时间中断的代码
 xiaojin-rcu synchronize_rcu --- 进入rcu gp的函数
 xiaojin-rcu rcu_segcblist --- rcu_data中的callback list
 xiaojin-rcu rcu_gp_kthread -- rcu核心线程的过程
+
+=========syscall
+xiaojin-syscall -- 系统调用相关
