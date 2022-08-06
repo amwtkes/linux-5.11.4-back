@@ -13,6 +13,7 @@ extern long __ia32_sys_ni_syscall(const struct pt_regs *regs);
 
 /*
  * Instead of the generic __SYSCALL_DEFINEx() definition, the x86 version takes
+ xiaojin-syscall-2
  * struct pt_regs *regs as the only argument of the syscall stub(s) named as:
  * __x64_sys_*()         - 64-bit native syscall
  * __ia32_sys_*()        - 32-bit native syscall or common compat syscall
@@ -20,7 +21,7 @@ extern long __ia32_sys_ni_syscall(const struct pt_regs *regs);
  * __x32_compat_sys_*()  - 64-bit X32 compat syscall
  *
  * The registers are decoded according to the ABI:
- * 64-bit: RDI, RSI, RDX, R10, R8, R9
+ * 64-bit: RDI, RSI, RDX, R10, R8, R9  xiaojin-syscall-3
  * 32-bit: EBX, ECX, EDX, ESI, EDI, EBP
  *
  * The stub then passes the decoded arguments to the __se_sys_*() wrapper to
@@ -53,6 +54,7 @@ extern long __ia32_sys_ni_syscall(const struct pt_regs *regs);
  */
 
 /* Mapping of registers to parameters for syscalls on x86-64 and x32 */
+/*xiaojin-syscall-3.4.1 SC_X86_64_REGS_TO_ARGS  从pt_reg将参数解出*/
 #define SC_X86_64_REGS_TO_ARGS(x, ...)					\
 	__MAP(x,__SC_ARGS						\
 		,,regs->di,,regs->si,,regs->dx				\
@@ -71,6 +73,11 @@ extern long __ia32_sys_ni_syscall(const struct pt_regs *regs);
 	long __##abi##_##name(const struct pt_regs *regs)		\
 		__alias(__do_##name);
 
+/*xiaojin-syscall-3.5! __SYS_STUBx 最终的步骤
+
+__SYS_STUBx(x64, sys##name,					\
+		    SC_X86_64_REGS_TO_ARGS(x, __VA_ARGS__))
+*/
 #define __SYS_STUBx(abi, name, ...)					\
 	long __##abi##_##name(const struct pt_regs *regs);		\
 	ALLOW_ERROR_INJECTION(__##abi##_##name, ERRNO);			\
@@ -92,6 +99,7 @@ extern long __ia32_sys_ni_syscall(const struct pt_regs *regs);
 #define __X64_SYS_STUB0(name)						\
 	__SYS_STUB0(x64, sys_##name)
 
+/*xiaojin-syscall-3.4 __X64_SYS_STUBx*/
 #define __X64_SYS_STUBx(x, name, ...)					\
 	__SYS_STUBx(x64, sys##name,					\
 		    SC_X86_64_REGS_TO_ARGS(x, __VA_ARGS__))
@@ -224,6 +232,7 @@ extern long __ia32_sys_ni_syscall(const struct pt_regs *regs);
 
 #endif /* CONFIG_COMPAT */
 
+/*xiaojin-syscall-3.3 __SYSCALL_DEFINEx*/
 #define __SYSCALL_DEFINEx(x, name, ...)					\
 	static long __se_sys##name(__MAP(x,__SC_LONG,__VA_ARGS__));	\
 	static inline long __do_sys##name(__MAP(x,__SC_DECL,__VA_ARGS__));\

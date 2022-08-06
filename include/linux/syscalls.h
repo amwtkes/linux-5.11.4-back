@@ -110,6 +110,18 @@ struct open_how;
 #define __MAP4(m,t,a,...) m(t,a), __MAP3(m,__VA_ARGS__)
 #define __MAP5(m,t,a,...) m(t,a), __MAP4(m,__VA_ARGS__)
 #define __MAP6(m,t,a,...) m(t,a), __MAP5(m,__VA_ARGS__)
+
+/*xiaojin-syscall-3.4.1.1 __MAP 参数展开
+__MAP(x,__SC_ARGS						\
+		,,regs->di,,regs->si,,regs->dx				\
+		,,regs->r10,,regs->r8,,regs->r9)	
+
+#define __SC_ARGS(t, a)	a 
+m(t,a) a ==> regs->di
+然后递归到最后解开以后：
+regs->di,regs->si,regis->dx,regs->r10,regs->r8,regs->r9
+形成6个参数，从regs中取值
+*/
 #define __MAP(n,...) __MAP##n(__VA_ARGS__)
 
 #define __SC_DECL(t, a)	t a
@@ -209,7 +221,7 @@ static inline int is_syscall_trace_event(struct trace_event_call *tp_event)
 	ALLOW_ERROR_INJECTION(sys_##sname, ERRNO);		\
 	asmlinkage long sys_##sname(void)
 #endif /* SYSCALL_DEFINE0 */
-
+/*xiaojin-syscall-3.1 SYSCALL_DEFINE1*/
 #define SYSCALL_DEFINE1(name, ...) SYSCALL_DEFINEx(1, _##name, __VA_ARGS__)
 #define SYSCALL_DEFINE2(name, ...) SYSCALL_DEFINEx(2, _##name, __VA_ARGS__)
 #define SYSCALL_DEFINE3(name, ...) SYSCALL_DEFINEx(3, _##name, __VA_ARGS__)
@@ -219,6 +231,7 @@ static inline int is_syscall_trace_event(struct trace_event_call *tp_event)
 
 #define SYSCALL_DEFINE_MAXARGS	6
 
+/*xiaojin-syscall-3.2 SYSCALL_DEFINEx*/
 #define SYSCALL_DEFINEx(x, sname, ...)				\
 	SYSCALL_METADATA(sname, x, __VA_ARGS__)			\
 	__SYSCALL_DEFINEx(x, sname, __VA_ARGS__)
