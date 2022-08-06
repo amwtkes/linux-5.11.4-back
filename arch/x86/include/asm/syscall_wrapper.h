@@ -83,6 +83,8 @@ __SYS_STUBx(x64, sys##name,					\
 	ALLOW_ERROR_INJECTION(__##abi##_##name, ERRNO);			\
 	long __##abi##_##name(const struct pt_regs *regs)		\
 	{								\
+		//参数就变成了这个了：regs->di,regs->si,regis->dx,regs->r10,regs->r8,regs->r9
+		//__se开头的这个函数在这个宏后面有声明。
 		return __se_##name(__VA_ARGS__);			\
 	}
 
