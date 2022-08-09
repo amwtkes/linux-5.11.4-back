@@ -11,8 +11,8 @@
 #include <asm/desc.h>
 #include <asm/hw_irq.h>
 
-#define DPL0		0x0
-#define DPL3		0x3
+#define DPL0		0x0 //内核态
+#define DPL3		0x3 //用户态
 
 #define DEFAULT_STACK	0
 
@@ -28,10 +28,12 @@
 	}
 
 /* Interrupt gate */
+/*xiaojin-gates define-0 中断门 DPL0*/
 #define INTG(_vector, _addr)				\
 	G(_vector, _addr, DEFAULT_STACK, GATE_INTERRUPT, DPL0, __KERNEL_CS)
 
 /* System interrupt gate */
+/*xiaojin-gates define-1 系统中断门 DPL3*/
 #define SYSG(_vector, _addr)				\
 	G(_vector, _addr, DEFAULT_STACK, GATE_INTERRUPT, DPL3, __KERNEL_CS)
 
@@ -39,10 +41,12 @@
  * Interrupt gate with interrupt stack. The _ist index is the index in
  * the tss.ist[] array, but for the descriptor it needs to start at 1.
  */
+/*xiaojin-gates define-3 tss.ist[]门  DPL0*/
 #define ISTG(_vector, _addr, _ist)			\
 	G(_vector, _addr, _ist + 1, GATE_INTERRUPT, DPL0, __KERNEL_CS)
 
 /* Task gate */
+/*xiaojin-gates define-2 任务门 DPL0*/
 #define TSKG(_vector, _gdt)				\
 	G(_vector, NULL, DEFAULT_STACK, GATE_TASK, DPL0, _gdt << 3)
 
@@ -54,6 +58,7 @@ static bool idt_setup_done __initdata;
  * Early traps running on the DEFAULT_STACK because the other interrupt
  * stacks work only after cpu_init().
  */
+/*xiaojin-gates tables -2 用户态可以触发的 int3 还有内核态的page_fault*/
 static const __initconst struct idt_data early_idts[] = {
 	INTG(X86_TRAP_DB,		asm_exc_debug),
 	SYSG(X86_TRAP_BP,		asm_exc_int3),
@@ -72,6 +77,7 @@ static const __initconst struct idt_data early_idts[] = {
  * the traps which use them are reinitialized with IST after cpu_init() has
  * set up TSS.
  */
+/*xiaojin-gates tables -0 traps int80老系统调用*/
 static const __initconst struct idt_data def_idts[] = {
 	INTG(X86_TRAP_DE,		asm_exc_divide_error),
 	INTG(X86_TRAP_NMI,		asm_exc_nmi),
@@ -110,6 +116,7 @@ static const __initconst struct idt_data def_idts[] = {
 /*
  * The APIC and SMP idt entries
  */
+/*xiaojin-gates tables -1 intgs*/
 static const __initconst struct idt_data apic_idts[] = {
 #ifdef CONFIG_SMP
 	INTG(RESCHEDULE_VECTOR,			asm_sysvec_reschedule_ipi),
@@ -225,6 +232,7 @@ static const __initconst struct idt_data early_pf_idts[] = {
  * The exceptions which use Interrupt stacks. They are setup after
  * cpu_init() when the TSS has been initialized.
  */
+/*xiaojin-gates tables -3 exceptions*/
 static const __initconst struct idt_data ist_idts[] = {
 	ISTG(X86_TRAP_DB,	asm_exc_debug,			IST_INDEX_DB),
 	ISTG(X86_TRAP_NMI,	asm_exc_nmi,			IST_INDEX_NMI),

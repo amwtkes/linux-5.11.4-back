@@ -14,3 +14,9 @@ xiaojin-rcu rcu_gp_kthread -- rcu核心线程的过程
 
 =========syscall
 xiaojin-syscall -- 系统调用相关
+
+
+
+========interrupt exception gates
+xiaojin-gates --- 基本
+xiaojin-gates define ---- 一些宏定义
