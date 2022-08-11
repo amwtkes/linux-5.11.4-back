@@ -457,6 +457,10 @@ inline void raise_softirq_irqoff(unsigned int nr)
 	__raise_softirq_irqoff(nr);
 
 	/*
+	软中断-softirq
+	1、内核延迟调用的一种机制
+	2、只能在内核发起
+	3、一个CPU核心只能执行一个软中断处理程序，但是多个CPU可以并行（如NET_RX_SOFTIRQ NET_TX_SOFTIRQ可以多CPU并行处理）
 	 * If we're in an interrupt or softirq, we're done
 	 * (this also catches softirq-disabled code). We will
 	 * actually run the softirq once we return from
