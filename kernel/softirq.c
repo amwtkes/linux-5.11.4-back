@@ -452,15 +452,15 @@ void irq_exit(void)
 /*
  * This function must run with irqs disabled!
  */
+/*xiaojin-si -2 调用逻辑
+	<1>、最重要的，就是置相应的位图，等待将来被处理；__raise_softirq_irqoff(nr)这里完成
+	<2>、如果此时已经没有在中断上下文中，则立即调用(其实是内核线程的唤醒操作)，现在就是将来；
+*/
 inline void raise_softirq_irqoff(unsigned int nr)
 {
 	__raise_softirq_irqoff(nr);
 
 	/*
-	软中断-softirq
-	1、内核延迟调用的一种机制
-	2、只能在内核发起
-	3、一个CPU核心只能执行一个软中断处理程序，但是多个CPU可以并行（如NET_RX_SOFTIRQ NET_TX_SOFTIRQ可以多CPU并行处理）
 	 * If we're in an interrupt or softirq, we're done
 	 * (this also catches softirq-disabled code). We will
 	 * actually run the softirq once we return from
@@ -469,20 +469,30 @@ inline void raise_softirq_irqoff(unsigned int nr)
 	 * Otherwise we wake up ksoftirqd to make sure we
 	 * schedule the softirq soon.
 	 */
-	/*xiaojin-si -2 调用逻辑
-		<1>、最重要的，就是置相应的位图，等待将来被处理；__raise_softirq_irqoff(nr)这里完成
-		<2>、如果此时已经没有在中断上下文中，则立即调用(其实是内核线程的唤醒操作)，现在就是将来；
-	*/
 	if (!in_interrupt()) //如果没有在中断上下文，也就是没有中断处理。
 		wakeup_softirqd();
 }
-/*xiaojin-si raise_softirq-0*/
+
+/*xiaojin-si raise_softirq-0
+软中断-softirq
+	1、内核延迟调用的一种机制
+	2、只能在内核发起
+	3、一个CPU核心只能执行一个软中断处理程序，但是多个CPU可以并行（如NET_RX_SOFTIRQ NET_TX_SOFTIRQ可以多CPU并行处理）
+
+	当需要调用软中断时，需要调用raise_softirq函数激活软中断，这里使用术语“激活”而非“调用”，
+是因为在很多情况下不能直接调用软中断。所以只能快速地将其标志为“可执行”，等待未来某一时刻调用。
+为什么“在很多情况下不能直接调用软中断”?试想一下下半部引入的理念，就是为了让上半部更快地执行。
+如果在中断程序代码中直接调用软中断函数，那么就失去了上半部与下半部的区别，也就是失去了其存在的意义。
+
+这个raise函数执行很快，只是设置__softirq_pending相关的字段，激活，挂起软中断nr。
+*/
 void raise_softirq(unsigned int nr)
 {
 	unsigned long flags;
-
+	//保存eflag寄存器，同时关闭中断
 	local_irq_save(flags);
 	raise_softirq_irqoff(nr);
+	//恢复eflag寄存器，打开中断
 	local_irq_restore(flags);
 }
 
@@ -495,6 +505,7 @@ void __raise_softirq_irqoff(unsigned int nr)
 		__softirq_pending 共32bit，即每个bit对应软中断的一个向量，实际使用了6个bit
 		第n个bit置1，即softirq_vec[n]有软中断发生。
 
+		#define local_softirq_pending()	(__this_cpu_read(local_softirq_pending_ref)) //softirq_pending是个percpu变量，这也说明，中断可以多CPU并行，但是同一个U不能并行与嵌套(由in_interrupt()控制，因为嵌套的话会造成第一个中断很长时间执行不完，中断不能嵌套的原因)。
 		#define local_softirq_pending_ref irq_stat.__softirq_pending
 		#define or_softirq_pending(x)	(__this_cpu_or(local_softirq_pending_ref, (x)))
 		将__softirq_pending这个percup变量的第nr位更新为1，表示挂起这个软中断号
