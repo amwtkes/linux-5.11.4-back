@@ -491,6 +491,8 @@ void __raise_softirq_irqoff(unsigned int nr)
 		#define or_softirq_pending(x)	(__this_cpu_or(local_softirq_pending_ref, (x)))
 		将__softirq_pending这个percup变量的第nr位更新为1，表示挂起这个软中断号
 		表示这个软中断被触发过。
+
+		所以很快就能执行完毕！然后下一步就在适当的时候调用__do_softirq来触发了。
 	*/
 	or_softirq_pending(1UL << nr);
 }
