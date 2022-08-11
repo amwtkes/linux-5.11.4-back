@@ -468,7 +468,7 @@ inline void raise_softirq_irqoff(unsigned int nr)
 	if (!in_interrupt())
 		wakeup_softirqd();
 }
-/*xiaojin-si raise_softirq*/
+/*xiaojin-si raise_softirq-0*/
 void raise_softirq(unsigned int nr)
 {
 	unsigned long flags;
@@ -482,7 +482,7 @@ void __raise_softirq_irqoff(unsigned int nr)
 {
 	lockdep_assert_irqs_disabled();
 	trace_softirq_raise(nr);
-	/*xiaojin-si or_softirq_pending 挂起一个软中断，待运行
+	/*xiaojin-si raise_softirq-1 or_softirq_pending  挂起一个软中断，待运行
 		内核用一个数据结构来标记曾经有“软中断”发生过（或者说成软中断被触发过）
 		__softirq_pending 共32bit，即每个bit对应软中断的一个向量，实际使用了6个bit
 		第n个bit置1，即softirq_vec[n]有软中断发生。
