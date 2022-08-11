@@ -468,7 +468,7 @@ inline void raise_softirq_irqoff(unsigned int nr)
 	if (!in_interrupt())
 		wakeup_softirqd();
 }
-
+/*xiaojin-si raise_softirq*/
 void raise_softirq(unsigned int nr)
 {
 	unsigned long flags;

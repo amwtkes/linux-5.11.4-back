@@ -10,7 +10,8 @@
 #include <linux/linkage.h>
 #include <linux/list.h>
 
-/*
+/* xiaojin-preemption_count 按位的含义
+
  * We put the hardirq and softirq counter into the preemption
  * counter. The bitmask has the following meaning:
  *
