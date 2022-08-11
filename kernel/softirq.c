@@ -313,7 +313,10 @@ static inline bool lockdep_softirq_start(void) { return false; }
 static inline void lockdep_softirq_end(bool in_hardirq) { }
 #endif
 
-/*xiaojin-si softirq __do_softirq-2*/
+/*xiaojin-si softirq __do_softirq-2
+所以软中断执行全靠一个pending的percpu变量来维系。
+而且不用上锁。效率很高的。
+*/
 asmlinkage __visible void __softirq_entry __do_softirq(void)
 {
 	unsigned long end = jiffies + MAX_SOFTIRQ_TIME;
