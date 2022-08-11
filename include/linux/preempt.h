@@ -78,7 +78,7 @@
 /* preempt_count() and related functions, depends on PREEMPT_NEED_RESCHED */
 #include <asm/preempt.h>
 
-#define nmi_count()	(preempt_count() & NMI_MASK)
+#define nmi_count()	(preempt_count() & NMI_MASK) //xiaojin nmi null missable interrupt count
 #define hardirq_count()	(preempt_count() & HARDIRQ_MASK)
 #define softirq_count()	(preempt_count() & SOFTIRQ_MASK)
 #define irq_count()	(nmi_count() | hardirq_count() | softirq_count())
