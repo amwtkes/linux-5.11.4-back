@@ -553,6 +553,7 @@ struct tasklet_head {
 	struct tasklet_struct **tail;
 };
 
+/*xiaojin-si-datastructure tasklet_vec tasklet_hi_vec*/
 static DEFINE_PER_CPU(struct tasklet_head, tasklet_vec);
 static DEFINE_PER_CPU(struct tasklet_head, tasklet_hi_vec);
 
