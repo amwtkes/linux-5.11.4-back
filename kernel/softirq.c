@@ -482,6 +482,16 @@ void __raise_softirq_irqoff(unsigned int nr)
 {
 	lockdep_assert_irqs_disabled();
 	trace_softirq_raise(nr);
+	/*xiaojin-si or_softirq_pending 挂起一个软中断，待运行
+		内核用一个数据结构来标记曾经有“软中断”发生过（或者说成软中断被触发过）
+		__softirq_pending 共32bit，即每个bit对应软中断的一个向量，实际使用了6个bit
+		第n个bit置1，即softirq_vec[n]有软中断发生。
+
+		#define local_softirq_pending_ref irq_stat.__softirq_pending
+		#define or_softirq_pending(x)	(__this_cpu_or(local_softirq_pending_ref, (x)))
+		将__softirq_pending这个percup变量的第nr位更新为1，表示挂起这个软中断号
+		表示这个软中断被触发过。
+	*/
 	or_softirq_pending(1UL << nr);
 }
 /*xiaojin open_softirq函数*/
