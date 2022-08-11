@@ -372,10 +372,12 @@ restart:
 		pending >>= softirq_bit;
 	}
 
+	//说明current是在内核线程，不是从用户来的，所以可以上报了。
 	if (__this_cpu_read(ksoftirqd) == current)
 		rcu_softirq_qs();
 	local_irq_disable();
 
+	//如果在处理之前的中断时，又来了软中断。
 	pending = local_softirq_pending();
 	if (pending) {
 		if (time_before(jiffies, end) && !need_resched() &&

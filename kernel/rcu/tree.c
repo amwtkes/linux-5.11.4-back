@@ -237,7 +237,7 @@ static long rcu_get_n_cbs_cpu(int cpu)
 
 void rcu_softirq_qs(void)
 {
-	rcu_qs();
+	rcu_qs(); //执行了软中断处理函数，肯定进入了qs
 	rcu_preempt_deferred_qs(current);
 }
 
