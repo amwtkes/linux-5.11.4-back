@@ -86,6 +86,7 @@ static bool ksoftirqd_running(unsigned long pending)
 {
 	struct task_struct *tsk = __this_cpu_read(ksoftirqd);
 
+	//可见，如果被挂起的软中断如果是hi或者tasklet，就马上要执行，不管内核线程是否也在处理软中断。
 	if (pending & SOFTIRQ_NOW_MASK)
 		return false;
 	return tsk && (tsk->state == TASK_RUNNING) &&
@@ -229,19 +230,33 @@ static inline void invoke_softirq(void)
 		wakeup_softirqd();
 	}
 }
-/*xiaojin-si do_softirq*/
+/*xiaojin-si do_softirq-1*/
 asmlinkage __visible void do_softirq(void)
 {
 	__u32 pending;
 	unsigned long flags;
 
+	//单个cpu不能嵌套调用软中断。说明已经有软中断在执行了。
+	//说明软中断处理过程可以被抢占。
 	if (in_interrupt())
 		return;
 	//保存eflag寄存器
 	local_irq_save(flags);
 
+	/*
+	//内核使用一个CPU位图，确实几个软中断可以同时在不同的CPU上运行，包括相同的软中断。例如，
+        //NET_RX_SOFTIRQ可以同时跑在多个处理器上。
+        //local_softirq_pending用于确定当前CPU的所有位图是否被设置。即是否有软中断等待处理。
+        //回想一下经常发生的网卡接收数据处理：当网卡中断落在哪一个CPU上时，与之相应的软中断函数就会在其上执行。
+        //从这里来看，实质就是哪个网卡中断落在相应的CPU上，CPU置其软中断位图，这里做相应的检测（这里local_softirq_pending只
+        //是一个总的判断，后面还有按位的判断），检测到有相应的位，执行之
+	*/
+
+ 	//irq_cpustat_t.__softirq_pending挂起的位图。第几位设置成1，说明nr就是几。
+	//这是percup变量不用上锁。
 	pending = local_softirq_pending();
 
+	//pending不能是0，因为必须有软中断被挂起才能处理啊。
 	if (pending && !ksoftirqd_running(pending))
 		do_softirq_own_stack();
 
@@ -298,7 +313,7 @@ static inline bool lockdep_softirq_start(void) { return false; }
 static inline void lockdep_softirq_end(bool in_hardirq) { }
 #endif
 
-/*xiaojin-si softirq __do_softirq*/
+/*xiaojin-si softirq __do_softirq-2*/
 asmlinkage __visible void __softirq_entry __do_softirq(void)
 {
 	unsigned long end = jiffies + MAX_SOFTIRQ_TIME;
@@ -475,6 +490,7 @@ inline void raise_softirq_irqoff(unsigned int nr)
 
 /*xiaojin-si raise_softirq-0
 软中断-softirq
+	0、最重要的一点是，软中断是先被挂起，然后由固定的点或者ksoftirq内核线程去异步执行的。所以也是分两部分的。
 	1、内核延迟调用的一种机制
 	2、只能在内核发起
 	3、一个CPU核心只能执行一个软中断处理程序，但是多个CPU可以并行（如NET_RX_SOFTIRQ NET_TX_SOFTIRQ可以多CPU并行处理）
