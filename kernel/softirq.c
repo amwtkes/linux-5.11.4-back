@@ -345,19 +345,20 @@ restart:
 
 	h = softirq_vec;
 
+//softirq_bit 是第一个为1的位数。可以求出nr来
 	while ((softirq_bit = ffs(pending))) {
 		unsigned int vec_nr;
 		int prev_count;
 
-		h += softirq_bit - 1;
+		h += softirq_bit - 1; //h指向nr中断的处理函数
 
 		vec_nr = h - softirq_vec;
 		prev_count = preempt_count();
 
-		kstat_incr_softirqs_this_cpu(vec_nr);
+		kstat_incr_softirqs_this_cpu(vec_nr); //统计nr中断共执行了多少次。
 
 		trace_softirq_entry(vec_nr);
-		h->action(h);
+		h->action(h); //调用软中断处理函数。
 		trace_softirq_exit(vec_nr);
 		if (unlikely(prev_count != preempt_count())) {
 			pr_err("huh, entered softirq %u %s %p with preempt_count %08x, exited with %08x?\n",
@@ -366,6 +367,8 @@ restart:
 			preempt_count_set(prev_count);
 		}
 		h++;
+		//pending会把位是1的往右移动，消灭掉，但是不会影响h，注意h是真正执行的指针，pending只是计数。
+		//这个操作很有意思。
 		pending >>= softirq_bit;
 	}
 
