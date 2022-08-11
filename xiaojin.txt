@@ -20,3 +20,4 @@ xiaojin-syscall -- 系统调用相关
 ========interrupt exception gates
 xiaojin-gates --- 基本
 xiaojin-gates define ---- 一些宏定义
+xiaojin-si --- 软中断相关

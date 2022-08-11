@@ -229,7 +229,7 @@ static inline void invoke_softirq(void)
 		wakeup_softirqd();
 	}
 }
-
+/*xiaojin-si do_softirq*/
 asmlinkage __visible void do_softirq(void)
 {
 	__u32 pending;
@@ -237,7 +237,7 @@ asmlinkage __visible void do_softirq(void)
 
 	if (in_interrupt())
 		return;
-
+	//保存eflag寄存器
 	local_irq_save(flags);
 
 	pending = local_softirq_pending();
@@ -245,6 +245,7 @@ asmlinkage __visible void do_softirq(void)
 	if (pending && !ksoftirqd_running(pending))
 		do_softirq_own_stack();
 
+	//恢复eflag寄存器
 	local_irq_restore(flags);
 }
 
@@ -297,6 +298,7 @@ static inline bool lockdep_softirq_start(void) { return false; }
 static inline void lockdep_softirq_end(bool in_hardirq) { }
 #endif
 
+/*xiaojin-si softirq __do_softirq*/
 asmlinkage __visible void __softirq_entry __do_softirq(void)
 {
 	unsigned long end = jiffies + MAX_SOFTIRQ_TIME;
