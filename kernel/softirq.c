@@ -465,7 +465,11 @@ inline void raise_softirq_irqoff(unsigned int nr)
 	 * Otherwise we wake up ksoftirqd to make sure we
 	 * schedule the softirq soon.
 	 */
-	if (!in_interrupt())
+	/*xiaojin-si -2 调用逻辑
+		<1>、最重要的，就是置相应的位图，等待将来被处理；__raise_softirq_irqoff(nr)这里完成
+		<2>、如果此时已经没有在中断上下文中，则立即调用(其实是内核线程的唤醒操作)，现在就是将来；
+	*/
+	if (!in_interrupt()) //如果没有在中断上下文，也就是没有中断处理。
 		wakeup_softirqd();
 }
 /*xiaojin-si raise_softirq-0*/
