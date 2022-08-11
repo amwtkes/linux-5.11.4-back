@@ -115,6 +115,8 @@ static inline __cpuidle void halt(void)
 /*
  * For spinlocks, etc:
  */
+/*xiaojin-irq arch_local_irq_save 
+保存eflag的同时要关闭中断*/
 static __always_inline unsigned long arch_local_irq_save(void)
 {
 	unsigned long flags = arch_local_save_flags();

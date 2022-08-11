@@ -159,6 +159,8 @@ do {						\
 		typecheck(unsigned long, flags);	\
 		flags = arch_local_irq_save();		\
 	} while (0)
+
+/*xiaojin-irq raw_local_irq_restore 恢复eflag寄存器，同时打开中断。*/
 #define raw_local_irq_restore(flags)			\
 	do {						\
 		typecheck(unsigned long, flags);	\
