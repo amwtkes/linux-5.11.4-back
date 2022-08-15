@@ -2511,6 +2511,8 @@ int rcutree_dead_cpu(unsigned int cpu)
  * Invoke any RCU callbacks that have made it to the end of their grace
  * period.  Thottle as specified by rdp->blimit.
  */
+/* xiaojin-rcu synchronize-6 rcu_do_batch
+*/
 static void rcu_do_batch(struct rcu_data *rdp)
 {
 	int div;
@@ -2558,7 +2560,7 @@ static void rcu_do_batch(struct rcu_data *rdp)
 	rcu_nocb_unlock_irqrestore(rdp, flags);
 
 	/* Invoke callbacks. 
-	xiaojin-rcu rcu_cblist callback 调起点
+	xiaojin-rcu rcu_cblist callback 调起点-wakeme_after_rcu
 	*/
 	tick_dep_set_task(current, TICK_DEP_BIT_RCU);
 	rhp = rcu_cblist_dequeue(&rcl);
@@ -2572,6 +2574,7 @@ static void rcu_do_batch(struct rcu_data *rdp)
 
 		f = rhp->func;
 		WRITE_ONCE(rhp->func, (rcu_callback_t)0L);
+		//调起点 wakeme_after_rcu
 		f(rhp);
 
 		rcu_lock_release(&rcu_callback_map);

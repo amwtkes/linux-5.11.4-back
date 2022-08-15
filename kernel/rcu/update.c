@@ -358,7 +358,7 @@ EXPORT_SYMBOL_GPL(rcu_read_lock_any_held);
  * Awaken the corresponding task now that a grace period has elapsed.
  */
 
-/*xiaojin-rcu synchronize_rcu-5 
+/*xiaojin-rcu synchronize_rcu-5 wakeme_after_rcu
 synchronize_rcu()的唤醒函数，是在回调中的。
 将completion上面等待的线程唤醒。通常只会等待一个线程。
 当
