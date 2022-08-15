@@ -83,6 +83,7 @@ do_wait_for_common(struct completion *x,
 		DECLARE_SWAITQUEUE(wait);
 
 		do {
+			//TASK_WAKEKILL TASK_INTERRUPTIBLE两种信号是不能被忽略的，快去处理。
 			if (signal_pending_state(state, current)) {
 				timeout = -ERESTARTSYS;
 				break;

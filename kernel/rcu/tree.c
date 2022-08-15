@@ -3076,6 +3076,7 @@ __call_rcu(struct rcu_head *head, rcu_callback_t func)
 		WRITE_ONCE(head->func, rcu_leak_callback);
 		return;
 	}
+	//xiaojin-rcu_call-2.1 注册回调函数 
 	head->func = func;
 	head->next = NULL;
 	local_irq_save(flags);
