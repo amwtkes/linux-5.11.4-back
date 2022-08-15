@@ -2583,6 +2583,7 @@ static void rcu_do_batch(struct rcu_data *rdp)
 		 * Stop only if limit reached and CPU has something to do.
 		 * Note: The rcl structure counts down from zero.
 		 */
+		//可能太多的callbacks要执行，而且内核线程的时间到了，要休息了。
 		if (-rcl.len >= bl && !offloaded &&
 		    (need_resched() ||
 		     (!is_idle_task(current) && !rcu_is_callbacks_kthread())))
@@ -2639,6 +2640,7 @@ static void rcu_do_batch(struct rcu_data *rdp)
 	rcu_nocb_unlock_irqrestore(rdp, flags);
 
 	/* Re-invoke RCU core processing if there are callbacks remaining. */
+	//如果没有运行完所有的callbacks，则继续触发软中断，等待后面继续执行，内核线程。
 	if (!offloaded && rcu_segcblist_ready_cbs(&rdp->cblist))
 		invoke_rcu_core();
 	tick_dep_clear_task(current, TICK_DEP_BIT_RCU);
