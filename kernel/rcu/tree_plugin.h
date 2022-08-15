@@ -811,7 +811,7 @@ static void __init rcu_bootup_announce(void)
  * the start of the grace period, this just sets a flag.  The caller must
  * have disabled preemption.
  */
-/*xiaojin-rcu 上报qs的函数*/
+/*xiaojin-rcu rcu_qs 上报qs的函数*/
 static void rcu_qs(void)
 {
 	/* xiaojin preemptible() 含义
