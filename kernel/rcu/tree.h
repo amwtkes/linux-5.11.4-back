@@ -37,6 +37,7 @@ struct rcu_exp_work {
 /*
  * Definition for node within the RCU grace-period-detection hierarchy.
  */
+/*xiaojin-rcu-datastructure rcu_node*/
 struct rcu_node {
 	/*保护此node的spinlock*/
 	raw_spinlock_t __private lock;	/* Root rcu_node's lock protects */
@@ -173,6 +174,7 @@ union rcu_noqs {
 };
 
 /* Per-CPU data for read-copy update. */
+/*xiaojin-rcu-datastructure rcu_data*/
 struct rcu_data {
 	/* 1) quiescent-state and grace-period handling : */
 	/* cpu当前的gp编号，以及低两位表示gp的状态 */
