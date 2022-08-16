@@ -2966,7 +2966,7 @@ rcu_spawn_core_kthreads 为创建内核线程。
 /*
  * Handle any core-RCU processing required by a call_rcu() invocation.
  */
-/*xiaojin-rcu_call-3  __call_rcu_core */
+/*xiaojin-call_rcu-3  __call_rcu_core */
 static void __call_rcu_core(struct rcu_data *rdp, struct rcu_head *head,
 			    unsigned long flags)
 {
@@ -3059,7 +3059,7 @@ static void check_cb_ovld(struct rcu_data *rdp)
 }
 
 /* Helper function for call_rcu() and friends.  */
-/*xiaojin-rcu_call-2 __call_rcu func函数是 wakeme_after_rcu */
+/*xiaojin-call-rcu-2 __call_rcu func函数是 wakeme_after_rcu */
 static void
 __call_rcu(struct rcu_head *head, rcu_callback_t func)
 {
@@ -3081,7 +3081,7 @@ __call_rcu(struct rcu_head *head, rcu_callback_t func)
 		WRITE_ONCE(head->func, rcu_leak_callback);
 		return;
 	}
-	//xiaojin-rcu_call-2.1 注册回调函数 
+	//xiaojin-call_rcu-2.1 注册回调函数 
 	head->func = func;
 	head->next = NULL;
 	local_irq_save(flags);
@@ -3162,7 +3162,7 @@ __call_rcu(struct rcu_head *head, rcu_callback_t func)
  * if CPU A and CPU B are the same CPU (but again only if the system has
  * more than one CPU).
  */
-/*xiaojin-rcu_call-1 call_rcu*/
+/*xiaojin-call_rcu-1 call_rcu*/
 void call_rcu(struct rcu_head *head, rcu_callback_t func)
 {
 	__call_rcu(head, func);
