@@ -82,7 +82,6 @@ int tick_is_oneshot_available(void)
 /* xiaojin- time_interrupt-1 tick_periodic(int cpu)
  * Periodic tick
  */
-/*xiaojin-rcu tick interrupt -0*/
 static void tick_periodic(int cpu)
 {
 	/*xiaojin tick_do_timer_cpu表示当前系统中由哪个CPU上的Tick设备负责更新系统jiffies*/
@@ -100,6 +99,7 @@ static void tick_periodic(int cpu)
 	}
 
 	/*xiaojin user_mode(get_irq_regs()) 根据栈上保留的寄存器信息，判断这个中断是从用户态还是从内核态跳过来的*/
+	/*xiaojin-rcu tick interrupt -0*/
 	update_process_times(user_mode(get_irq_regs()));
 	profile_tick(CPU_PROFILING);
 }
