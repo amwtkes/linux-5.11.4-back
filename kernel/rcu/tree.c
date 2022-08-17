@@ -2656,7 +2656,9 @@ static void rcu_do_batch(struct rcu_data *rdp)
  * purpose of providing a providing the needed quiescent state.
  */
 /*xiaojin-rcu tick interrupt -2
-rcu_sched_clock_irq 非进程切换QS处理。non-context-switch quiescent state*/
+rcu_sched_clock_irq 非进程切换QS处理。non-context-switch quiescent state 
+因为是tick中断的处理，则肯定是非进程切换上下文，因为进程切换时要禁用中断的。
+*/
 void rcu_sched_clock_irq(int user)
 {
 	trace_rcu_utilization(TPS("Start scheduler-tick"));
