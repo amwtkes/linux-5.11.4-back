@@ -1788,6 +1788,7 @@ static void rcu_strict_gp_boundary(void *unused)
 /*
  * Initialize a new grace period.  Return false if no grace period required.
  */
+/*xiaojin-rcu-gp 0 开启新的gp*/
 static bool rcu_gp_init(void)
 {
 	unsigned long firstseq;
