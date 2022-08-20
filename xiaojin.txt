@@ -22,3 +22,6 @@ xiaojin-gates --- 基本
 xiaojin-gates define ---- 一些宏定义
 xiaojin-si --- 软中断相关
 xiaojin time_interrupt ---- 时间中断 tick
+
+-=========xiaojin-accounting
+xiaojin-accounting --- cpu统计信息
