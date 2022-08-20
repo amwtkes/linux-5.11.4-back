@@ -1780,6 +1780,7 @@ void update_process_times(int user_tick)
 	PRANDOM_ADD_NOISE(jiffies, user_tick, p, 0);
 
 	/* Note: this timer irq context must be accounted for as well. */
+	/*xiaojin-accounting account_process_tick 记录处于用户态，内核态的CPU时间*/
 	account_process_tick(p, user_tick);
 	run_local_timers();
 	/*xiaojin-rcu tick interrupt -1*/
