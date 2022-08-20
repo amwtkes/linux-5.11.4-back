@@ -317,6 +317,10 @@ static void rcu_dynticks_eqs_online(void)
  *
  * No ordering, as we are sampling CPU-local information.
  */
+
+/*xiaojin-rcu rcu_dynticks_curr_cpu_in_eqs 判断是否是处于EQS中
+rdp->dynticks 前两个bit是0表示在，否则不在。
+*/
 static __always_inline bool rcu_dynticks_curr_cpu_in_eqs(void)
 {
 	struct rcu_data *rdp = this_cpu_ptr(&rcu_data);
