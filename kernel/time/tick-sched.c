@@ -223,6 +223,7 @@ static void tick_sched_handle(struct tick_sched *ts, struct pt_regs *regs)
 		ts->next_tick = 0;
 	}
 #endif
+	/*xiaojin-tick_sched_timer -2 update_process_times*/
 	update_process_times(user_mode(regs));
 	profile_tick(CPU_PROFILING);
 }
@@ -1366,6 +1367,7 @@ static enum hrtimer_restart tick_sched_timer(struct hrtimer *timer)
 	 * no valid regs pointer
 	 */
 	if (regs)
+		/*xiaojin-tick_sched_timer -1 tick_sched_handle*/
 		tick_sched_handle(ts, regs);
 	else
 		ts->next_tick = 0;
@@ -1401,6 +1403,8 @@ void tick_setup_sched_timer(void)
 	 * Emulate tick processing via per-CPU hrtimers:
 	 */
 	hrtimer_init(&ts->sched_timer, CLOCK_MONOTONIC, HRTIMER_MODE_ABS_HARD);
+
+	/*xiaojin-tick_sched_timer -0 初始化*/
 	ts->sched_timer.function = tick_sched_timer;
 
 	/* Get the next period (per-CPU) */
