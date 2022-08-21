@@ -930,6 +930,7 @@ static void rcu_preempt_check_blocked_tasks(struct rcu_node *rnp)
 static void rcu_flavor_sched_clock_irq(int user)
 {
 	//在时间中断中判断，如果是从用户态或者idle线程过来的，就说明已经进入qs了。要上报。
+	/*xiaojin-rcu-qs -2.2*/
 	if (user || rcu_is_cpu_rrupt_from_idle()) {
 
 		/*

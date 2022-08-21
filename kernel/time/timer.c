@@ -1786,6 +1786,7 @@ void update_process_times(int user_tick)
 	account_process_tick(p, user_tick);
 	run_local_timers();
 	/*xiaojin-rcu tick interrupt -1*/
+	/*xiaojin-rcu-qs -2 非进程切换上报*/
 	rcu_sched_clock_irq(user_tick);
 #ifdef CONFIG_IRQ_WORK
 	if (in_irq())

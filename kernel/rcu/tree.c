@@ -2679,6 +2679,7 @@ void rcu_sched_clock_irq(int user)
 		}
 		__this_cpu_write(rcu_data.rcu_urgent_qs, false);
 	}
+	/*xiaojin-rcu-qs -2.1*/
 	rcu_flavor_sched_clock_irq(user);
 	if (rcu_pending(user))
 		invoke_rcu_core();
