@@ -781,7 +781,7 @@ static struct smp_hotplug_thread softirq_threads = {
 	.thread_fn		= run_ksoftirqd,
 	.thread_comm		= "ksoftirqd/%u",
 };
-
+/*xiaojin-si spawn_ksoftirqd kthread softirq的percup线程启动 run_ksoftirqd ksoftirqd*/
 static __init int spawn_ksoftirqd(void)
 {
 	cpuhp_setup_state_nocalls(CPUHP_SOFTIRQ_DEAD, "softirq:dead", NULL,
