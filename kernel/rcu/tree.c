@@ -668,8 +668,11 @@ static noinstr void rcu_eqs_enter(bool user)
 	instrument_atomic_write(&rdp->dynticks, sizeof(rdp->dynticks));
 
 	instrumentation_end();
+	/*xiaojin-rcu-eqs -0 dynticks_nesting ==0 表示进入eqs*/
 	WRITE_ONCE(rdp->dynticks_nesting, 0); /* Avoid irq-access tearing. */
 	// RCU is watching here ...
+	/*xiaojin-rcu-eqs -0.1 rdp->dynticks 为偶数时也是表示在EQS
+	arch_atomic_add_return(RCU_DYNTICK_CTRL_CTR, &rdp->dynticks) */
 	rcu_dynticks_eqs_enter();
 	// ... but is no longer watching here.
 	rcu_dynticks_task_enter();
@@ -749,6 +752,7 @@ static inline void rcu_irq_work_resched(void) { }
  * If you add or remove a call to rcu_user_enter(), be sure to test with
  * CONFIG_RCU_EQS_DEBUG=y.
  */
+/*xiaojin-rcu-eqs -1.1 也调用了rcu_eqs_enter*/
 noinstr void rcu_user_enter(void)
 {
 	lockdep_assert_irqs_disabled();

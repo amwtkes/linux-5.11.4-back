@@ -82,6 +82,8 @@ void noinstr __context_tracking_enter(enum ctx_state state)
 				vtime_user_enter(current);
 				instrumentation_end();
 			}
+
+			/*xiaojin-rcu-eqs -1 rcu_user_enter 进入user mode表示进入eqs*/
 			rcu_user_enter();
 		}
 		/*

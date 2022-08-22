@@ -12,6 +12,7 @@ xiaojin-rcu.*interrupt -- rcu在时间中断的代码
 xiaojin-rcu synchronize_rcu --- 进入rcu gp的函数
 xiaojin-rcu rcu_segcblist --- rcu_data中的callback list
 xiaojin-rcu rcu_gp_kthread -- rcu核心线程的过程
+xiaojin-rcu-eqs --- rcu的eqs解释
 
 =========syscall
 xiaojin-syscall -- 系统调用相关
