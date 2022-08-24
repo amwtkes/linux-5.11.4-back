@@ -632,7 +632,7 @@ EXPORT_SYMBOL_GPL(rcutorture_get_gp_data);
  * the possibility of usermode upcalls having messed up our count
  * of interrupt nesting level during the prior busy period.
  */
-/*xiaojin-rcu rcu_qs Extended-QS的处理！
+/*xiaojin-rcu-eqs Readme --- rcu_qs Extended-QS的处理！
 do_idle
   ...
     ->rcu_idle_enter
@@ -641,7 +641,12 @@ do_idle
 为什么要有EQS呢？主要是为了动态时钟的场景，若系统开启了NO_HZ_IDLE，在运行idle进程的情况下CPU是不响应tick中断的
 若开启NO_HZ_FULL，不仅CPU Idle时不响应tick，在CPU只有一个running状态的进程时也不响应tick中断。前面我们讲tick中断时已经说到它的功能包括检查QS，以及唤醒RCU软中断。那在没有的tick的情况下CPU如何上报QS呢？
 看上面的函数分析，进入EQS时会调用rcu_eqs_enter()->rcu_dynticks_eqs_enter()将当前CPU的rdp->dynticks的bit1加1变为奇数，表示处于动态时钟模式，而gp线程在处理强制静止态force qs的操作中会搜集所有的处于EQS的CPU，并替它们上报QS。
-既然有进入，那就会有退出，退出EQS模式时会将rdp->dynticks的bit1减1，变为偶数。对应函数rcu_eqs_exit() ，场景包括退出idle进程、进入中断。*/
+既然有进入，那就会有退出，退出EQS模式时会将rdp->dynticks的bit1减1，变为偶数。对应函数rcu_eqs_exit() ，场景包括退出idle进程、进入中断。
+
+
+----MARK
+eqs表示rcu没有起作用，没有watching的状态。此时，cpu要么处于用户态，因为用户态不能用rcu，要么在内核的idle省电模式，此时rcu也没有作用。
+*/
 static noinstr void rcu_eqs_enter(bool user)
 {
 	struct rcu_data *rdp = this_cpu_ptr(&rcu_data);
@@ -689,6 +694,8 @@ static noinstr void rcu_eqs_enter(bool user)
  * If you add or remove a call to rcu_idle_enter(), be sure to test with
  * CONFIG_RCU_EQS_DEBUG=y.
  */
+
+/*xiaojin-rcu-eqs -1.1 进入eqs - idle态*/
 void rcu_idle_enter(void)
 {
 	lockdep_assert_irqs_disabled();
@@ -752,7 +759,7 @@ static inline void rcu_irq_work_resched(void) { }
  * If you add or remove a call to rcu_user_enter(), be sure to test with
  * CONFIG_RCU_EQS_DEBUG=y.
  */
-/*xiaojin-rcu-eqs -1.1 也调用了rcu_eqs_enter*/
+/*xiaojin-rcu-eqs -1.1 进入eqs -- 用户态*/
 noinstr void rcu_user_enter(void)
 {
 	lockdep_assert_irqs_disabled();
@@ -1063,7 +1070,7 @@ void __rcu_irq_enter_check_tick(void)
  * with CONFIG_RCU_EQS_DEBUG=y.
  */
 
-/*xiaojin-rcu-eqs -3.2 rcu_nmi_enter*/
+/*xiaojin-rcu-eqs -3.2 退出eqs rcu_nmi_enter*/
 noinstr void rcu_nmi_enter(void)
 {
 	long incby = 2;
@@ -1142,7 +1149,7 @@ noinstr void rcu_nmi_enter(void)
  * CONFIG_RCU_EQS_DEBUG=y.
  */
 
-/*xiaojin-rcu-eqs -3.1 rcu_irq_enter*/
+/*xiaojin-rcu-eqs -3.1 退出eqs rcu_irq_enter*/
 noinstr void rcu_irq_enter(void)
 {
 	lockdep_assert_irqs_disabled();
