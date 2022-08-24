@@ -779,6 +779,7 @@ noinstr void rcu_user_enter(void)
  * If you add or remove a call to rcu_nmi_exit(), be sure to test
  * with CONFIG_RCU_EQS_DEBUG=y.
  */
+/*xiaojin-rcu-eqs -2.1 进入eqs 退出nmi中断处理函数，表示进入了eqs。*/
 noinstr void rcu_nmi_exit(void)
 {
 	struct rcu_data *rdp = this_cpu_ptr(&rcu_data);
@@ -843,6 +844,15 @@ noinstr void rcu_nmi_exit(void)
  * If you add or remove a call to rcu_irq_exit(), be sure to test with
  * CONFIG_RCU_EQS_DEBUG=y.
  */
+
+/*xiaojin-rcu-eqs -2 进入eqs--- rcu_irq_exit 
+dynticks_nesting==0表示CPU在eqs状态。
+dynticks是偶数表示在eqs，奇数不在。
+
+参考：
+http://www.joelfernandes.org/linuxinternals/2018/06/15/rcu-dynticks.html#:~:text=The%20kernel's%20dynticks%2Didle%20mode,presents%20some%20challenges%20to%20RCU.
+If this counter is odd, it means we are NOT in an EQS and if its even, then we ARE.
+*/
 void noinstr rcu_irq_exit(void)
 {
 	lockdep_assert_irqs_disabled();
@@ -1052,6 +1062,8 @@ void __rcu_irq_enter_check_tick(void)
  * If you add or remove a call to rcu_nmi_enter(), be sure to test
  * with CONFIG_RCU_EQS_DEBUG=y.
  */
+
+/*xiaojin-rcu-eqs -3.2 rcu_nmi_enter*/
 noinstr void rcu_nmi_enter(void)
 {
 	long incby = 2;
@@ -1129,6 +1141,8 @@ noinstr void rcu_nmi_enter(void)
  * If you add or remove a call to rcu_irq_enter(), be sure to test with
  * CONFIG_RCU_EQS_DEBUG=y.
  */
+
+/*xiaojin-rcu-eqs -3.1 rcu_irq_enter*/
 noinstr void rcu_irq_enter(void)
 {
 	lockdep_assert_irqs_disabled();

@@ -415,6 +415,15 @@ void irq_enter_rcu(void)
  */
 void irq_enter(void)
 {
+	/*xiaojin-rcu-eqs -3 退出eqs 进入中断处理函数，因为中断处理函数可能包含read-critical-section 
+所以退出eqs
+
+dynticks_nesting==0表示CPU在eqs状态。
+dynticks是偶数表示在eqs，奇数不在。
+
+参考：
+http://www.joelfernandes.org/linuxinternals/2018/06/15/rcu-dynticks.html#:~:text=The%20kernel's%20dynticks%2Didle%20mode,presents%20some%20challenges%20to%20RCU.
+*/
 	rcu_irq_enter();
 	irq_enter_rcu();
 }
