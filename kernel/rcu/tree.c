@@ -759,7 +759,7 @@ static inline void rcu_irq_work_resched(void) { }
  * If you add or remove a call to rcu_user_enter(), be sure to test with
  * CONFIG_RCU_EQS_DEBUG=y.
  */
-/*xiaojin-rcu-eqs -1.1 进入eqs -- 用户态*/
+/*xiaojin-rcu-eqs -1.1 进入eqs -- 用户态--CONFIG_NO_HZ_FULL*/
 noinstr void rcu_user_enter(void)
 {
 	lockdep_assert_irqs_disabled();
