@@ -69,6 +69,10 @@ void complete_all(struct completion *x)
 }
 EXPORT_SYMBOL(complete_all);
 
+/*xiaojin-rcu-synchronize_rcu -5.0.3 最后调用逻辑
+x - call_rcu的唤醒信号，x->done表示可以唤醒了。同时会有current在里面。
+action - schedule_timeout休眠函数
+*/
 static inline long __sched
 do_wait_for_common(struct completion *x,
 		   long (*action)(long), long timeout, int state)
@@ -117,6 +121,9 @@ do_wait_for_common(struct completion *x,
 	return timeout ?: 1;
 }
 
+/*xiaojin-rcu-synchronize_rcu -5.0.2 __wait_for_common
+包装函数
+*/
 static inline long __sched
 __wait_for_common(struct completion *x,
 		  long (*action)(long), long timeout, int state)
@@ -137,6 +144,7 @@ __wait_for_common(struct completion *x,
 static long __sched
 wait_for_common(struct completion *x, long timeout, int state)
 {
+	/*xiaojin-rcu-synchronize_rcu -5.0.1 __wait_for_common*/
 	return __wait_for_common(x, schedule_timeout, timeout, state);
 }
 
@@ -156,6 +164,7 @@ wait_for_common_io(struct completion *x, long timeout, int state)
  * See also similar routines (i.e. wait_for_completion_timeout()) with timeout
  * and interrupt capability. Also see complete().
  */
+/*xiaojin-rcu-synchronize_rcu -5.0.0 wait_for_completion*/
 void __sched wait_for_completion(struct completion *x)
 {
 	wait_for_common(x, MAX_SCHEDULE_TIMEOUT, TASK_UNINTERRUPTIBLE);

@@ -1844,6 +1844,10 @@ static void process_timeout(struct timer_list *t)
  * jiffies will be returned. In all cases the return value is guaranteed
  * to be non-negative.
  */
+
+/*xiaojin-rcu-synchronize_rcu -5.0.1.1 schedule_timeout
+休眠函数，timeout是唤醒时间。
+*/
 signed long __sched schedule_timeout(signed long timeout)
 {
 	struct process_timer timer;
