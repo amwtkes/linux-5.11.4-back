@@ -2370,6 +2370,7 @@ rcu_report_unblock_qs_rnp(struct rcu_node *rnp, unsigned long flags)
  * Record a quiescent state for the specified CPU to that CPU's rcu_data
  * structure.  This must be called from the specified CPU.
  */
+/*xiaojin-rcu-report-qs rcu_report_qs_rdp*/
 static void
 rcu_report_qs_rdp(struct rcu_data *rdp)
 {
@@ -2431,6 +2432,9 @@ rcu_check_quiescent_state(struct rcu_data *rdp)
 	 * Does this CPU still need to do its part for current grace period?
 	 * If no, return and let the other CPUs do their part as well.
 	 */
+	/*是否需要此CPU上报QS？
+	如果false就表示不需要这个CPU上报，
+	就return*/
 	if (!rdp->core_needs_qs)
 		return;
 
@@ -2438,6 +2442,7 @@ rcu_check_quiescent_state(struct rcu_data *rdp)
 	 * Was there a quiescent state since the beginning of the grace
 	 * period? If no, then exit and wait for the next call.
 	 */
+	/*没有qs的标志，如果经历了qs肯定是false啦*/
 	if (rdp->cpu_no_qs.b.norm)
 		return;
 
@@ -2445,6 +2450,7 @@ rcu_check_quiescent_state(struct rcu_data *rdp)
 	 * Tell RCU we are done (but rcu_report_qs_rdp() will be the
 	 * judge of that).
 	 */
+	/*xiaojin-rcu-report-qs rdp-0*/
 	rcu_report_qs_rdp(rdp);
 }
 
@@ -2837,6 +2843,7 @@ static __latent_entropy void rcu_core(void)
 
 	/* Update RCU state based on any recent quiescent states. */
 	/*xiaojin-rcu rcu_gp_kthread-3 这里可以唤醒核心线程*/
+	/*xiaojin-rcu-report-qs -00 rcu_check_quiescent_state*/
 	rcu_check_quiescent_state(rdp);
 
 	/* No grace period and unregistered callbacks? */

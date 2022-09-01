@@ -783,6 +783,7 @@ dump_blkd_tasks(struct rcu_node *rnp, int ncheck)
  * __rcu_read_unlock() marks the beginning of a quiescent state, immediately
  * report that quiescent state and, if requested, spin for a bit.
  */
+/*xiaojin-rcu-report-qs rdp-0.1*/
 void rcu_read_unlock_strict(void)
 {
 	struct rcu_data *rdp;
