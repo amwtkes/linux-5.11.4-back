@@ -82,6 +82,7 @@ void ftrace_likely_update(struct ftrace_likely_data *f, int val,
 #ifndef barrier
 /* The "volatile" is due to gcc bugs 
 不允许GCC重拍读写指令
+https://app.yinxiang.com/shard/s65/nl/15273355/85fea796-de45-41c3-997a-192b4c78d39c/
 */
 # define barrier() __asm__ __volatile__("": : :"memory")
 #endif
