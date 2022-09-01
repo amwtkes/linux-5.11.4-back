@@ -83,6 +83,11 @@ void ftrace_likely_update(struct ftrace_likely_data *f, int val,
 /* The "volatile" is due to gcc bugs 
 不允许GCC重拍读写指令
 https://app.yinxiang.com/shard/s65/nl/15273355/85fea796-de45-41c3-997a-192b4c78d39c/
+
+__asm__ is a gcc extension of permitting assembly language statements to be entered nested within your C code - used here for its property of being able to specify side effects that prevent the compiler from performing certain types of optimisations (which in this case might end up generating incorrect code).
+ __volatile__ is required to ensure that the asm statement itself is not reordered with any other volatile accesses any (a guarantee in the C language).
+ memory is an instruction to GCC that (sort of) says that the inline asm sequence has side effects on global memory, and hence not just effects on local variables need to be taken into account.
+
 */
 # define barrier() __asm__ __volatile__("": : :"memory")
 #endif
