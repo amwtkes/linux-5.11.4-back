@@ -429,7 +429,11 @@ do {									      \
 									      \
 	if (__builtin_constant_p(v) && (_r_a_p__v) == (uintptr_t)NULL)	      \
 		WRITE_ONCE((p), (typeof(p))(_r_a_p__v));		      \
-	else								      \
+	else
+		/*其实就是插入了一个__asm__ __volatile__("": : :"memory")
+		表示在rcu_assign_pointer执行之前的语句要先执行才能执行这条语句。
+		防止读脏啊。
+		*/								      \
 		smp_store_release(&p, RCU_INITIALIZER((typeof(p))_r_a_p__v)); \
 } while (0)
 
