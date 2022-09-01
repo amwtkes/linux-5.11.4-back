@@ -43,6 +43,7 @@ TRACE_EVENT(rcu_utilization,
 
 #if defined(CONFIG_TREE_RCU)
 
+/*xiaojin-rcu-event -0 all events*/
 /*
  * Tracepoint for grace-period events.  Takes a string identifying the
  * RCU flavor, the grace-period number, and a string identifying the

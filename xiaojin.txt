@@ -13,6 +13,7 @@ xiaojin-rcu synchronize_rcu --- 进入rcu gp的函数
 xiaojin-rcu rcu_segcblist --- rcu_data中的callback list
 xiaojin-rcu rcu_gp_kthread -- rcu核心线程的过程
 xiaojin-rcu-eqs --- rcu的eqs解释
+xiaojin-rcu-event ----rcu状态机
 
 =========syscall
 xiaojin-syscall -- 系统调用相关

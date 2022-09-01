@@ -2450,7 +2450,9 @@ rcu_check_quiescent_state(struct rcu_data *rdp)
 	 * Tell RCU we are done (but rcu_report_qs_rdp() will be the
 	 * judge of that).
 	 */
-	/*xiaojin-rcu-report-qs rdp-0*/
+	/*xiaojin-rcu-report-qs rdp-0
+	到这里说明这个CPU在qs，可以上报了。
+	*/
 	rcu_report_qs_rdp(rdp);
 }
 
