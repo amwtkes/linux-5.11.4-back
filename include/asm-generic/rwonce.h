@@ -41,7 +41,12 @@
  * atomicity. Note that this may result in tears!
  */
 #ifndef __READ_ONCE
-/*xiaojin __READ_ONCE 主要是引入volatile的关键词禁止编译器优化 禁止从寄存器读写数据		*/
+/*xiaojin __READ_ONCE 主要是引入volatile的关键词禁止编译器优化 禁止从寄存器读写数据		
+intel平台下，64位的对齐指针读取是原子的。跟MESI有关。
+https://app.yinxiang.com/shard/s65/nl/15273355/baa09c41-30ca-45f9-a70a-84f8868150cf/
+
+arm下面是加了原子指令的
+*/
 #define __READ_ONCE(x)	(*(const volatile __unqual_scalar_typeof(x) *)&(x))
 #endif
 
@@ -51,7 +56,10 @@
 	__READ_ONCE(x);							\
 })
 
-/*xiaojin write_once 主要是引入volatile的关键词禁止编译器优化 禁止从寄存器读写数据*/
+/*xiaojin write_once 主要是引入volatile的关键词禁止编译器优化 禁止从寄存器读写数据
+祝：在intel下，对齐的64字节的指针赋值是原子的。手册8.1有写。
+https://app.yinxiang.com/shard/s65/nl/15273355/baa09c41-30ca-45f9-a70a-84f8868150cf/
+*/
 #define __WRITE_ONCE(x, val)						\
 do {									\
 	*(volatile typeof(x) *)&(x) = (val);				\
