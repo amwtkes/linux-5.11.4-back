@@ -15,7 +15,8 @@
                 "__CHECKER__",
                 "CONFIG_TREE_RCU",
                 "CONFIG_PREEMPT_COUNT",
-                "CONFIG_HIGH_RES_TIMERS"
+                "CONFIG_HIGH_RES_TIMERS",
+                "__x86_64__"
                 // "CONFIG_PREEMPT_RCU"
             ],
             "macFrameworkPath": [
