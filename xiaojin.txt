@@ -28,3 +28,6 @@ xiaojin time_interrupt ---- 时间中断 tick
 
 -=========xiaojin-accounting
 xiaojin-accounting --- cpu统计信息
+
+=========PER_CPU=======
+xiaojin-percpu ---- percpu的含义 参考文档：https://app.yinxiang.com/shard/s65/nl/15273355/b75171a4-4d50-4e53-9019-7512b2b3305f/

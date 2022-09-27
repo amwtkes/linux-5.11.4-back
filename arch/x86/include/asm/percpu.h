@@ -3,6 +3,7 @@
 #define _ASM_X86_PERCPU_H
 
 #ifdef CONFIG_X86_64
+/*xiaojin-percpu -3 可以看到用了gs寄存器*/
 #define __percpu_seg		gs
 #else
 #define __percpu_seg		fs
@@ -28,6 +29,7 @@
 #include <linux/stringify.h>
 
 #ifdef CONFIG_SMP
+/*xiaojin-percpu -2 这里*/
 #define __percpu_prefix		"%%"__stringify(__percpu_seg)":"
 #define __my_cpu_offset		this_cpu_read(this_cpu_off)
 
@@ -47,6 +49,7 @@
 #define __percpu_prefix		""
 #endif
 
+/*xiaojin-percpu -1 通过寄存器来访问percpu变量*/
 #define __percpu_arg(x)		__percpu_prefix "%" #x
 
 /*
@@ -139,6 +142,8 @@ do {									\
 		percpu_to_op(size, qual, "add", var, val);		\
 } while (0)
 
+
+/*xiaojin-percpu -0 __percpu_arg 是获取percpu的地方。*/
 #define percpu_from_op(size, qual, op, _var)				\
 ({									\
 	__pcpu_type_##size pfo_val__;					\
