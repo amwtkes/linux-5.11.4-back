@@ -284,6 +284,7 @@ syscall_return_via_sysret:
 	USERGS_SYSRET64
 SYM_CODE_END(entry_SYSCALL_64)
 
+/*xiaojin-contextswitch -1 __switch_to_asm*/
 /*
  * %rdi: prev task
  * %rsi: next task
@@ -301,7 +302,8 @@ SYM_FUNC_START(__switch_to_asm)
 	pushq	%r14
 	pushq	%r15
 
-	/* switch stack 
+	/* xiaojin-contextswitch -2 切换栈到next
+	switch stack 
 	内核栈切换到了next的进程*/
 	movq	%rsp, TASK_threadsp(%rdi)
 	movq	TASK_threadsp(%rsi), %rsp
@@ -323,6 +325,7 @@ SYM_FUNC_START(__switch_to_asm)
 #endif
 
 	/* restore callee-saved registers 
+	xiaojin-contextswitch -3 恢复next的内核栈
 	next的inactive_task_frame被恢复了*/
 	popq	%r15
 	popq	%r14
@@ -331,7 +334,7 @@ SYM_FUNC_START(__switch_to_asm)
 	popq	%rbx
 	popq	%rbp
 
-/* xiaojin
+/* xiaojin-contextswitch -4 调用__switch_to jmp可以减小函数调用的开销。
 https://app.yinxiang.com/shard/s65/nl/15273355/8e77b8e9-eb82-4514-bc30-746f5ff58040/
 这里采用jmp而不是call的原因。
 __switch_to函数的两个参数还是在这里
