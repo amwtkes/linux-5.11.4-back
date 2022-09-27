@@ -339,6 +339,7 @@ static __always_inline void load_seg_legacy(unsigned short prev_index,
 	}
 }
 
+/*xiaojin-contextswitch -6 x86_fsgsbase_load*/
 static __always_inline void x86_fsgsbase_load(struct thread_struct *prev,
 					      struct thread_struct *next)
 {
