@@ -450,6 +450,7 @@ struct zone {
 #ifdef CONFIG_NUMA
 	int node;
 #endif
+/*xiaojin-mm-datastructure -2.4 属于哪个node的指针*/
 	struct pglist_data	*zone_pgdat;
 	struct per_cpu_pageset __percpu *pageset;
 	/*
@@ -467,6 +468,7 @@ struct zone {
 	unsigned long		*pageblock_flags;
 #endif /* CONFIG_SPARSEMEM */
 
+/*xiaojin-mm-datastructure -2.2 内存的页面可以被看成一个大数组，那么当前zone从node中哪个页号开始就记录在这里。pfn其实就是zone起始地址然后除以page_size就能得到页号。*/
 	/* zone_start_pfn == zone_start_paddr >> PAGE_SHIFT */
 	unsigned long		zone_start_pfn;
 
@@ -505,6 +507,7 @@ struct zone {
 	 * mem_hotplug_begin/end(). Any reader who can't tolerant drift of
 	 * present_pages should get_online_mems() to get a stable value.
 	 */
+	/*xiaojin-mm-datastructure -2.1 spanned_pages 指的是不管中间有没有物理内存空洞，反正就是最后的页号减去起始的页号。present_pages指的是除开空洞以外的可以使用的真正的内存页面数*/
 	atomic_long_t		managed_pages;
 	unsigned long		spanned_pages;
 	unsigned long		present_pages;
@@ -729,6 +732,7 @@ typedef struct pglist_data {
 
 	int nr_zones; /* number of populated zones in this node */
 #ifdef CONFIG_FLAT_NODE_MEM_MAP	/* means !SPARSEMEM */
+/*xiaojin-mm-datastructure -1.1 node_mem_map node中所有页面看成一个数组，这就是这个数组，可以方便的根据页号拿到一个page。*/
 	struct page *node_mem_map;
 #ifdef CONFIG_PAGE_EXTENSION
 	struct page_ext *node_page_ext;
