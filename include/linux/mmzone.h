@@ -426,6 +426,7 @@ enum zone_type {
 
 #define ASYNC_AND_SYNC 2
 
+/*xiaojin-mm-datastructure-2 numa zone描述符*/
 struct zone {
 	/* Read-mostly fields */
 
@@ -710,6 +711,7 @@ struct deferred_split {
  * Memory statistics and page replacement data structures are maintained on a
  * per-zone basis.
  */
+/*xiaojin-mm-datastructure-1 numa node的描述符*/
 typedef struct pglist_data {
 	/*
 	 * node_zones contains just the zones for THIS node. Not all of the

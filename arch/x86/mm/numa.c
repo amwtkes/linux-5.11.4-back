@@ -22,6 +22,7 @@
 int numa_off;
 nodemask_t numa_nodes_parsed __initdata;
 
+/*xiaojin-mm-datastructure-0 struct pglist_data *node_data[MAX_NUMNODES] __read_mostly */
 struct pglist_data *node_data[MAX_NUMNODES] __read_mostly;
 EXPORT_SYMBOL(node_data);
 

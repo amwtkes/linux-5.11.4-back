@@ -35,3 +35,9 @@ xiaojin-percpu ---- percpu的含义 参考文档：https://app.yinxiang.com/shar
 
 ==============context switch =======
 xiaojin-contextswitch
+
+
+
+
+===============内存这块
+xiaojin-mm-datastructure  --- 数据结构
