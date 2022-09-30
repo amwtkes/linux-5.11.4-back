@@ -452,6 +452,10 @@ struct zone {
 #endif
 /*xiaojin-mm-datastructure -2.4 属于哪个node的指针*/
 	struct pglist_data	*zone_pgdat;
+	/*xiaojin-mm-datastructure -2.5 per_cpu_pageset 用于区分冷热页。什么叫冷热页呢？咱们讲 x86 体系结构的时候讲过，为了让 CPU 快速访问段描述符，在 CPU 里面有段描述符缓存。CPU 访问这个缓存的速度比内存快得多。同样对于页面来讲，也是这样的。如果一个页被加载到 CPU 高速缓存里面，这就是一个热页（Hot Page），CPU 读起来速度会快很多，如果没有就是冷页（Cold Page）。由于每个 CPU 都有自己的高速缓存，因而 per_cpu_pageset 也是每个 CPU 一个。
+	
+	注意：这里的pageset指针是cpu0的pageset的指针，需要加上偏移才能得到当前cpu的真实地址。
+	*/
 	struct per_cpu_pageset __percpu *pageset;
 	/*
 	 * the high and batch values are copied to individual pagesets for
@@ -507,7 +511,7 @@ struct zone {
 	 * mem_hotplug_begin/end(). Any reader who can't tolerant drift of
 	 * present_pages should get_online_mems() to get a stable value.
 	 */
-	/*xiaojin-mm-datastructure -2.1 spanned_pages 指的是不管中间有没有物理内存空洞，反正就是最后的页号减去起始的页号。present_pages指的是除开空洞以外的可以使用的真正的内存页面数*/
+	/*xiaojin-mm-datastructure -2.1 spanned_pages 指的是不管中间有没有物理内存空洞，反正就是最后的页号减去起始的页号。present_pages指的是除开空洞以外的可以使用的真正的内存页面数managed_pages = present_pages - reserved_pages，也即 managed_pages 是这个 zone 被伙伴系统管理的所有的 page 数目*/
 	atomic_long_t		managed_pages;
 	unsigned long		spanned_pages;
 	unsigned long		present_pages;
