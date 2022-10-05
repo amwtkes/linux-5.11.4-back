@@ -452,7 +452,40 @@ struct zone {
 #endif
 /*xiaojin-mm-datastructure -2.4 属于哪个node的指针*/
 	struct pglist_data	*zone_pgdat;
-	/*xiaojin-mm-datastructure -2.5 per_cpu_pageset 用于区分冷热页。什么叫冷热页呢？咱们讲 x86 体系结构的时候讲过，为了让 CPU 快速访问段描述符，在 CPU 里面有段描述符缓存。CPU 访问这个缓存的速度比内存快得多。同样对于页面来讲，也是这样的。如果一个页被加载到 CPU 高速缓存里面，这就是一个热页（Hot Page），CPU 读起来速度会快很多，如果没有就是冷页（Cold Page）。由于每个 CPU 都有自己的高速缓存，因而 per_cpu_pageset 也是每个 CPU 一个。
+	/*xiaojin-mm-datastructure -2.5 per_cpu_pageset 本质是buddy system的缓存。
+
+	struct zone {
+ 
+......
+ 
+        struct per_cpu_pageset __percpu *pageset;
+ 
+......
+ 
+}
+ 
+struct per_cpu_pageset {
+ 
+        struct per_cpu_pages pcp;
+ 
+......
+ 
+};
+struct per_cpu_pages {
+ 
+        int count; //per_cpu缓存中页帧的总数
+ 
+        int high; //high记录了per_cpu缓存中页帧的上限，如果超过这个值就将释放 batch个页帧到伙伴系统中去
+ 
+        int batch; //如果per_cpu中没有可分配的页帧就从伙伴系统中分配batch个页帧到缓存中来
+ 
+        struct list_head lists[MIGRATE_PCPTYPES]; //Per_cpu缓存中的页帧的page就挂接在struct list_head lists中。为防止产生过多内存碎片，内核将页帧分类：可移动页，不可移动页，可回收页等等。内核还定义了一个枚举类型来表示这些可能的类型。
+ 
+};
+
+如果只分配一个页帧，可以直接从per_cpu缓存中分配，而不用经过伙伴系统，可以提高分配效率。Count记录了per_cpu缓存中页帧的总数，high记录了per_cpu缓存中页帧的上限，如果超过这个值就将释放 batch个页帧到伙伴系统中去，如果per_cpu中没有可分配的页帧就从伙伴系统中分配batch个页帧到缓存中来。Per_cpu缓存中的页帧的page就挂接在struct list_head lists中。为防止产生过多内存碎片，内核将页帧分类：可移动页，不可移动页，可回收页等等。内核还定义了一个枚举类型来表示这些可能的类型。
+	
+	用于区分冷热页。什么叫冷热页呢？咱们讲 x86 体系结构的时候讲过，为了让 CPU 快速访问段描述符，在 CPU 里面有段描述符缓存。CPU 访问这个缓存的速度比内存快得多。同样对于页面来讲，也是这样的。如果一个页被加载到 CPU 高速缓存里面，这就是一个热页（Hot Page），CPU 读起来速度会快很多，如果没有就是冷页（Cold Page）。由于每个 CPU 都有自己的高速缓存，因而 per_cpu_pageset 也是每个 CPU 一个。
 	
 	注意：这里的pageset指针是cpu0的pageset的指针，需要加上偏移才能得到当前cpu的真实地址。
 	*/
