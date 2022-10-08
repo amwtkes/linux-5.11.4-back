@@ -41,3 +41,4 @@ xiaojin-contextswitch
 
 ===============内存这块
 xiaojin-mm-datastructure  --- 数据结构
+xiaojin-percpu --- 每cpu变量
