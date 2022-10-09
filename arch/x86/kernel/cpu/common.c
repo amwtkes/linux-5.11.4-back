@@ -1974,7 +1974,7 @@ void cpu_init(void)
 	 * Initialize the per-CPU GDT with the boot GDT,
 	 * and set up the GDT descriptor:
 	 */
-	/*xiaojin-percpu -8.6 -5 switch_to_new_gdt*/
+	/*xiaojin-percpu -8.6 -5 switch_to_new_gdt到了gs设置了。*/
 	switch_to_new_gdt(cpu);
 	load_current_idt();
 

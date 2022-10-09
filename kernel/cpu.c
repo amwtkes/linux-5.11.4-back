@@ -166,7 +166,9 @@ static int cpuhp_invoke_callback(unsigned int cpu, enum cpuhp_state state,
 
 	if (!step->multi_instance) {
 		WARN_ON_ONCE(lastp && *lastp);
-		//这里会调用startup.single中注册的方法。
+		/*xiaojin-percpu -8.5.1 step->startup.single这里是关键。主要看看startup.single是怎么赋值的，赋值的函数是不是用来初始化gs的。
+		每个CPU的gs一旦初始化就不会变了。
+		*/
 		cb = bringup ? step->startup.single : step->teardown.single;
 		if (!cb)
 			return 0;
@@ -562,7 +564,7 @@ static int bringup_cpu(unsigned int cpu)
 	irq_lock_sparse();
 
 	/* Arch-specific enabling code. */
-	/*xiaojin-percpu -8.8 startup.single-3*/
+	/*xiaojin-percpu -8.8 startup.single-3 看看哪里使用__cpu_up*/
 	ret = __cpu_up(cpu, idle);
 	irq_unlock_sparse();
 	if (ret)
@@ -1576,7 +1578,7 @@ static struct cpuhp_step cpuhp_hp_states[] = {
 	/* Kicks the plugged cpu into life */
 	[CPUHP_BRINGUP_CPU] = {
 		.name			= "cpu:bringup",
-		/*xiaojin-percpu -8.9 startup.single-4 对齐了。*/
+		/*xiaojin-percpu -8.9 startup.single-4 对齐了。原来这里使用bringup_cpu，跟*/
 		.startup.single		= bringup_cpu,
 		.teardown.single	= finish_cpu,
 		.cant_stop		= true,
