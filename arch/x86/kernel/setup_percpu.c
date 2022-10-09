@@ -221,9 +221,13 @@ void __init setup_per_cpu_areas(void)
 	/* alrighty, percpu areas up and running */
 	delta = (unsigned long)pcpu_base_addr - (unsigned long)__per_cpu_start;
 	for_each_possible_cpu(cpu) {
-		/*xiaojin-percpu -0.2 给per_cpu_offset变量赋值=delta + pcpu_unit_offsets[cpu] detal=第一个group的基地址 - __per_cpu_start的值*/
+		/*xiaojin-percpu -0.2 (赋值了！)给per_cpu_offset变量赋值=delta + pcpu_unit_offsets[cpu] detal=第一个group的基地址 - __per_cpu_start的值*/
 		per_cpu_offset(cpu) = delta + pcpu_unit_offsets[cpu];
+
+		/* xiaojin-percpu -0.2.1 定义了一个percpu的变量"this_cpu_off"，用percpu的方式来保存__per_cpu_offset[cpu]数组 */
 		per_cpu(this_cpu_off, cpu) = per_cpu_offset(cpu);
+
+		/* xiaojin-percpu -0.2.2 赋值smp_processor_id */
 		per_cpu(cpu_number, cpu) = cpu;
 		setup_percpu_segment(cpu);
 		setup_stack_canary_segment(cpu);
@@ -264,6 +268,7 @@ void __init setup_per_cpu_areas(void)
 		 * area.  Reload any changed state for the boot CPU.
 		 */
 		if (!cpu)
+		/*xiaojin-percpu -0.2.3 设置boot cpu (cpu 0)的gs寄存器为__per_cpu_offset[0] */
 			switch_to_new_gdt(cpu);
 	}
 
