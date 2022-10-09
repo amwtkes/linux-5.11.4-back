@@ -2916,6 +2916,8 @@ int __init pcpu_embed_first_chunk(size_t reserved_size, size_t dyn_size,
 				continue;
 			}
 			/* copy and return the unused part */
+			/*xiaojin-percpu -0.12 pcpu_embed_first_chunk 拷贝percpu的地方，memcpy调用
+			__per_cpu_load是重点，可能是percpu所有静态变量在段里面加载到内存后的起始地址，然后整体拷贝。*/
 			memcpy(ptr, __per_cpu_load, ai->static_size);
 			free_fn(ptr + size_sum, ai->unit_size - size_sum);
 		}
@@ -2963,7 +2965,6 @@ out_free:
  * RETURNS:
  * 0 on success, -errno on failure.
  */
-/*xiaojin-percpu 0.12 拷贝cpu数据具体发生在这里*/
 int __init pcpu_page_first_chunk(size_t reserved_size,
 				 pcpu_fc_alloc_fn_t alloc_fn,
 				 pcpu_fc_free_fn_t free_fn,
@@ -3048,6 +3049,8 @@ int __init pcpu_page_first_chunk(size_t reserved_size,
 		 */
 
 		/* copy static data */
+		/*xiaojin-percpu -0.12 pcpu_page_first_chunk 拷贝percpu的地方，memcpy调用
+			__per_cpu_load是重点，可能是percpu所有静态变量在段里面加载到内存后的起始地址，然后整体拷贝。*/
 		memcpy((void *)unit_addr, __per_cpu_load, ai->static_size);
 	}
 
