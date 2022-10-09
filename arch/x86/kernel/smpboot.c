@@ -233,6 +233,7 @@ static void notrace start_secondary(void *unused)
 	__flush_tlb_all();
 #endif
 	cpu_init_exception_handling();
+	/*xiaojin-percpu -8.6 -4 cpu_init*/
 	cpu_init();
 	rcu_cpu_starting(raw_smp_processor_id());
 	x86_cpuinit.early_percpu_clock_init();
@@ -1038,6 +1039,7 @@ static int do_boot_cpu(int apicid, int cpu, struct task_struct *idle,
 
 	idle->thread.sp = (unsigned long)task_pt_regs(idle);
 	early_gdt_descr.address = (unsigned long)get_cpu_gdt_rw(cpu);
+	/*xiaojin-percpu -8.6 -2 start_secondary*/
 	initial_code = (unsigned long)start_secondary;
 	initial_stack  = idle->thread.sp;
 
@@ -1175,6 +1177,7 @@ int native_cpu_up(unsigned int cpu, struct task_struct *tidle)
 	if (err)
 		return err;
 
+	/*xiaojin-percpu -8.6 -1 do_boot_cpu */
 	err = do_boot_cpu(apicid, cpu, tidle, &cpu0_nmi_registered);
 	if (err) {
 		pr_err("do_boot_cpu failed(%d) to wakeup CPU#%u\n", err, cpu);

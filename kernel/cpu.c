@@ -166,10 +166,14 @@ static int cpuhp_invoke_callback(unsigned int cpu, enum cpuhp_state state,
 
 	if (!step->multi_instance) {
 		WARN_ON_ONCE(lastp && *lastp);
+		//这里会调用startup.single中注册的方法。
 		cb = bringup ? step->startup.single : step->teardown.single;
 		if (!cb)
 			return 0;
 		trace_cpuhp_enter(cpu, st->target, state, cb);
+		/*xiaojin-percpu -8.5 就是这里了！这里会将每个cpu的gs寄存器绑定到cpu的percpu的unit基地址上。
+		https://app.yinxiang.com/shard/s65/nl/15273355/b75171a4-4d50-4e53-9019-7512b2b3305f/
+		*/
 		ret = cb(cpu);
 		trace_cpuhp_exit(cpu, st->state, state, ret);
 		return ret;
@@ -558,6 +562,7 @@ static int bringup_cpu(unsigned int cpu)
 	irq_lock_sparse();
 
 	/* Arch-specific enabling code. */
+	/*xiaojin-percpu -8.8 startup.single-3*/
 	ret = __cpu_up(cpu, idle);
 	irq_unlock_sparse();
 	if (ret)
@@ -1193,6 +1198,7 @@ void cpuhp_online_idle(enum cpuhp_state state)
 /* Requires cpu_add_remove_lock to be held */
 static int _cpu_up(unsigned int cpu, int tasks_frozen, enum cpuhp_state target)
 {
+	//此时gs寄存器还没设置，不会通过寄存器直接读取percpu的基地址。
 	struct cpuhp_cpu_state *st = per_cpu_ptr(&cpuhp_state, cpu);
 	struct task_struct *idle;
 	int ret = 0;
@@ -1243,6 +1249,7 @@ static int _cpu_up(unsigned int cpu, int tasks_frozen, enum cpuhp_state target)
 	 * responsible for bringing it up to the target state.
 	 */
 	target = min((int)target, CPUHP_BRINGUP_CPU);
+	/*xiaojin-percpu -8.4 cpuhp_up_callbacks快到设置gs的地方了。*/
 	ret = cpuhp_up_callbacks(cpu, st, target);
 out:
 	cpus_write_unlock();
@@ -1340,6 +1347,7 @@ void bringup_nonboot_cpus(unsigned int setup_max_cpus)
 		if (num_online_cpus() >= setup_max_cpus)
 			break;
 		if (!cpu_online(cpu))
+		/*xiaojin-percpu -8.3 每个CPU都会调用cpu_up()*/
 			cpu_up(cpu, CPUHP_ONLINE);
 	}
 }
@@ -1568,6 +1576,7 @@ static struct cpuhp_step cpuhp_hp_states[] = {
 	/* Kicks the plugged cpu into life */
 	[CPUHP_BRINGUP_CPU] = {
 		.name			= "cpu:bringup",
+		/*xiaojin-percpu -8.9 startup.single-4 对齐了。*/
 		.startup.single		= bringup_cpu,
 		.teardown.single	= finish_cpu,
 		.cant_stop		= true,

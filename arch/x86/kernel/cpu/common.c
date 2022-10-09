@@ -597,7 +597,11 @@ void load_percpu_segment(int cpu)
 	loadsegment(fs, __KERNEL_PERCPU);
 #else
 	__loadsegment_simple(gs, 0);
-	/*percup确实是gs指向的，GS没有放在GDT中了，而是有MSR这个特殊模组寄存器来存放。*/
+	/* xiaojin-percpu -8.10 每个CPU在初始化的时候都会设置自身的gs寄存器，指向各自CPU的unit基地址。
+	https://app.yinxiang.com/shard/s65/nl/15273355/b75171a4-4d50-4e53-9019-7512b2b3305f/
+	percup确实是gs指向的，GS没有放在GDT中了，而是有MSR这个特殊模组寄存器来存放。*/
+
+	/*xiaojin-percpu -8.6 -6设置gs的地方。*/
 	wrmsrl(MSR_GS_BASE, cpu_kernelmode_gs_base(cpu));
 #endif
 	load_stack_canary_segment();
@@ -1970,6 +1974,7 @@ void cpu_init(void)
 	 * Initialize the per-CPU GDT with the boot GDT,
 	 * and set up the GDT descriptor:
 	 */
+	/*xiaojin-percpu -8.6 -5 switch_to_new_gdt*/
 	switch_to_new_gdt(cpu);
 	load_current_idt();
 

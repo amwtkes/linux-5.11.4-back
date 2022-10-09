@@ -84,6 +84,7 @@ static inline void smp_cpus_done(unsigned int max_cpus)
 
 static inline int __cpu_up(unsigned int cpu, struct task_struct *tidle)
 {
+	/*xiaojin-percpu -8.7 startup.single-2*/
 	return smp_ops.cpu_up(cpu, tidle);
 }
 
