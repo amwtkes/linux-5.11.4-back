@@ -2831,6 +2831,9 @@ static struct pcpu_alloc_info * __init pcpu_build_alloc_info(
  * RETURNS:
  * 0 on success, -errno on failure.
  */
+
+/*xiaojin-percpu -0.11  pcpu_embed_first_chunk 准备ai与gi
+这时buddy还没启动，所以用memblock_alloc来分配内存。https://app.yinxiang.com/shard/s65/nl/15273355/b75171a4-4d50-4e53-9019-7512b2b3305f/ */
 int __init pcpu_embed_first_chunk(size_t reserved_size, size_t dyn_size,
 				  size_t atom_size,
 				  pcpu_fc_cpu_distance_fn_t cpu_distance_fn,
@@ -2960,6 +2963,7 @@ out_free:
  * RETURNS:
  * 0 on success, -errno on failure.
  */
+/*xiaojin-percpu 0.12 拷贝cpu数据具体发生在这里*/
 int __init pcpu_page_first_chunk(size_t reserved_size,
 				 pcpu_fc_alloc_fn_t alloc_fn,
 				 pcpu_fc_free_fn_t free_fn,

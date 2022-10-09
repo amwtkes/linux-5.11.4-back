@@ -202,6 +202,7 @@ void __init setup_per_cpu_areas(void)
 #else
 		atom_size = PAGE_SIZE;
 #endif
+/*xiaojin-percpu -0.1 拷贝percpu变量*/
 		rc = pcpu_embed_first_chunk(PERCPU_FIRST_CHUNK_RESERVE,
 					    dyn_size, atom_size,
 					    pcpu_cpu_distance,
@@ -220,6 +221,7 @@ void __init setup_per_cpu_areas(void)
 	/* alrighty, percpu areas up and running */
 	delta = (unsigned long)pcpu_base_addr - (unsigned long)__per_cpu_start;
 	for_each_possible_cpu(cpu) {
+		/*xiaojin-percpu -0.2 给per_cpu_offset变量赋值=delta + pcpu_unit_offsets[cpu] detal=第一个group的基地址 - __per_cpu_start的值*/
 		per_cpu_offset(cpu) = delta + pcpu_unit_offsets[cpu];
 		per_cpu(this_cpu_off, cpu) = per_cpu_offset(cpu);
 		per_cpu(cpu_number, cpu) = cpu;

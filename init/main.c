@@ -872,6 +872,7 @@ asmlinkage __visible void __init __no_sanitize_address start_kernel(void)
 	setup_boot_config(command_line);
 	setup_command_line(command_line);
 	setup_nr_cpu_ids();
+	/*xiaojin-percpu -0.0 setup_per_cpu_areas*/
 	setup_per_cpu_areas();
 	smp_prepare_boot_cpu();	/* arch-specific boot-cpu hooks */
 	boot_cpu_hotplug_init();

@@ -1428,6 +1428,7 @@ phys_addr_t __init memblock_phys_alloc_try_nid(phys_addr_t size, phys_addr_t ali
  * Return:
  * Virtual address of allocated memory block on success, NULL on failure.
  */
+/*xiaojin-percpu 9.1 memblock_alloc_internal*/
 static void * __init memblock_alloc_internal(
 				phys_addr_t size, phys_addr_t align,
 				phys_addr_t min_addr, phys_addr_t max_addr,
