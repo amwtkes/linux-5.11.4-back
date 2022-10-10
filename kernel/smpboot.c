@@ -167,6 +167,7 @@ static int smpboot_thread_fn(void *data)
 	}
 }
 
+/*xiaojin-percpu -7.2 __smpboot_create_thread*/
 static int
 __smpboot_create_thread(struct smp_hotplug_thread *ht, unsigned int cpu)
 {
@@ -288,6 +289,7 @@ static void smpboot_destroy_threads(struct smp_hotplug_thread *ht)
  * Creates and starts the threads on all online cpus.
  */
 /*xiaojin-rcu 3 rcu_cpu_kthread内核线程。 smpboot_register_percpu_thread */
+/*xiaojin-percpu -7.1 注册percpu的内核线程 kthread register percpu */
 int smpboot_register_percpu_thread(struct smp_hotplug_thread *plug_thread)
 {
 	unsigned int cpu;

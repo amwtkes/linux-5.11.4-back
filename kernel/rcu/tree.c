@@ -2981,6 +2981,7 @@ static struct smp_hotplug_thread rcu_cpu_thread_spec = {
 /*xiaojin-rcu 2 rcu_spawn_core_kthreads 在这里初始化 rcu_cpu_kthread内核线程。 rcu_cpu_kthread_task 初始化 
 不用软中断的时候用每个CPU会有个内核线程实时的监控RCU的状态变化。
 */
+/*xiaojin-percpu -7.0 rcu smpboot_register_percpu_thread 调用点。*/
 static int __init rcu_spawn_core_kthreads(void)
 {
 	int cpu;
