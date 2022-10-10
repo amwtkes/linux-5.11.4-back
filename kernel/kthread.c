@@ -466,7 +466,7 @@ void kthread_bind_mask(struct task_struct *p, const struct cpumask *mask)
  * except that @cpu doesn't need to be online, and the thread must be
  * stopped (i.e., just returned from kthread_create()).
  */
-/*xiaojin-percpu -7.5.1 kthread_bind*/
+/*xiaojin-percpu -7.5 kthread_bind*/
 void kthread_bind(struct task_struct *p, unsigned int cpu)
 {
 	__kthread_bind(p, cpu, TASK_UNINTERRUPTIBLE);
@@ -484,7 +484,7 @@ EXPORT_SYMBOL(kthread_bind);
  * Description: This helper function creates and names a kernel thread
  */
 
-/*xiaojin-percpu -7.4 这是创建cpu绑定的kthread的方法！*/
+/*xiaojin-percpu -7.3 这是创建cpu绑定的kthread的方法！*/
 struct task_struct *kthread_create_on_cpu(int (*threadfn)(void *data),
 					  void *data, unsigned int cpu,
 					  const char *namefmt)
@@ -496,7 +496,7 @@ struct task_struct *kthread_create_on_cpu(int (*threadfn)(void *data),
 				   cpu);
 	if (IS_ERR(p))
 		return p;
-	/*xiaojin-percpu -7.5 绑定的具体函数。*/
+	/*xiaojin-percpu -7.4 绑定的具体函数。*/
 	kthread_bind(p, cpu);
 	/* CPU hotplug need to bind once again when unparking the thread. */
 	to_kthread(p)->cpu = cpu;
