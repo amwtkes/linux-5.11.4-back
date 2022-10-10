@@ -2106,6 +2106,7 @@ __do_set_cpus_allowed(struct task_struct *p, const struct cpumask *new_mask, u32
 	if (running)
 		put_prev_task(rq, p);
 
+/*xiaojin-percpu -7.7.2 ！！！set_cpus_allowed 主要看创建线程的时候这个class设置的是啥sched_class*/
 	p->sched_class->set_cpus_allowed(p, new_mask, flags);
 
 	if (queued)
@@ -2116,6 +2117,7 @@ __do_set_cpus_allowed(struct task_struct *p, const struct cpumask *new_mask, u32
 
 void do_set_cpus_allowed(struct task_struct *p, const struct cpumask *new_mask)
 {
+	/*xiaojin-percpu -7.7.1 __do_set_cpus_allowed*/
 	__do_set_cpus_allowed(p, new_mask, 0);
 }
 

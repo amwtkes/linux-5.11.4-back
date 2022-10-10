@@ -442,6 +442,7 @@ static void __kthread_bind_mask(struct task_struct *p, const struct cpumask *mas
 
 	/* It's safe because the task is inactive. */
 	raw_spin_lock_irqsave(&p->pi_lock, flags);
+	/*xiaojin-percpu -7.7 !!!真正设置percpu kthread 绑定的地方。*/
 	do_set_cpus_allowed(p, mask);
 	p->flags |= PF_NO_SETAFFINITY;
 	raw_spin_unlock_irqrestore(&p->pi_lock, flags);
@@ -449,6 +450,7 @@ static void __kthread_bind_mask(struct task_struct *p, const struct cpumask *mas
 
 static void __kthread_bind(struct task_struct *p, unsigned int cpu, long state)
 {
+	/*xiaojin-percpu -7.6 __kthread_bind*/
 	__kthread_bind_mask(p, cpumask_of(cpu), state);
 }
 
@@ -492,6 +494,7 @@ struct task_struct *kthread_create_on_cpu(int (*threadfn)(void *data),
 	struct task_struct *p;
 
 //在本地node分配线程的内存与栈
+	/*xiaojin-percpu -7.7.4 创建内核线程的地方。*/
 	p = kthread_create_on_node(threadfn, data, cpu_to_node(cpu), namefmt,
 				   cpu);
 	if (IS_ERR(p))
