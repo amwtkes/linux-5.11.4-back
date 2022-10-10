@@ -466,6 +466,7 @@ void kthread_bind_mask(struct task_struct *p, const struct cpumask *mask)
  * except that @cpu doesn't need to be online, and the thread must be
  * stopped (i.e., just returned from kthread_create()).
  */
+/*xiaojin-percpu -7.5.1 kthread_bind*/
 void kthread_bind(struct task_struct *p, unsigned int cpu)
 {
 	__kthread_bind(p, cpu, TASK_UNINTERRUPTIBLE);
