@@ -684,6 +684,7 @@ noinline void __ref rest_init(void)
 	 * we schedule it before we create kthreadd, will OOPS.
 	 */
 	/*xiaojin-percpu -8.1 kernel_init pid 1的线程。*/
+	/*xiaojin-kthread -0 kernel_thread(kernel_init, NULL, CLONE_FS) 开始*/
 	pid = kernel_thread(kernel_init, NULL, CLONE_FS);
 	/*
 	 * Pin init on the boot CPU. Task migration is not properly working
@@ -696,7 +697,7 @@ noinline void __ref rest_init(void)
 	rcu_read_unlock();
 
 	numa_default_policy();
-	/*xiaojin-percpu -7.7.3 kthreadadd 创建内核线程的线程初始化的地方。*/
+	/*xiaojin-percpu -7.7.3 kthreadd 创建内核线程的线程初始化的地方。*/
 	pid = kernel_thread(kthreadd, NULL, CLONE_FS | CLONE_FILES);
 	rcu_read_lock();
 	kthreadd_task = find_task_by_pid_ns(pid, &init_pid_ns);

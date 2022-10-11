@@ -752,7 +752,7 @@ thread_info可以放在内核栈的栈顶部位，
 #endif
 
 	unsigned int			policy;
-	int				nr_cpus_allowed;
+	int				nr_cpus_allowed;//该进程允许使用的cpu的数量
 	const cpumask_t			*cpus_ptr;
 	cpumask_t			cpus_mask;
 	void				*migration_pending;

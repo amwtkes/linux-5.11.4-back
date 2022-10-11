@@ -2503,6 +2503,7 @@ pid_t kernel_clone(struct kernel_clone_args *args)
 /*
  * Create a kernel thread.
  */
+/*xiaojin-kthread -1 kernel_thread() 创建内核线程的地方*/
 pid_t kernel_thread(int (*fn)(void *), void *arg, unsigned long flags)
 {
 	struct kernel_clone_args args = {

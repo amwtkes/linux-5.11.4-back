@@ -345,7 +345,8 @@ struct task_struct *__kthread_create_on_node(int (*threadfn)(void *data),
 	create->done = &done;
 
 	spin_lock(&kthread_create_lock);
-	list_add_tail(&create->list, &kthread_create_list);//发到这个队列上，由kthreadd_task后台线程来异步创建。
+	/*xiaojin-percpu -7.7.4.1 发到kthread_create_list这个队列上，由kthreadd_task后台线程来异步创建。*/
+	list_add_tail(&create->list, &kthread_create_list);
 	spin_unlock(&kthread_create_lock);
 
 	wake_up_process(kthreadd_task);
@@ -486,7 +487,7 @@ EXPORT_SYMBOL(kthread_bind);
  * Description: This helper function creates and names a kernel thread
  */
 
-/*xiaojin-percpu -7.3 这是创建cpu绑定的kthread的方法！*/
+/*xiaojin-percpu -7.3 kthread_create_on_cpu() 这是创建cpu绑定的kthread的方法！*/
 struct task_struct *kthread_create_on_cpu(int (*threadfn)(void *data),
 					  void *data, unsigned int cpu,
 					  const char *namefmt)
@@ -649,6 +650,7 @@ int kthreadd(void *unused)
 	current->flags |= PF_NOFREEZE;
 	cgroup_init_kthreadd();
 
+	/*xiaojin-percpu -7.7.4.2 kthreadd()--->kthread_create_list读取create list创建内核线程*/
 	for (;;) {
 		set_current_state(TASK_INTERRUPTIBLE);
 		if (list_empty(&kthread_create_list))
