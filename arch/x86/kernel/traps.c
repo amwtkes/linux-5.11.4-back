@@ -198,6 +198,7 @@ static __always_inline void __user *error_get_trap_addr(struct pt_regs *regs)
 	return (void __user *)uprobe_get_trap_addr(regs);
 }
 
+/*xiaojin-interrupt_macro -4 定义一个异常或者中断的形式。*/
 DEFINE_IDTENTRY(exc_divide_error)
 {
 	do_error_trap(regs, 0, "divide error", X86_TRAP_DE, SIGFPE,

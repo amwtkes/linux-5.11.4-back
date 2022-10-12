@@ -399,9 +399,10 @@ SYM_CODE_END(ret_from_fork)
  * @cfunc:		C function to be called
  * @has_error_code:	Hardware pushed error code on stack
  */
+ /*xiaojin-interrupt_macro 0.1 idtentry_body 中断body宏定义，先save_regs，然后call C的处理函数*/
 .macro idtentry_body cfunc has_error_code:req
 
-	call	error_entry
+	call	error_entry /*保存所有的寄存器*/
 	UNWIND_HINT_REGS
 
 	movq	%rsp, %rdi			/* pt_regs pointer into 1st argument*/
@@ -411,7 +412,7 @@ SYM_CODE_END(ret_from_fork)
 		movq	$-1, ORIG_RAX(%rsp)	/* no syscall to restart */
 	.endif
 
-	call	\cfunc
+	call	\cfunc /*调起实际的处理流程，是个c函数*/
 
 	jmp	error_return
 .endm
@@ -426,6 +427,7 @@ SYM_CODE_END(ret_from_fork)
  * The macro emits code to set up the kernel context for straight forward
  * and simple IDT entries. No IST stack, no paranoid entry checks.
  */
+ /*xiaojin-interrupt_macro -0 idtentry 实际的中断，异常处理函数的宏。定义了一个以asm_开始的汇编函数 idtentry是宏的名称 */
 .macro idtentry vector asmsym cfunc has_error_code:req
 SYM_CODE_START(\asmsym)
 	UNWIND_HINT_IRET_REGS offset=\has_error_code*8
@@ -449,7 +451,7 @@ SYM_CODE_START(\asmsym)
 .Lfrom_usermode_no_gap_\@:
 	.endif
 
-	idtentry_body \cfunc \has_error_code
+	idtentry_body \cfunc \has_error_code /*这里是入口*/
 
 _ASM_NOKPROBE(\asmsym)
 SYM_CODE_END(\asmsym)
@@ -1086,6 +1088,7 @@ SYM_CODE_END(paranoid_exit)
 /*
  * Save all registers in pt_regs, and switch GS if needed.
  */
+ /*xiaojin-interrupt_macro 0.2 error_entry 中断到来的时候保存寄存器的程序定义 error_entry*/
 SYM_CODE_START_LOCAL(error_entry)
 	UNWIND_HINT_FUNC
 	cld

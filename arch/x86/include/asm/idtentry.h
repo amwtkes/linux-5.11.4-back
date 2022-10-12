@@ -26,6 +26,11 @@
  * declares the entry points for usage in C code. There is an ASM variant
  * as well which is used to emit the entry stubs in entry_32/64.S.
  */
+/*xiaojin-interrupt_macro ***-2 申明asm_函数的地方
+you两个这个宏一个是生成汇编asm_handler的，汇编宏idtentry
+一个是这里。这里是要等汇编的编译以后，再跟内核的c语言再编译一遍的
+这里只是声明了这个asm的汇编函数。
+*/
 #define DECLARE_IDTENTRY(vector, func)					\
 	asmlinkage void asm_##func(void);				\
 	asmlinkage void xen_asm_##func(void);				\
@@ -44,6 +49,7 @@
  * arbitrary code in the body. irqentry_exit() contains common code
  * which has to run before returning to the low level assembly code.
  */
+/*xiaojin-interrupt_macro -1 定义处理中断异常函数的宏*/
 #define DEFINE_IDTENTRY(func)						\
 static __always_inline void __##func(struct pt_regs *regs);		\
 									\
@@ -436,6 +442,7 @@ __visible noinstr void func(struct pt_regs *regs,			\
 /*
  * The ASM variants for DECLARE_IDTENTRY*() which emit the ASM entry stubs.
  */
+/*xiaojin-interrupt_macro +2 定义asm_函数的地方*/
 #define DECLARE_IDTENTRY(vector, func)					\
 	idtentry vector asm_##func func has_error_code=0
 
@@ -555,6 +562,7 @@ SYM_CODE_END(spurious_entries_start)
 #define X86_TRAP_OTHER		0xFFFF
 
 /* Simple exception entry points. No hardware error code */
+/*xiaojin-interrupt_macro +2.1 DECLARE_IDTENTRY例子*/
 DECLARE_IDTENTRY(X86_TRAP_DE,		exc_divide_error);
 DECLARE_IDTENTRY(X86_TRAP_OF,		exc_overflow);
 DECLARE_IDTENTRY(X86_TRAP_BR,		exc_bounds);
