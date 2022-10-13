@@ -2108,7 +2108,10 @@ __do_set_cpus_allowed(struct task_struct *p, const struct cpumask *new_mask, u32
 	if (running)
 		put_prev_task(rq, p);
 
-/*xiaojin-percpu_kthread -7.2 ！！！set_cpus_allowed 主要看创建线程的时候这个class设置的是啥sched_class*/
+/*xiaojin-percpu_kthread -7.2 ！！！set_cpus_allowed 主要看创建线程的时候这个class设置的是啥sched_class
+可以看到后面的代码就是把p放入相应cpu的runqueue中即可，现在的问题是，cpu是怎么启动起来，core是怎么启动起来来执行这条
+属于自己的runqueue中的相应代码的呢？也就是每个core必须有代码去让它启动起来，识别这条队列并运行里面的task。
+*/
 	p->sched_class->set_cpus_allowed(p, new_mask, flags);
 
 	if (queued)
@@ -2119,7 +2122,7 @@ __do_set_cpus_allowed(struct task_struct *p, const struct cpumask *new_mask, u32
 /*xiaojin-percpu_kthread -7.1 do_set_cpus_allowed*/
 void do_set_cpus_allowed(struct task_struct *p, const struct cpumask *new_mask)
 {
-	/*xiaojin-percpu_kthread -7.2 __do_set_cpus_allowed*/
+	/*xiaojin-percpu_kthread -7.1 __do_set_cpus_allowed*/
 	__do_set_cpus_allowed(p, new_mask, 0);
 }
 
