@@ -683,7 +683,7 @@ noinline void __ref rest_init(void)
 	 * the init task will end up wanting to create kthreads, which, if
 	 * we schedule it before we create kthreadd, will OOPS.
 	 */
-	/*xiaojin-percpu -8.1 kernel_init pid 1的线程。*/
+	/*xiaojin-percpu_kthread_cpu0_run.1 kernel_init pid 1的线程。*/
 	/*xiaojin-kthread -0 kernel_thread(kernel_init, NULL, CLONE_FS) 开始*/
 	pid = kernel_thread(kernel_init, NULL, CLONE_FS);
 	/*
@@ -1062,7 +1062,7 @@ asmlinkage __visible void __init __no_sanitize_address start_kernel(void)
 	kcsan_init();
 
 	/* Do the rest non-__init'ed, we're now alive */
-	/*xiaojin-percpu -8.0 开始做多核MP percpu的初始化了。*/
+	/*xiaojin-percpu_kthread_cpu0_run.0 开始做多核MP percpu的初始化了。*/
 	arch_call_rest_init();
 
 	prevent_tail_call_optimization();
@@ -1528,7 +1528,7 @@ static noinline void __init kernel_init_freeable(void)
 	do_pre_smp_initcalls();
 	lockup_detector_init();
 
-	/*xiaojin-percpu -8.2 smp_init*/
+	/*xiaojin-percpu_kthread_cpu0_run.2 smp_init*/
 	smp_init();
 	sched_init_smp();
 

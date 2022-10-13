@@ -267,7 +267,7 @@ struct smp_ops smp_ops = {
 	.crash_stop_other_cpus	= kdump_nmi_shootdown_cpus,
 #endif
 	.smp_send_reschedule	= native_smp_send_reschedule,
-	/*xiaojin-percpu -8.6 ！！！ startup.single-1 native_cpu_up 也是 startup.single->cpu_up
+	/*xiaojin-percpu_kthread_cpu0_run.6 ！！！ startup.single-1 native_cpu_up 也是 startup.single->cpu_up
 	每个CPU都会调用cpu_up函数，完成gs的设置。
 
 	下面看看startup.single是怎么初始化的。就是怎么用smp_ops这个结构初始化startup.single的。

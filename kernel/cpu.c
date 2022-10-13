@@ -166,14 +166,14 @@ static int cpuhp_invoke_callback(unsigned int cpu, enum cpuhp_state state,
 
 	if (!step->multi_instance) {
 		WARN_ON_ONCE(lastp && *lastp);
-		/*xiaojin-percpu -8.5.1 step->startup.single这里是关键。主要看看startup.single是怎么赋值的，赋值的函数是不是用来初始化gs的。
+		/*xiaojin-percpu_kthread_cpu0_run.5.1 step->startup.single这里是关键。主要看看startup.single是怎么赋值的，赋值的函数是不是用来初始化gs的。
 		每个CPU的gs一旦初始化就不会变了。
 		*/
 		cb = bringup ? step->startup.single : step->teardown.single;
 		if (!cb)
 			return 0;
 		trace_cpuhp_enter(cpu, st->target, state, cb);
-		/*xiaojin-percpu -8.5 就是这里了！这里会将每个cpu的gs寄存器绑定到cpu的percpu的unit基地址上。
+		/*xiaojin-percpu_kthread_cpu0_run.5 就是这里了！这里会将每个cpu的gs寄存器绑定到cpu的percpu的unit基地址上。
 		https://app.yinxiang.com/shard/s65/nl/15273355/b75171a4-4d50-4e53-9019-7512b2b3305f/
 		*/
 		ret = cb(cpu);
@@ -564,7 +564,7 @@ static int bringup_cpu(unsigned int cpu)
 	irq_lock_sparse();
 
 	/* Arch-specific enabling code. */
-	/*xiaojin-percpu -8.8 startup.single-3 看看哪里使用__cpu_up*/
+	/*xiaojin-percpu_kthread_cpu0_run.8 startup.single-3 看看哪里使用__cpu_up*/
 	ret = __cpu_up(cpu, idle);
 	irq_unlock_sparse();
 	if (ret)
@@ -1251,7 +1251,7 @@ static int _cpu_up(unsigned int cpu, int tasks_frozen, enum cpuhp_state target)
 	 * responsible for bringing it up to the target state.
 	 */
 	target = min((int)target, CPUHP_BRINGUP_CPU);
-	/*xiaojin-percpu -8.4 cpuhp_up_callbacks快到设置gs的地方了。*/
+	/*xiaojin-percpu_kthread_cpu0_run.4 cpuhp_up_callbacks快到设置gs的地方了。*/
 	ret = cpuhp_up_callbacks(cpu, st, target);
 out:
 	cpus_write_unlock();
@@ -1349,7 +1349,10 @@ void bringup_nonboot_cpus(unsigned int setup_max_cpus)
 		if (num_online_cpus() >= setup_max_cpus)
 			break;
 		if (!cpu_online(cpu))
-		/*xiaojin-percpu -8.3 每个CPU都会调用cpu_up()*/
+		/*xiaojin-percpu_kthread_cpu0_run.3 每个CPU都会调用cpu_up() 一般是cpu 0 是boot cpu负责启动其他cpu
+
+		https://app.yinxiang.com/shard/s65/nl/15273355/20f9f5ee-3555-435d-993b-bad24d309729/
+		*/
 			cpu_up(cpu, CPUHP_ONLINE);
 	}
 }
@@ -1578,7 +1581,7 @@ static struct cpuhp_step cpuhp_hp_states[] = {
 	/* Kicks the plugged cpu into life */
 	[CPUHP_BRINGUP_CPU] = {
 		.name			= "cpu:bringup",
-		/*xiaojin-percpu -8.9 startup.single-4 对齐了。原来这里使用bringup_cpu，跟*/
+		/*xiaojin-percpu_kthread_cpu0_run.9 startup.single-4 对齐了。原来这里使用bringup_cpu，跟*/
 		.startup.single		= bringup_cpu,
 		.teardown.single	= finish_cpu,
 		.cant_stop		= true,
