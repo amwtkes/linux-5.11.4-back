@@ -1028,6 +1028,8 @@ int common_cpu_up(unsigned int cpu, struct task_struct *idle)
  * Returns zero if CPU booted OK, else error code from
  * ->wakeup_secondary_cpu.
  */
+
+/*xiaojin-do_boot_cpu https://app.yinxiang.com/shard/s65/nl/15273355/eba9e89a-cb95-4103-9141-ab1aa783b5e1/*/
 static int do_boot_cpu(int apicid, int cpu, struct task_struct *idle,
 		       int *cpu0_nmi_registered)
 {
@@ -1039,8 +1041,15 @@ static int do_boot_cpu(int apicid, int cpu, struct task_struct *idle,
 
 	idle->thread.sp = (unsigned long)task_pt_regs(idle);
 	early_gdt_descr.address = (unsigned long)get_cpu_gdt_rw(cpu);
-	/*xiaojin-percpu_kthread_cpu0_run.9 -2 start_secondary*/
+	/*xiaojin-percpu_kthread_cpu0_run.9 -2 start_secondary
+     AP初始化完成后，就运行start_secondary函数，见startup_32_smp末尾
+	就在下面会调起：start_secondary
+	boot_error = wakeup_cpu_via_init_nmi(cpu, start_ip, apicid,
+						     cpu0_nmi_registered);
+	*/
 	initial_code = (unsigned long)start_secondary;
+
+	//为AP设定好执行start_secondary时将要使用的stack，见startup_32_smp末尾
 	initial_stack  = idle->thread.sp;
 
 	/* Enable the espfix hack for this CPU */
@@ -1086,6 +1095,13 @@ static int do_boot_cpu(int apicid, int cpu, struct task_struct *idle,
 	if (apic->wakeup_secondary_cpu)
 		boot_error = apic->wakeup_secondary_cpu(apicid, start_ip);
 	else
+		/*xiaojin-percpu_kthread_cpu0_run.10+激活AP的IPI wakeup_cpu_via_init_nmi 这里是重点拉，发送IPI中断。
+         * 在这个函数中通过操作APIC_ICR寄存器，BSP向目标AP发送IPI消息，触发目标AP从start_eip地址处，
+         * 实模式开始运行。 
+		 * 
+		 * 实际就是触发AP执行刚刚设置的start_secondary函数。
+		 * initial_code = (unsigned long)start_secondary;
+         */
 		boot_error = wakeup_cpu_via_init_nmi(cpu, start_ip, apicid,
 						     cpu0_nmi_registered);
 
@@ -1096,10 +1112,15 @@ static int do_boot_cpu(int apicid, int cpu, struct task_struct *idle,
 		boot_error = -1;
 		timeout = jiffies + 10*HZ;
 		while (time_before(jiffies, timeout)) {
-			if (cpumask_test_cpu(cpu, cpu_initialized_mask)) {
-				/*
+			/*
 				 * Tell AP to proceed with initialization
-				 */
+			*/
+
+			/* AP唤醒后会进入start_secondary()-->smp_callin() 设置对应的cpu_callin_mask
+             * 所以这里只要检测到cpu_callin_mask被设置了，代表AP激活成功
+			 */
+			if (cpumask_test_cpu(cpu, cpu_initialized_mask)) {
+
 				cpumask_set_cpu(cpu, cpu_callout_mask);
 				boot_error = 0;
 				break;

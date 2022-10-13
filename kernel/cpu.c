@@ -527,7 +527,7 @@ static int cpuhp_kick_ap(struct cpuhp_cpu_state *st, enum cpuhp_state target)
 
 	return ret;
 }
-/*xiaojin-percpu_kthread_cpu0_run.10 bringup_wait_for_ap 
+/*xiaojin-percpu_kthread_cpu0_run.7.2 bringup_wait_for_ap 
 */
 static int bringup_wait_for_ap(unsigned int cpu)
 {
