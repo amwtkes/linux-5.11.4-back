@@ -697,7 +697,9 @@ noinline void __ref rest_init(void)
 	rcu_read_unlock();
 
 	numa_default_policy();
-	/*xiaojin-percpu_kthread -7.3 kthreadd 创建内核线程的线程初始化的地方。*/
+	/*xiaojin-percpu_kthread -7.3 kthreadd 创建内核线程的线程初始化的地方。
+	维护了一个列表，这个线程会轮询这个链表，然后根据需求创建kthread。
+	*/
 	pid = kernel_thread(kthreadd, NULL, CLONE_FS | CLONE_FILES);
 	rcu_read_lock();
 	kthreadd_task = find_task_by_pid_ns(pid, &init_pid_ns);
@@ -1062,7 +1064,7 @@ asmlinkage __visible void __init __no_sanitize_address start_kernel(void)
 	kcsan_init();
 
 	/* Do the rest non-__init'ed, we're now alive */
-	/*xiaojin-percpu_kthread_cpu0_run.0 开始做多核MP percpu的初始化了。*/
+	/*xiaojin-percpu_kthread_cpu0_run.0 开始做多核MP percpu的初始化了。包括percpu的kthread也是在这个里面创建的*/
 	arch_call_rest_init();
 
 	prevent_tail_call_optimization();
