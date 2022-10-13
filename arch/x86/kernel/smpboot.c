@@ -1173,11 +1173,14 @@ int native_cpu_up(unsigned int cpu, struct task_struct *tidle)
 	/* the FPU context is blank, nobody can own it */
 	per_cpu(fpu_fpregs_owner_ctx, cpu) = NULL;
 
+	/*设置CPU到idle状态 
+	https://app.yinxiang.com/shard/s65/nl/15273355/db25ce86-bf0d-4b1e-8b90-b8a980ad2594/
+	*/
 	err = common_cpu_up(cpu, tidle);
 	if (err)
 		return err;
 
-	/*xiaojin-percpu_kthread_cpu0_run.9 -1 do_boot_cpu */
+	/*xiaojin-percpu_kthread_cpu0_run.9 -1 do_boot_cpu apicid是标志一个ap的唯一标志*/
 	err = do_boot_cpu(apicid, cpu, tidle, &cpu0_nmi_registered);
 	if (err) {
 		pr_err("do_boot_cpu failed(%d) to wakeup CPU#%u\n", err, cpu);
