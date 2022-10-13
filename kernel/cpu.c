@@ -145,6 +145,7 @@ static struct cpuhp_step *cpuhp_get_step(enum cpuhp_state state)
  *
  * Called from cpu hotplug and from the state register machinery.
  */
+/*xiaojin cpuhp_invoke_callback*/
 static int cpuhp_invoke_callback(unsigned int cpu, enum cpuhp_state state,
 				 bool bringup, struct hlist_node *node,
 				 struct hlist_node **lastp)
@@ -526,7 +527,8 @@ static int cpuhp_kick_ap(struct cpuhp_cpu_state *st, enum cpuhp_state target)
 
 	return ret;
 }
-
+/*xiaojin-percpu_kthread_cpu0_run.10 bringup_wait_for_ap 
+*/
 static int bringup_wait_for_ap(unsigned int cpu)
 {
 	struct cpuhp_cpu_state *st = per_cpu_ptr(&cpuhp_state, cpu);
@@ -568,7 +570,7 @@ static int bringup_cpu(unsigned int cpu)
 	irq_lock_sparse();
 
 	/* Arch-specific enabling code. */
-	/*xiaojin-percpu_kthread_cpu0_run.8 startup.single-3 看看哪里使用__cpu_up*/
+	/*xiaojin-percpu_kthread_cpu0_run.7 __cpu_up() bringup_wait_for_ap() startup.single-3 看看哪里使用__cpu_up*/
 	ret = __cpu_up(cpu, idle);
 	irq_unlock_sparse();
 	if (ret)
@@ -615,6 +617,7 @@ static inline bool can_rollback_cpu(struct cpuhp_cpu_state *st)
 	return st->state <= CPUHP_BRINGUP_CPU;
 }
 
+/*xiaojin cpuhp_up_callbacks*/
 static int cpuhp_up_callbacks(unsigned int cpu, struct cpuhp_cpu_state *st,
 			      enum cpuhp_state target)
 {
@@ -623,6 +626,7 @@ static int cpuhp_up_callbacks(unsigned int cpu, struct cpuhp_cpu_state *st,
 
 	while (st->state < target) {
 		st->state++;
+		/*xiaojin cpuhp_invoke_callback */
 		ret = cpuhp_invoke_callback(cpu, st->state, true, NULL, NULL);
 		if (ret) {
 			if (can_rollback_cpu(st)) {
@@ -1291,7 +1295,7 @@ static int cpu_up(unsigned int cpu, enum cpuhp_state target)
 		err = -EPERM;
 		goto out;
 	}
-	//这里
+	/*xiaojin _cpu_up*/
 	err = _cpu_up(cpu, 0, target);
 out:
 	cpu_maps_update_done();
@@ -1346,6 +1350,7 @@ int bringup_hibernate_cpu(unsigned int sleep_cpu)
 	return 0;
 }
 
+/*xiaojin-percpu_kthread_cpu0_run.3  bringup_nonboot_cpus*/
 void bringup_nonboot_cpus(unsigned int setup_max_cpus)
 {
 	unsigned int cpu;
@@ -1354,7 +1359,7 @@ void bringup_nonboot_cpus(unsigned int setup_max_cpus)
 		if (num_online_cpus() >= setup_max_cpus)
 			break;
 		if (!cpu_online(cpu))
-		/*xiaojin-percpu_kthread_cpu0_run.3 每个CPU都会调用cpu_up() 一般是cpu 0 是boot cpu负责启动其他cpu
+		/*xiaojin bringup_nonboot_cpus 每个CPU都会调用cpu_up() 一般是cpu 0 是boot cpu负责启动其他cpu
 
 		https://app.yinxiang.com/shard/s65/nl/15273355/20f9f5ee-3555-435d-993b-bad24d309729/
 		*/
@@ -1586,7 +1591,7 @@ static struct cpuhp_step cpuhp_hp_states[] = {
 	/* Kicks the plugged cpu into life */
 	[CPUHP_BRINGUP_CPU] = {
 		.name			= "cpu:bringup",
-		/*xiaojin-percpu_kthread_cpu0_run.10 startup.single-4 对齐了。原来这里使用bringup_cpu，跟*/
+		/*xiaojin-percpu_kthread_cpu0_run.6 startup.single-4 对齐了。原来这里使用bringup_cpu，跟*/
 		.startup.single		= bringup_cpu,
 		.teardown.single	= finish_cpu,
 		.cant_stop		= true,

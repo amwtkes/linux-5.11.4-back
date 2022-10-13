@@ -810,7 +810,7 @@ void __init smp_init(void)
 	cpuhp_threads_init();
 
 	pr_info("Bringing up secondary CPUs ...\n");
-	/*xiaojin-percpu_kthread_cpu0_run.2.1 初始化非bsp也就是非启动内核的那个cpu*/
+	/*xiaojin-percpu_kthread_cpu0_run.2.1 初始化非bsp也就是非启动内核的那个cpu  bringup_nonboot_cpus*/
 	bringup_nonboot_cpus(setup_max_cpus);
 
 	num_nodes = num_online_nodes();
