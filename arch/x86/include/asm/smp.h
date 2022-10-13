@@ -82,7 +82,7 @@ static inline void smp_cpus_done(unsigned int max_cpus)
 	smp_ops.smp_cpus_done(max_cpus);
 }
 
-/*xiaojin-percpu_kthread_cpu0_run.9 __cpu_up
+/*_xiaojin __cpu_up()
 在x86/smp.c文件最后被定义
 .cpu_up			= native_cpu_up,
 */

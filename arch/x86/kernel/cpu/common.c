@@ -601,7 +601,7 @@ void load_percpu_segment(int cpu)
 	https://app.yinxiang.com/shard/s65/nl/15273355/b75171a4-4d50-4e53-9019-7512b2b3305f/
 	percup确实是gs指向的，GS没有放在GDT中了，而是有MSR这个特殊模组寄存器来存放。*/
 
-	/*xiaojin-percpu_kthread_cpu0_run.6 -6设置gs的地方。*/
+	/*xiaojin-percpu_kthread_cpu0_run.9 -5设置gs的地方。*/
 	wrmsrl(MSR_GS_BASE, cpu_kernelmode_gs_base(cpu));
 #endif
 	load_stack_canary_segment();
@@ -1974,7 +1974,7 @@ void cpu_init(void)
 	 * Initialize the per-CPU GDT with the boot GDT,
 	 * and set up the GDT descriptor:
 	 */
-	/*xiaojin-percpu_kthread_cpu0_run.6 -5 switch_to_new_gdt到了gs设置了。*/
+	/*xiaojin-percpu_kthread_cpu0_run.9 -4 switch_to_new_gdt到了gs设置了。*/
 	switch_to_new_gdt(cpu);
 	load_current_idt();
 

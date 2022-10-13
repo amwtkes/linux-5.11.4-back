@@ -277,7 +277,7 @@ SYM_INNER_LABEL(secondary_startup_64_no_verify, SYM_L_GLOBAL)
 	 */
 	pushq	$.Lafter_lret	# put return address on stack for unwinder
 	xorl	%ebp, %ebp	# clear frame pointer
-	/*xiaojin-percpu_kthread_cpu0_run.6 -3 在startup_64里面调用initial_code*/
+	/*xiaojin-percpu_kthread_cpu0_run.9 -2.1 在startup_64里面调用initial_code*/
 	movq	initial_code(%rip), %rax
 	pushq	$__KERNEL_CS	# set correct cs
 	pushq	%rax		# target address in negative space

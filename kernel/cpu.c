@@ -570,7 +570,7 @@ static int bringup_cpu(unsigned int cpu)
 	irq_lock_sparse();
 
 	/* Arch-specific enabling code. */
-	/*xiaojin-percpu_kthread_cpu0_run.7 __cpu_up() bringup_wait_for_ap() startup.single-3 看看哪里使用__cpu_up*/
+	/*xiaojin-percpu_kthread_cpu0_run.7 bringup_cpu->__cpu_up() bringup_wait_for_ap() startup.single-3 看看哪里使用__cpu_up*/
 	ret = __cpu_up(cpu, idle);
 	irq_unlock_sparse();
 	if (ret)
