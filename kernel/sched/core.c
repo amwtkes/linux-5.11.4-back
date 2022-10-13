@@ -2111,6 +2111,8 @@ __do_set_cpus_allowed(struct task_struct *p, const struct cpumask *new_mask, u32
 /*xiaojin-percpu_kthread -7.2 ！！！set_cpus_allowed 主要看创建线程的时候这个class设置的是啥sched_class
 可以看到后面的代码就是把p放入相应cpu的runqueue中即可，现在的问题是，cpu是怎么启动起来，core是怎么启动起来来执行这条
 属于自己的runqueue中的相应代码的呢？也就是每个core必须有代码去让它启动起来，识别这条队列并运行里面的task。
+
+https://app.yinxiang.com/shard/s65/nl/15273355/20f9f5ee-3555-435d-993b-bad24d309729/
 */
 	p->sched_class->set_cpus_allowed(p, new_mask, flags);
 
