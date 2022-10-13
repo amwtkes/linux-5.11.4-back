@@ -860,11 +860,16 @@ wakeup_secondary_cpu_via_init(int phys_apicid, unsigned long start_eip)
 		/* Target chip */
 		/* Boot on the stack */
 		/* Kick the second */
+		/*xiaojin-percpu_kthread_cpu0_run.10.3 运行start_secondary函数的IPI指令。此时还是cpu0-BSP在执行。
+		在start_eip的开头执行
+		 实模式开始运行
+		*/
 		apic_icr_write(APIC_DM_STARTUP | (start_eip >> 12),
 			       phys_apicid);
 
 		/*
 		 * Give the other CPU some time to accept the IPI.
+		 等待AP执行。
 		 */
 		if (init_udelay == 0)
 			udelay(10);
@@ -973,6 +978,7 @@ wakeup_cpu_via_init_nmi(int cpu, unsigned long start_ip, int apicid,
 	 * Wake up AP by INIT, INIT, STARTUP sequence.
 	 */
 	if (cpu) {
+		/*xiaojin-percpu_kthread_cpu0_run.10.1 wakeup_secondary_cpu_via_init*/
 		boot_error = wakeup_secondary_cpu_via_init(apicid, start_ip);
 		goto out;
 	}
