@@ -1529,7 +1529,6 @@ static noinline void __init kernel_init_freeable(void)
 	cad_pid = task_pid(current);
 
 	smp_prepare_cpus(setup_max_cpus);
-	/*xiaojin-percpu_workqueue_cpu0 -0 初始化workqueue? start_kernel->arch_call_rest_init->rest_init->kernel_init->kernel_init_freeable->workqueue_init*/
 	workqueue_init();
 
 	init_mm_internals();
