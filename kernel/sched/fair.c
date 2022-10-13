@@ -11237,7 +11237,7 @@ static unsigned int get_rr_interval_fair(struct rq *rq, struct task_struct *task
 /*
  * All the scheduling class methods:
  */
-/*xiaojin-percpu -7.7.2 fair_sched_class的定义*/
+/*xiaojin-percpu_kthread -7.2 fair_sched_class的定义*/
 DEFINE_SCHED_CLASS(fair) = {
 
 	.enqueue_task		= enqueue_task_fair,

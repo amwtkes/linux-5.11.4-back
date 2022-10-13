@@ -2058,7 +2058,7 @@ out_unlock:
  * sched_class::set_cpus_allowed must do the below, but is not required to
  * actually call this function.
  */
-/*xiaojin-percpu -7.7.2.1 set_cpus_allowed_common flag=0,cpumask是cpu编号的long位图*/
+/*xiaojin-percpu_kthread -7.2.1 set_cpus_allowed_common flag=0,cpumask是cpu编号的long位图*/
 void set_cpus_allowed_common(struct task_struct *p, const struct cpumask *new_mask, u32 flags)
 {
 	if (flags & (SCA_MIGRATE_ENABLE | SCA_MIGRATE_DISABLE)) {
@@ -2108,7 +2108,7 @@ __do_set_cpus_allowed(struct task_struct *p, const struct cpumask *new_mask, u32
 	if (running)
 		put_prev_task(rq, p);
 
-/*xiaojin-percpu -7.7.2 ！！！set_cpus_allowed 主要看创建线程的时候这个class设置的是啥sched_class*/
+/*xiaojin-percpu_kthread -7.2 ！！！set_cpus_allowed 主要看创建线程的时候这个class设置的是啥sched_class*/
 	p->sched_class->set_cpus_allowed(p, new_mask, flags);
 
 	if (queued)
@@ -2116,10 +2116,10 @@ __do_set_cpus_allowed(struct task_struct *p, const struct cpumask *new_mask, u32
 	if (running)
 		set_next_task(rq, p);
 }
-/*xiaojin-percpu -7.7.1 do_set_cpus_allowed*/
+/*xiaojin-percpu_kthread -7.1 do_set_cpus_allowed*/
 void do_set_cpus_allowed(struct task_struct *p, const struct cpumask *new_mask)
 {
-	/*xiaojin-percpu -7.7.2 __do_set_cpus_allowed*/
+	/*xiaojin-percpu_kthread -7.2 __do_set_cpus_allowed*/
 	__do_set_cpus_allowed(p, new_mask, 0);
 }
 
@@ -3759,7 +3759,7 @@ int sched_fork(unsigned long clone_flags, struct task_struct *p)
 	if (dl_prio(p->prio))
 		return -EAGAIN;
 
-	/*xiaojin-percpu -7.7.2 这里设置的 sched_fork() 设置成fair_sched_class*/
+	/*xiaojin-percpu_kthread -7.2 这里设置的 sched_fork() 设置成fair_sched_class*/
 	else if (rt_prio(p->prio))
 		p->sched_class = &rt_sched_class;
 	else

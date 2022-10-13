@@ -345,7 +345,7 @@ struct task_struct *__kthread_create_on_node(int (*threadfn)(void *data),
 	create->done = &done;
 
 	spin_lock(&kthread_create_lock);
-	/*xiaojin-percpu -7.7.4.1 发到kthread_create_list这个队列上，由kthreadd_task后台线程来异步创建。*/
+	/*xiaojin-percpu_kthread -7.4.1 发到kthread_create_list这个队列上，由kthreadd_task后台线程来异步创建。*/
 	list_add_tail(&create->list, &kthread_create_list);
 	spin_unlock(&kthread_create_lock);
 
@@ -443,7 +443,7 @@ static void __kthread_bind_mask(struct task_struct *p, const struct cpumask *mas
 
 	/* It's safe because the task is inactive. */
 	raw_spin_lock_irqsave(&p->pi_lock, flags);
-	/*xiaojin-percpu -7.7 !!!真正设置percpu kthread 绑定的地方。*/
+	/*xiaojin-percpu_kthread -7 !!!真正设置percpu kthread 绑定的地方。*/
 	do_set_cpus_allowed(p, mask);
 	p->flags |= PF_NO_SETAFFINITY;
 	raw_spin_unlock_irqrestore(&p->pi_lock, flags);
@@ -451,7 +451,7 @@ static void __kthread_bind_mask(struct task_struct *p, const struct cpumask *mas
 
 static void __kthread_bind(struct task_struct *p, unsigned int cpu, long state)
 {
-	/*xiaojin-percpu -7.6 __kthread_bind*/
+	/*xiaojin-percpu_kthread -6 __kthread_bind*/
 	__kthread_bind_mask(p, cpumask_of(cpu), state);
 }
 
@@ -469,7 +469,7 @@ void kthread_bind_mask(struct task_struct *p, const struct cpumask *mask)
  * except that @cpu doesn't need to be online, and the thread must be
  * stopped (i.e., just returned from kthread_create()).
  */
-/*xiaojin-percpu -7.5 kthread_bind*/
+/*xiaojin-percpu_kthread -5 kthread_bind*/
 void kthread_bind(struct task_struct *p, unsigned int cpu)
 {
 	__kthread_bind(p, cpu, TASK_UNINTERRUPTIBLE);
@@ -487,7 +487,7 @@ EXPORT_SYMBOL(kthread_bind);
  * Description: This helper function creates and names a kernel thread
  */
 
-/*xiaojin-percpu -7.3 kthread_create_on_cpu() 这是创建cpu绑定的kthread的方法！*/
+/*xiaojin-percpu_kthread -3 kthread_create_on_cpu() 这是创建cpu绑定的kthread的方法！*/
 struct task_struct *kthread_create_on_cpu(int (*threadfn)(void *data),
 					  void *data, unsigned int cpu,
 					  const char *namefmt)
@@ -495,12 +495,12 @@ struct task_struct *kthread_create_on_cpu(int (*threadfn)(void *data),
 	struct task_struct *p;
 
 //在本地node分配线程的内存与栈
-	/*xiaojin-percpu -7.7.4 创建内核线程的地方。*/
+	/*xiaojin-percpu_kthread -7.4 创建内核线程的地方。*/
 	p = kthread_create_on_node(threadfn, data, cpu_to_node(cpu), namefmt,
 				   cpu);
 	if (IS_ERR(p))
 		return p;
-	/*xiaojin-percpu -7.4 绑定的具体函数。*/
+	/*xiaojin-percpu_kthread -4 绑定的具体函数。*/
 	kthread_bind(p, cpu);
 	/* CPU hotplug need to bind once again when unparking the thread. */
 	to_kthread(p)->cpu = cpu;
@@ -650,7 +650,7 @@ int kthreadd(void *unused)
 	current->flags |= PF_NOFREEZE;
 	cgroup_init_kthreadd();
 
-	/*xiaojin-percpu -7.7.4.2 kthreadd()--->kthread_create_list读取create list创建内核线程*/
+	/*xiaojin-percpu_kthread -7.4.2 kthreadd()--->kthread_create_list读取create list创建内核线程*/
 	for (;;) {
 		set_current_state(TASK_INTERRUPTIBLE);
 		if (list_empty(&kthread_create_list))
