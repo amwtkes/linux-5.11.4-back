@@ -2981,14 +2981,15 @@ static struct smp_hotplug_thread rcu_cpu_thread_spec = {
 /*xiaojin-rcu 2 rcu_spawn_core_kthreads 在这里初始化 rcu_cpu_kthread内核线程。 rcu_cpu_kthread_task 初始化 
 不用软中断的时候用每个CPU会有个内核线程实时的监控RCU的状态变化。
 */
-/*xiaojin-percpu_kthread -0 rcu smpboot_register_percpu_thread 调用点。*/
+/*xiaojin-percpu_kthread -0 rcu smpboot_register_percpu_thread 调用点。
+main.c->do_basic_setup->do_initcalls->initcall_levels数组就是.init节中的init函数->do_initcall_level调起每个init函数*/
 static int __init rcu_spawn_core_kthreads(void)
 {
 	int cpu;
 
 	for_each_possible_cpu(cpu)
 		per_cpu(rcu_data.rcu_cpu_has_work, cpu) = 0;
-	if (!IS_ENABLED(CONFIG_RCU_BOOST) && use_softirq)
+	if (!IS_ENABLED(CONFIG_RCU_BOOST) && use_softirq) //对rcu callback的处理也可以通过软中断处理，如果多CPU也可以使用下面的percpu_kthread处理。
 		return 0;
 	WARN_ONCE(smpboot_register_percpu_thread(&rcu_cpu_thread_spec),
 		  "%s: Could not start rcuc kthread, OOM is now expected behavior\n", __func__);

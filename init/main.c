@@ -1064,7 +1064,9 @@ asmlinkage __visible void __init __no_sanitize_address start_kernel(void)
 	kcsan_init();
 
 	/* Do the rest non-__init'ed, we're now alive */
-	/*xiaojin-percpu_kthread_cpu0_run.0 开始做多核MP percpu的初始化了。包括percpu的kthread也是在这个里面创建的*/
+	/*xiaojin-percpu_kthread_cpu0_run.0 开始做多核MP的初始化了。包括percpu的kthread也是在这个里面创建的
+	在此之前percpu变量已经由cpu0准备好了。
+	*/
 	arch_call_rest_init();
 
 	prevent_tail_call_optimization();
