@@ -1305,6 +1305,8 @@ static void __init do_initcall_level(int level, char *command_line)
 		do_one_initcall(initcall_from_entry(fn));
 }
 
+/*xiaojin do_initcalls 注册为early init的函数在这里被调起。
+如：static int __init rcu_spawn_core_kthreads(void)*/
 static void __init do_initcalls(void)
 {
 	int level;
@@ -1331,6 +1333,8 @@ static void __init do_initcalls(void)
  *
  * Now we can finally start doing some real work..
  */
+/*xiaojin do_basic_setup 这里启动percpu_kthread 以及标记early的程序。
+*/
 static void __init do_basic_setup(void)
 {
 	cpuset_init_smp();
@@ -1338,7 +1342,7 @@ static void __init do_basic_setup(void)
 	init_irq_proc();
 	do_ctors();
 	usermodehelper_enable();
-	do_initcalls();
+	do_initcalls(); //这里
 }
 
 static void __init do_pre_smp_initcalls(void)
@@ -1505,6 +1509,8 @@ void __init console_on_rootfs(void)
 	fput(file);
 }
 
+/*xiaojin kernel_init_freeable 在pid=1号线程，也就是pid = kernel_thread(kernel_init, NULL, CLONE_FS); 调起，属于kernel_start中比较晚的启动了。smp_init在这里
+*/
 static noinline void __init kernel_init_freeable(void)
 {
 	/*
