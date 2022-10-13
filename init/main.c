@@ -1430,7 +1430,7 @@ void __weak free_initmem(void)
 static int __ref kernel_init(void *unused)
 {
 	int ret;
-
+	/*xiaojin start_kernel->arch_call_rest_init->rest_init->kernel_init->kernel_init_freeable*/
 	kernel_init_freeable();
 	/* need to finish all async __init code before freeing the memory */
 	async_synchronize_full();
@@ -1546,7 +1546,7 @@ static noinline void __init kernel_init_freeable(void)
 	page_alloc_init_late();
 	/* Initialize page ext after all struct pages are initialized. */
 	page_ext_init();
-
+	/*xiaojin start_kernel->arch_call_rest_init->rest_init->kernel_init->kernel_init_freeable->do_basic_setup*/
 	do_basic_setup();
 
 	kunit_run_all_tests();
