@@ -168,6 +168,10 @@ static int cpuhp_invoke_callback(unsigned int cpu, enum cpuhp_state state,
 		WARN_ON_ONCE(lastp && *lastp);
 		/*xiaojin-percpu_kthread_cpu0_run.5.1 step->startup.single这里是关键。主要看看startup.single是怎么赋值的，赋值的函数是不是用来初始化gs的。
 		每个CPU的gs一旦初始化就不会变了。
+
+		step是一个步骤，记录cpu的状态与启动过程，中间有个钩子函数startup.single 
+		对于[CPUHP_BRINGUP_CPU]阶段初始化为 .startup.single		= bringup_cpu,
+		这里执行的实际上是bringup_cpu函数。
 		*/
 		cb = bringup ? step->startup.single : step->teardown.single;
 		if (!cb)
@@ -1259,6 +1263,7 @@ out:
 	return ret;
 }
 
+/*xiaojin-percpu_kthread_cpu0_run.3.1 cpu_up*/
 static int cpu_up(unsigned int cpu, enum cpuhp_state target)
 {
 	int err = 0;
@@ -1286,7 +1291,7 @@ static int cpu_up(unsigned int cpu, enum cpuhp_state target)
 		err = -EPERM;
 		goto out;
 	}
-
+	//这里
 	err = _cpu_up(cpu, 0, target);
 out:
 	cpu_maps_update_done();
@@ -1581,7 +1586,7 @@ static struct cpuhp_step cpuhp_hp_states[] = {
 	/* Kicks the plugged cpu into life */
 	[CPUHP_BRINGUP_CPU] = {
 		.name			= "cpu:bringup",
-		/*xiaojin-percpu_kthread_cpu0_run.9 startup.single-4 对齐了。原来这里使用bringup_cpu，跟*/
+		/*xiaojin-percpu_kthread_cpu0_run.10 startup.single-4 对齐了。原来这里使用bringup_cpu，跟*/
 		.startup.single		= bringup_cpu,
 		.teardown.single	= finish_cpu,
 		.cant_stop		= true,
