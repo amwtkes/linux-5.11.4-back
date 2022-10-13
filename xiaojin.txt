@@ -47,4 +47,4 @@ xiaojin-percpu --- 每cpu变量
 
 ------------kthread 这块
 xiaojin-kthread -内核线程这块
-xiaojin-percpu -7.7.2 -- percpu内核线程亲和力的设置
+xiaojin-percpu_kthread -- percpu内核线程亲和力的设置
