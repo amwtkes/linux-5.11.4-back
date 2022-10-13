@@ -1538,7 +1538,7 @@ static noinline void __init kernel_init_freeable(void)
 	do_pre_smp_initcalls();
 	lockup_detector_init();
 
-	/*xiaojin-percpu_kthread_cpu0_run.11.2 这是是初始化SMP的地方。BSP到AP的过程。比percpu kthread要早。*/
+	/*xiaojin-percpu_kthread_cpu0_run.入口1 这是是初始化SMP的地方。BSP到AP的过程。比percpu kthread要早。*/
 	/*xiaojin-percpu_kthread_cpu0_run.2 smp_init*/
 	smp_init();
 	sched_init_smp();
@@ -1547,7 +1547,7 @@ static noinline void __init kernel_init_freeable(void)
 	page_alloc_init_late();
 	/* Initialize page ext after all struct pages are initialized. */
 	page_ext_init();
-	/*xiaojin-percpu_kthread_cpu0_run.11.1 init percpu kthread的地方 start_kernel->arch_call_rest_init->rest_init->kernel_init->kernel_init_freeable->do_basic_setup*/
+	/*xiaojin-percpu_kthread_cpu0_run.入口2 init percpu kthread的地方 start_kernel->arch_call_rest_init->rest_init->kernel_init->kernel_init_freeable->do_basic_setup*/
 	do_basic_setup();
 
 	kunit_run_all_tests();
