@@ -219,7 +219,12 @@ static int enable_start_cpu0;
  * Activate a secondary processor.
  */
 
-/*xiaojin-percpu_kthread_cpu0_run.10.+3  start_secondary 此时分页和保护模式都已经开启，且完全进入BP事先为我们fork好的idel线程的上下文。本函数主要是通知BP本AP启动完成，然后cpu_idle，参与到任务调度。*/
+/*xiaojin-percpu_kthread_cpu0_run.10.+3  start_secondary 此时已经在AP中运行。 此时分页和保护模式都已经开启，且完全进入BP事先为我们fork好的idel线程的上下文。本函数主要是通知BP本AP启动完成，然后cpu_idle，参与到任务调度。
+1. CPU0-BSP do_boot_cpu注册start_secondary函数。
+		设置start_ip = real_mode_header->trampoline_start;
+2. CPU0-BSP在do_boot_cpu下执行wakeup_cpu_via_init_nmi发送IPI给AP，
+3. AP在设置的start_ip开始执行（xiaojin-percpu_kthread_cpu0_run.10.+2）汇编startup_64.S(xiaojin-percpu_kthread_cpu0_run.9 -2.1)
+*/
 static void notrace start_secondary(void *unused)
 {
 	/*
