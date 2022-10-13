@@ -218,6 +218,8 @@ static int enable_start_cpu0;
 /*
  * Activate a secondary processor.
  */
+
+/*xiaojin-percpu_kthread_cpu0_run.10.+3  start_secondary 此时分页和保护模式都已经开启，且完全进入BP事先为我们fork好的idel线程的上下文。本函数主要是通知BP本AP启动完成，然后cpu_idle，参与到任务调度。*/
 static void notrace start_secondary(void *unused)
 {
 	/*
