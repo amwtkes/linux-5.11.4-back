@@ -56,6 +56,7 @@ static __always_inline void preempt_count_set(int pc)
  * need to resched (the bit is cleared) and can resched (no preempt count).
  */
 
+/*xiaojin --todo set_preempt_need_resched*/
 static __always_inline void set_preempt_need_resched(void)
 {
 	raw_cpu_and_4(__preempt_count, ~PREEMPT_NEED_RESCHED);

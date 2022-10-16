@@ -120,6 +120,7 @@ static const __initconst struct idt_data def_idts[] = {
 /*xiaojin-gates tables -1 intgs*/
 static const __initconst struct idt_data apic_idts[] = {
 #ifdef CONFIG_SMP
+/*xiaojin RESCHEDULE_VECTOR asm_sysvec_reschedule_ipi*/
 	INTG(RESCHEDULE_VECTOR,			asm_sysvec_reschedule_ipi),
 	INTG(CALL_FUNCTION_VECTOR,		asm_sysvec_call_function),
 	INTG(CALL_FUNCTION_SINGLE_VECTOR,	asm_sysvec_call_function_single),

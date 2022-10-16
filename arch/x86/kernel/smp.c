@@ -222,6 +222,11 @@ static void native_stop_other_cpus(int wait)
  * Reschedule call back. KVM uses this interrupt to force a cpu out of
  * guest mode.
  */
+
+/*xiaojin RESCHEDULE_VECTOR sysvec_reschedule_ipi 定义
+
+当CPU收到这个中断以后会开启cpu的need_resched percpu变量属性。从而从idle中退出进入进程的调度过程。
+*/
 DEFINE_IDTENTRY_SYSVEC_SIMPLE(sysvec_reschedule_ipi)
 {
 	ack_APIC_irq();

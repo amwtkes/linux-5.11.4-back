@@ -284,6 +284,10 @@ static void notrace start_secondary(void *unused)
 	x86_cpuinit.setup_percpu_clockev();
 
 	wmb();
+
+	/*xiaojin-percpu_kthread_cpu0_run.11 最后参与调度。进入idle的进程，然后循环等待need_resched被设置从而退出idle，调用schedule 进入调度。
+	https://app.yinxiang.com/shard/s65/nl/15273355/eba9e89a-cb95-4103-9141-ab1aa783b5e1/
+	*/
 	cpu_startup_entry(CPUHP_AP_ONLINE_IDLE);
 }
 
