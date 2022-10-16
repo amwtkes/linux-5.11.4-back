@@ -1875,6 +1875,9 @@ static inline void setup_getcpu(int cpu)
 static inline void ucode_cpu_init(int cpu)
 {
 	if (cpu)
+	/*xiaojin-microcode load_ucode_ap 跟修正cpu bug有关？
+	https://app.yinxiang.com/shard/s65/nl/15273355/4b9b512c-311c-4057-87cd-836745f920cd/
+	*/
 		load_ucode_ap();
 }
 
