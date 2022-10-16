@@ -224,6 +224,8 @@ static int enable_start_cpu0;
 		设置start_ip = real_mode_header->trampoline_start;
 2. CPU0-BSP在do_boot_cpu下执行wakeup_cpu_via_init_nmi发送IPI给AP，
 3. AP在设置的start_ip开始执行（xiaojin-percpu_kthread_cpu0_run.10.+2）汇编startup_64.S(xiaojin-percpu_kthread_cpu0_run.9 -2.1)
+
+percpu执行的代码。每个AP都要执行这个。完成AP的初始化。最后进入idle状态。
 */
 static void notrace start_secondary(void *unused)
 {
@@ -245,6 +247,11 @@ static void notrace start_secondary(void *unused)
 	rcu_cpu_starting(raw_smp_processor_id());
 	x86_cpuinit.early_percpu_clock_init();
 	preempt_disable();
+
+	/*
+	AP唤醒后会进入start_secondary()-->smp_callin() 设置对应的cpu_callin_mask
+ 	BSP只要检测到cpu_callin_mask被设置了，代表AP激活成功
+	*/
 	smp_callin();
 
 	enable_start_cpu0 = 0;

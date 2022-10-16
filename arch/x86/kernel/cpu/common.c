@@ -1958,7 +1958,7 @@ void cpu_init(void)
 
 	wait_for_master_cpu(cpu);
 
-	ucode_cpu_init(cpu);
+	ucode_cpu_init(cpu); //可以看手册8.7.11
 
 #ifdef CONFIG_NUMA
 	if (this_cpu_read(numa_node) == 0 &&
@@ -1984,7 +1984,7 @@ void cpu_init(void)
 	if (IS_ENABLED(CONFIG_X86_64)) {
 		loadsegment(fs, 0);
 		memset(cur->thread.tls_array, 0, GDT_ENTRY_TLS_ENTRIES * 8);
-		syscall_init();
+		syscall_init(); //每个cpu都要单独初始化
 
 		wrmsrl(MSR_FS_BASE, 0);
 		wrmsrl(MSR_KERNEL_GS_BASE, 0);
