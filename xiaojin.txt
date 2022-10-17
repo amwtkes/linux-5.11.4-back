@@ -48,6 +48,6 @@ xiaojin-percpu --- 每cpu变量
 ------------kthread 这块
 xiaojin-kthread -内核线程创建这块
 xiaojin-percpu_kthread_cpu0_run ---内核如何启动多核的
-    xiaojin-percpu_kthread_cpu0_run.*secondary
+    xiaojin-percpu_kthread_cpu0_run.*secondary（最后通过使得AP进入idle schedule来进入任务调度。schedule()是关键）
     xiaojin RESCHEDULE_VECTOR 这里做idle的唤醒IPI。
 xiaojin-percpu_kthread -- percpu内核线程亲和力的设置
