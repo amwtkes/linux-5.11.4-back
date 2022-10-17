@@ -700,6 +700,8 @@ noinline void __ref rest_init(void)
 	/*xiaojin-percpu_kthread -7.3 kthreadd 创建内核线程的线程初始化的地方。
 	维护了一个列表，这个线程会轮询这个链表，然后根据需求创建kthread。
 	*/
+
+	/*xiaojin-kthread -2 kernel_thread的创建。这个线程监听一个队列，用于创建kthread。是第二个启动的内核线程。第一个是kernel_init*/
 	pid = kernel_thread(kthreadd, NULL, CLONE_FS | CLONE_FILES);
 	rcu_read_lock();
 	kthreadd_task = find_task_by_pid_ns(pid, &init_pid_ns);

@@ -637,6 +637,7 @@ int kthread_stop(struct task_struct *k)
 }
 EXPORT_SYMBOL(kthread_stop);
 
+/*xiaojin-kthread -3 kthreadd函数*/
 int kthreadd(void *unused)
 {
 	struct task_struct *tsk = current;
@@ -666,6 +667,7 @@ int kthreadd(void *unused)
 			list_del_init(&create->list);
 			spin_unlock(&kthread_create_lock);
 
+			/*xiaojin-kthread -3.1 create_kthread(create)这里创建内核线程*/
 			create_kthread(create);
 
 			spin_lock(&kthread_create_lock);
