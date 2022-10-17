@@ -884,7 +884,7 @@ thread_info可以放在内核栈的栈顶部位，
 	 */
 
 	/* Real parent process: */
-	struct task_struct __rcu	*real_parent;
+	struct task_struct __rcu	*real_parent; //GDB调试线程的时候，gdb是parent，bash是real_parent.
 
 	/* Recipient of SIGCHLD, wait4() reports: */
 	struct task_struct __rcu	*parent;
@@ -893,7 +893,7 @@ thread_info可以放在内核栈的栈顶部位，
 	 * Children/sibling form the list of natural children:
 	 */
 	struct list_head		children;
-	struct list_head		sibling;
+	struct list_head		sibling;//兄弟进程
 	struct task_struct		*group_leader;
 
 	/*
@@ -919,8 +919,8 @@ thread_info可以放在内核栈的栈顶部位，
 	/* CLONE_CHILD_CLEARTID: */
 	int __user			*clear_child_tid;
 
-	u64				utime;
-	u64				stime;
+	u64				utime;//用户态消耗的CPU时间
+	u64				stime;//内核态消耗的CPU时间
 #ifdef CONFIG_ARCH_HAS_SCALED_CPUTIME
 	u64				utimescaled;
 	u64				stimescaled;
@@ -935,14 +935,14 @@ thread_info可以放在内核栈的栈顶部位，
 	atomic_t			tick_dep_mask;
 #endif
 	/* Context switch counts: */
-	unsigned long			nvcsw;
-	unsigned long			nivcsw;
+	unsigned long			nvcsw;//自愿(voluntary)上下文切换计数
+	unsigned long			nivcsw;//非自愿(involuntary)上下文切换计数
 
 	/* Monotonic time in nsecs: */
-	u64				start_time;
+	u64				start_time;//进程启动时间，不包含睡眠时间
 
 	/* Boot based time in nsecs: */
-	u64				start_boottime;
+	u64				start_boottime;//进程启动时间，包含睡眠时间
 
 	/* MM fault and swap info: this can arguably be seen as either mm-specific or thread-specific: */
 	unsigned long			min_flt;
@@ -961,10 +961,10 @@ thread_info可以放在内核栈的栈顶部位，
 	const struct cred __rcu		*ptracer_cred;
 
 	/* Objective and real subjective task credentials (COW): */
-	const struct cred __rcu		*real_cred;
+	const struct cred __rcu		*real_cred;//谁能操作我。我是Objective。RCU说明这个变量可以用RCU方式操作。
 
 	/* Effective (overridable) subjective task credentials (COW): */
-	const struct cred __rcu		*cred;
+	const struct cred __rcu		*cred;//我能操作谁？我是Subjective
 
 #ifdef CONFIG_KEYS
 	/* Cached requested key. */

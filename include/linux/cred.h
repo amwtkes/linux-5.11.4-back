@@ -117,19 +117,32 @@ struct cred {
 #define CRED_MAGIC	0x43736564
 #define CRED_MAGIC_DEAD	0x44656144
 #endif
-	kuid_t		uid;		/* real UID of the task */
-	kgid_t		gid;		/* real GID of the task */
+/*一般说来，fsuid、euid，和 uid 是一样的，fsgid、egid，和 gid 也是一样的。因为谁启动的进程，就应该审核启动的用户到底有没有这个权限。
+https://time.geekbang.org/column/article/92151
+*/
+	kuid_t		uid;		/* real UID of the task 一般情况下，谁启动的进程，就是谁的 ID*/
+	kgid_t		gid;		/* real GID of the task 一般情况下，谁启动的进程，就是谁的 ID*/
 	kuid_t		suid;		/* saved UID of the task */
 	kgid_t		sgid;		/* saved GID of the task */
-	kuid_t		euid;		/* effective UID of the task */
-	kgid_t		egid;		/* effective GID of the task */
-	kuid_t		fsuid;		/* UID for VFS ops */
-	kgid_t		fsgid;		/* GID for VFS ops */
+	kuid_t		euid;		/* effective UID of the task 一看这个名字，就知道这个是起“作用”的。当这个进程要操作消息队列、共享内存、信号量等对象的时候，其实就是在比较这个用户和组是否有权限。*/
+	kgid_t		egid;		/* effective GID of the task 一看这个名字，就知道这个是起“作用”的。当这个进程要操作消息队列、共享内存、信号量等对象的时候，其实就是在比较这个用户和组是否有权限。*/
+	kuid_t		fsuid;		/* UID for VFS ops 这个是对文件操作会审核的权限。*/
+	kgid_t		fsgid;		/* GID for VFS ops 这个是对文件操作会审核的权限。*/
 	unsigned	securebits;	/* SUID-less security management */
+
+	/*cap_inheritable 表示当可执行文件的扩展属性设置了 inheritable 位时，调用 exec 执行该程序会继承调用者的 inheritable 集合，并将其加入到 permitted 集合。但在非 root 用户下执行 exec 时，通常不会保留 inheritable 集合，但是往往又是非 root 用户，才想保留权限，所以非常鸡肋。*/
 	kernel_cap_t	cap_inheritable; /* caps our children can inherit */
+
+	/*
+	cap_permitted 表示进程能够使用的权限。但是真正起作用的是 cap_effective。cap_permitted 中可以包含 cap_effective 中没有的权限。一个进程可以在必要的时候，放弃自己的某些权限，这样更加安全。假设自己因为代码漏洞被攻破了，但是如果啥也干不了，就没办法进一步突破。
+	*/
 	kernel_cap_t	cap_permitted;	/* caps we're permitted */
 	kernel_cap_t	cap_effective;	/* caps we can actually use */
+
+	/*cap_bset，也就是 capability bounding set，是系统中所有进程允许保留的权限。如果这个集合中不存在某个权限，那么系统中的所有进程都没有这个权限。即使以超级用户权限执行的进程，也是一样的。这样有很多好处。例如，系统启动以后，将加载内核模块的权限去掉，那所有进程都不能加载内核模块。这样，即便这台机器被攻破，也做不了太多有害的事情。*/
 	kernel_cap_t	cap_bset;	/* capability bounding set */
+
+	/*cap_ambient 是比较新加入内核的，就是为了解决 cap_inheritable 鸡肋的状况，也就是，非 root 用户进程使用 exec 执行一个程序的时候，如何保留权限的问题。当执行 exec 的时候，cap_ambient 会被添加到 cap_permitted 中，同时设置到 cap_effective 中。*/
 	kernel_cap_t	cap_ambient;	/* Ambient capability set */
 #ifdef CONFIG_KEYS
 	unsigned char	jit_keyring;	/* default keyring to attach requested
