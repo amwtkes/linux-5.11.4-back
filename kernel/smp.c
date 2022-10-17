@@ -806,6 +806,7 @@ void __init smp_init(void)
 {
 	int num_nodes, num_cpus;
 
+	/*xiaojin-percpu_kthread_cpu0_run.11.1 idle_threads_init 初始化Ap的idle线程,从0号线程copy。*/
 	idle_threads_init();
 	cpuhp_threads_init();
 
