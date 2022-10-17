@@ -660,8 +660,8 @@ thread_info可以放在内核栈的栈顶部位，
 	 */
 	struct thread_info		thread_info;
 #endif
-	/* xioajin C C++的volatile是禁止编译器GCC对其进行优化*/
-
+	/* xioajin C C++的volatile是禁止编译器GCC对其进行优化.x86-64系统下，同一个cacheline下的指针/变量赋值/读取操作是原子的。	因为有MESI缓存行一致性协议在这里。
+	*/
 	/* -1 unrunnable, 0 runnable, >0 stopped: */
 	volatile long			state;
 

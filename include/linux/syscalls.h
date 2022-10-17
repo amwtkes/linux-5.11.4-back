@@ -112,15 +112,14 @@ struct open_how;
 #define __MAP6(m,t,a,...) m(t,a), __MAP5(m,__VA_ARGS__)
 
 /*xiaojin-syscall-3.4.1.1 __MAP 参数展开
-__MAP(x,__SC_ARGS						\
-		,,regs->di,,regs->si,,regs->dx				\
-		,,regs->r10,,regs->r8,,regs->r9)	
-
-#define __SC_ARGS(t, a)	a 
-m(t,a) a ==> regs->di
-然后递归到最后解开以后：
-regs->di,regs->si,regis->dx,regs->r10,regs->r8,regs->r9
-形成6个参数，从regs中取值
+__MAP(x,__SC_LONG,__VA_ARGS__)—— m其实是宏__SC_LONG
+比如：
+SYSCALL_DEFINE3(arc_usr_cmpxchg, int *, uaddr, int, expected, int, new)
+->__MAP(3,__SC_LONG,int *, uaddr, int, expected, int, new)
+->__MAP3(__SC_LONG,int *, uaddr, int, expected, int, new)
+->__SC_LONG(int *, uaddr), __MAP2(__SC_LONG,int, expected, int, new)
+-->__SC_LONG(int *, uaddr),__SC_LONG(int, expected),__SC_LONG(int, new)
+->int * uadd,int expected,int new 最终就是这个了。
 */
 #define __MAP(n,...) __MAP##n(__VA_ARGS__)
 
@@ -129,7 +128,7 @@ regs->di,regs->si,regis->dx,regs->r10,regs->r8,regs->r9
 #define __TYPE_IS_L(t)	(__TYPE_AS(t, 0L))
 #define __TYPE_IS_UL(t)	(__TYPE_AS(t, 0UL))
 #define __TYPE_IS_LL(t) (__TYPE_AS(t, 0LL) || __TYPE_AS(t, 0ULL))
-#define __SC_LONG(t, a) __typeof(__builtin_choose_expr(__TYPE_IS_LL(t), 0LL, 0L)) a
+#define __SC_LONG(t, a) __typeof(__builtin_choose_expr(__TYPE_IS_LL(t), 0LL, 0L)) a//-->t a
 #define __SC_CAST(t, a)	(__force t) a
 #define __SC_ARGS(t, a)	a
 #define __SC_TEST(t, a) (void)BUILD_BUG_ON_ZERO(!__TYPE_IS_LL(t) && sizeof(t) > sizeof(long))
@@ -221,7 +220,7 @@ static inline int is_syscall_trace_event(struct trace_event_call *tp_event)
 	ALLOW_ERROR_INJECTION(sys_##sname, ERRNO);		\
 	asmlinkage long sys_##sname(void)
 #endif /* SYSCALL_DEFINE0 */
-/*xiaojin-syscall-3.1 SYSCALL_DEFINE1*/
+/*xiaojin-syscall-3.1 SYSCALL_DEFINE1 __VA_ARGS__表示前面的...参数数组。1-6表示几个参数，最多6个参数，x86-64用于系统调用的寄存器只有6个。系统调用只能从汇编调起，因为汇编基于寄存器来进行函数调用，而c语言基于栈，所以为了方便程序员写代码，glibc对系统调用进行了封装，平台相关的asm都在glic中。用户只要写C就行了。*/
 #define SYSCALL_DEFINE1(name, ...) SYSCALL_DEFINEx(1, _##name, __VA_ARGS__)
 #define SYSCALL_DEFINE2(name, ...) SYSCALL_DEFINEx(2, _##name, __VA_ARGS__)
 #define SYSCALL_DEFINE3(name, ...) SYSCALL_DEFINEx(3, _##name, __VA_ARGS__)

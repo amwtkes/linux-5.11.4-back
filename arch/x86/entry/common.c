@@ -50,7 +50,10 @@ __visible noinstr void do_syscall_64(unsigned long nr, struct pt_regs *regs)
          * 函数返回值保存在 regs->ax 里，最后将这个值，保存到 rax 寄存器传递到用户空间。 */
 
 
-		/*sys_call_table 是编译时进行设置的，通过syscalltbl.sh脚本与syscall_64.tbl文件生成的，奇葩。*/
+		/*sys_call_table 是编译时进行设置的，通过syscalltbl.sh脚本与syscall_64.tbl文件生成.
+		sys_call_table[nr]表示nr是系统调用的nr号，sys_call_table是个数组保存了第nr个系统调用的函数地址。
+		regs，表示所有的系统调用其实参数都是一样的都是struct pt_regs *regs。怎么做到的呢？看看后面的宏展开。
+		*/
 		regs->ax = sys_call_table[nr](regs);
 #ifdef CONFIG_X86_X32_ABI
 	} else if (likely((nr & __X32_SYSCALL_BIT) &&

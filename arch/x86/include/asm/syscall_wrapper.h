@@ -54,7 +54,9 @@ extern long __ia32_sys_ni_syscall(const struct pt_regs *regs);
  */
 
 /* Mapping of registers to parameters for syscalls on x86-64 and x32 */
-/*xiaojin-syscall-3.4.1 SC_X86_64_REGS_TO_ARGS  从pt_reg将参数解出*/
+/*xiaojin-syscall-3.4.1 SC_X86_64_REGS_TO_ARGS  从pt_reg将参数解出.第一个参数是di寄存器，第二个是si，第三个dx，第四个r10，第5个r8，第6个r9
+
+*/
 #define SC_X86_64_REGS_TO_ARGS(x, ...)					\
 	__MAP(x,__SC_ARGS						\
 		,,regs->di,,regs->si,,regs->dx				\
@@ -73,7 +75,7 @@ extern long __ia32_sys_ni_syscall(const struct pt_regs *regs);
 	long __##abi##_##name(const struct pt_regs *regs)		\
 		__alias(__do_##name);
 
-/*xiaojin-syscall-3.5! __SYS_STUBx 最终的步骤
+/*xiaojin-syscall-3.5! __SYS_STUBx 最终的步骤。最终syscall的形态就在这里出来了——long __##abi##_##name(const struct pt_regs *regs);它调用了__se_##name(__VA_ARGS__)。
 
 __SYS_STUBx(x64, sys##name,					\
 		    SC_X86_64_REGS_TO_ARGS(x, __VA_ARGS__))
@@ -101,7 +103,7 @@ __SYS_STUBx(x64, sys##name,					\
 #define __X64_SYS_STUB0(name)						\
 	__SYS_STUB0(x64, sys_##name)
 
-/*xiaojin-syscall-3.4 __X64_SYS_STUBx*/
+/*xiaojin-syscall-3.4 __X64_SYS_STUBx SC_X86_64_REGS_TO_ARGS就是将实际参数regs转成正常业务参数的宏（映射成普通的参数定义在系统调用的定义参数。因为暴露出去的系统调用都是以pt_regs为参数的。）*/
 #define __X64_SYS_STUBx(x, name, ...)					\
 	__SYS_STUBx(x64, sys##name,					\
 		    SC_X86_64_REGS_TO_ARGS(x, __VA_ARGS__))
@@ -234,7 +236,30 @@ __SYS_STUBx(x64, sys##name,					\
 
 #endif /* CONFIG_COMPAT */
 
-/*xiaojin-syscall-3.3 __SYSCALL_DEFINEx*/
+/*xiaojin-syscall-3.3 __SYSCALL_DEFINEx 产生了__do_sys+系统调用name的函数，并将实际代码放入后面。主要：这个函数的参数还有宏没解开——__MAP
+例如：SYSCALL_DEFINE3(arc_usr_cmpxchg, int *, uaddr, int, expected, int, new){...}
+static long __se_sysarc_usr_cmpxchg(int * uadd,int expected,int new);
+static inline long __do_sysarc_usr_cmpxchg(int * uadd,int expected,int new);
+
+	long __x64_sysarc_usr_cmpxchg(const struct pt_regs *regs);		\
+	ALLOW_ERROR_INJECTION(__##abi##_##name, ERRNO);			\
+	long __x64_sysarc_usr_cmpxchg(const struct pt_regs *regs)		\
+	{								\
+		//参数就变成了这个了：regs->di,regs->si,regis->dx,regs->r10,regs->r8,regs->r9
+		//__se开头的这个函数在这个宏后面有声明。
+		return __se_sysarc_usr_cmpxchg(regs->di,regs->si,regs->dx);			\
+	}	
+
+static long __se_sysarc_usr_cmpxchg(int * uadd,int expected,int new)	\
+	{								\
+		long ret = __do_sysarc_usr_cmpxchg(int * uadd,int expected,int new);\
+		__MAP(x,__SC_TEST,__VA_ARGS__);				\
+		__PROTECT(x, ret,__MAP(x,__SC_ARGS,__VA_ARGS__));	\
+		return ret;						\
+	}	
+
+static inline long __do_sysarc_usr_cmpxchg(int * uadd,int expected,int new){...}
+*/
 #define __SYSCALL_DEFINEx(x, name, ...)					\
 	static long __se_sys##name(__MAP(x,__SC_LONG,__VA_ARGS__));	\
 	static inline long __do_sys##name(__MAP(x,__SC_DECL,__VA_ARGS__));\
