@@ -658,6 +658,7 @@ thread_info可以放在内核栈的栈顶部位，
 	 * For reasons of header soup (see current_thread_info()), this
 	 * must be the first element of task_struct.
 	 */
+	/*这段空间的最低位置，是一个 thread_info 结构。这个结构是对 task_struct 结构的补充。因为 task_struct 结构庞大但是通用，不同的体系结构就需要保存不同的东西，所以往往与体系结构有关的，都放在 thread_info 里面。*/
 	struct thread_info		thread_info;
 #endif
 	/* xioajin C C++的volatile是禁止编译器GCC对其进行优化.x86-64系统下，同一个cacheline下的指针/变量赋值/读取操作是原子的。	因为有MESI缓存行一致性协议在这里。
