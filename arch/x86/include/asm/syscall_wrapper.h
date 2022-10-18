@@ -237,22 +237,25 @@ __SYS_STUBx(x64, sys##name,					\
 #endif /* CONFIG_COMPAT */
 
 /*xiaojin-syscall-3.3 __SYSCALL_DEFINEx 产生了__do_sys+系统调用name的函数，并将实际代码放入后面。主要：这个函数的参数还有宏没解开——__MAP
-例如：SYSCALL_DEFINE3(arc_usr_cmpxchg, int *, uaddr, int, expected, int, new){...}
-static long __se_sysarc_usr_cmpxchg(int * uadd,int expected,int new);
-static inline long __do_sysarc_usr_cmpxchg(int * uadd,int expected,int new);
+例如：SYSCALL_DEFINE3(arc_usr_cmpxchg, int *, uaddr, int, expected, int, new){...} //arc_usr_cmpxchg 会先变成_arc_usr_cmpxchg（#define SYSCALL_DEFINE1(name, ...) SYSCALL_DEFINEx(1, _##name, __VA_ARGS__)）
 
-	long __x64_sysarc_usr_cmpxchg(const struct pt_regs *regs);		\
+
+
+static long __se_sys_arc_usr_cmpxchg(int * uadd,int expected,int new);
+static inline long __do_sys_arc_usr_cmpxchg(int * uadd,int expected,int new);
+
+	long __x64_sys_arc_usr_cmpxchg(const struct pt_regs *regs);		\
 	ALLOW_ERROR_INJECTION(__##abi##_##name, ERRNO);			\
-	long __x64_sysarc_usr_cmpxchg(const struct pt_regs *regs)		\
+	long __x64_sys_arc_usr_cmpxchg(const struct pt_regs *regs)		\
 	{								\
 		//参数就变成了这个了：regs->di,regs->si,regis->dx,regs->r10,regs->r8,regs->r9
 		//__se开头的这个函数在这个宏后面有声明。
-		return __se_sysarc_usr_cmpxchg(regs->di,regs->si,regs->dx);			\
+		return __se_sys_arc_usr_cmpxchg(regs->di,regs->si,regs->dx);			\
 	}	
 
-static long __se_sysarc_usr_cmpxchg(int * uadd,int expected,int new)	\
+static long __se_sys_arc_usr_cmpxchg(int * uadd,int expected,int new)	\
 	{								\
-		long ret = __do_sysarc_usr_cmpxchg(int * uadd,int expected,int new);\
+		long ret = __do_sys_arc_usr_cmpxchg(int * uadd,int expected,int new);\
 		__MAP(x,__SC_TEST,__VA_ARGS__);				\
 		__PROTECT(x, ret,__MAP(x,__SC_ARGS,__VA_ARGS__));	\
 		return ret;						\
