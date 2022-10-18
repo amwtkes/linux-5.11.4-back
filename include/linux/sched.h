@@ -722,7 +722,11 @@ thread_info可以放在内核栈的栈顶部位，
 	int				normal_prio;
 	unsigned int			rt_priority;
 
+/*
+调度策略的执行逻辑，就封装在这里面，它是真正干活的那个。sched_class 有几种实现：stop_sched_class 优先级最高的任务会使用这种策略，会中断所有其他线程，且不会被其他任务打断；dl_sched_class 就对应上面的 deadline 调度策略；rt_sched_class 就对应 RR 算法或者 FIFO 算法的调度策略，具体调度策略由进程的 task_struct->policy 指定；fair_sched_class 就是普通进程的调度策略；idle_sched_class 就是空闲进程的调度策略。
+*/
 	const struct sched_class	*sched_class;
+	
 	struct sched_entity		se;
 	struct sched_rt_entity		rt;
 #ifdef CONFIG_CGROUP_SCHED
@@ -752,7 +756,18 @@ thread_info可以放在内核栈的栈顶部位，
 	unsigned int			btrace_seq;
 #endif
 
-	unsigned int			policy;
+	/*
+	#define SCHED_NORMAL    0#define SCHED_FIFO    1#define SCHED_RR    2#define SCHED_BATCH    3#define SCHED_IDLE    5#define SCHED_DEADLINE    6
+
+	对于调度策略，其中 SCHED_FIFO、SCHED_RR、SCHED_DEADLINE 是实时进程的调度策略。
+
+	例如，SCHED_FIFO 就是交了相同钱的，先来先服务，但是有的加钱多，可以分配更高的优先级，也就是说，高优先级的进程可以抢占低优先级的进程，而相同优先级的进程，我们遵循先来先得。另外一种策略是，交了相同钱的，轮换着来，这就是 SCHED_RR 轮流调度算法，采用时间片，相同优先级的任务当用完时间片会被放到队列尾部，以保证公平性，而高优先级的任务也是可以抢占低优先级的任务。还有一种新的策略是 SCHED_DEADLINE，是按照任务的 deadline 进行调度的。当产生一个调度点的时候，DL 调度器总是选择其 deadline 距离当前时间点最近的那个任务，并调度它执行。
+
+
+	对于普通进程的调度策略有，SCHED_NORMAL、SCHED_BATCH、SCHED_IDLE。既然大家的项目都没有那么紧急，就应该按照普通的项目流程，公平地分配人员。SCHED_NORMAL 是普通的进程，就相当于咱们公司接的普通项目。SCHED_BATCH 是后台进程，几乎不需要和前端进行交互。这有点像公司在接项目同时，开发一些可以复用的模块，作为公司的技术积累，从而使得在之后接新项目的时候，能够减少工作量。这类项目可以默默执行，不要影响需要交互的进程，可以降低它的优先级。SCHED_IDLE 是特别空闲的时候才跑的进程，相当于咱们学习训练类的项目，比如咱们公司很长时间没有接到外在项目了，可以弄几个这样的项目练练手。
+	*/
+	unsigned int			policy;//调度策略
+
 	int				nr_cpus_allowed;//该进程允许使用的cpu的数量
 	const cpumask_t			*cpus_ptr;
 	cpumask_t			cpus_mask;

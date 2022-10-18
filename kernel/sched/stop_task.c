@@ -108,6 +108,7 @@ static void update_curr_stop(struct rq *rq)
 
 /*
  * Simple, special scheduling class for the per-CPU stop tasks:
+xiaojin stop_sched_class 优先级最高的任务会使用这种策略，会中断所有其他线程，且不会被其他任务打断；
  */
 DEFINE_SCHED_CLASS(stop) = {
 
