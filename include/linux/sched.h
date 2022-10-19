@@ -726,8 +726,9 @@ thread_info可以放在内核栈的栈顶部位，
 调度策略的执行逻辑，就封装在这里面，它是真正干活的那个。sched_class 有几种实现：stop_sched_class 优先级最高的任务会使用这种策略，会中断所有其他线程，且不会被其他任务打断；dl_sched_class 就对应上面的 deadline 调度策略；rt_sched_class 就对应 RR 算法或者 FIFO 算法的调度策略，具体调度策略由进程的 task_struct->policy 指定；fair_sched_class 就是普通进程的调度策略；idle_sched_class 就是空闲进程的调度策略。
 */
 	const struct sched_class	*sched_class;
-	
-	struct sched_entity		se;
+
+	/*看来 CFS 需要一个数据结构来对 vruntime 进行排序，找出最小的那个。这个能够排序的数据结构不但需要查询的时候，能够快速找到最小的，更新的时候也需要能够快速地调整排序，要知道 vruntime 可是经常在变的，变了再插入这个数据结构，就需要重新排序。能够平衡查询和更新速度的是树，在这里使用的是红黑树。红黑树的的节点是应该包括 vruntime 的，称为调度实体。在 task_struct 中有这样的成员变量：struct sched_entity se;struct sched_rt_entity rt;struct sched_dl_entity dl;这里有实时调度实体 sched_rt_entity，Deadline 调度实体 sched_dl_entity，以及完全公平算法调度实体 sched_entity。看来不光 CFS 调度策略需要有这样一个数据结构进行排序，其他的调度策略也同样有自己的数据结构进行排序，因为任何一个策略做调度的时候，都是要区分谁先运行谁后运行。而进程根据自己是实时的，还是普通的类型，通过这个成员变量，将自己挂在某一个数据结构里面，和其他的进程排序，等待被调度。如果这个进程是个普通进程，则通过 sched_entity，将自己挂在这棵红黑树上。*/
+	struct sched_entity		se; //普通进程用Fair的方式调度，这是调度的实体。
 	struct sched_rt_entity		rt;
 #ifdef CONFIG_CGROUP_SCHED
 	struct task_group		*sched_task_group;
