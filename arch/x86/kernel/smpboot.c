@@ -227,6 +227,13 @@ static int enable_start_cpu0;
 
 percpu执行的代码。每个AP都要执行这个。完成AP的初始化。最后进入idle状态。
 */
+
+/*作用：
+1、设置CPU中各个控制寄存器的值：IDT，LDT，GDT，CR4，syscall等等
+2、设置RCU，使得cpu可以使用rcu组建
+3、ucode microcode的CPU补丁，每个CPU都要打
+4、CPU运行idle线程，参与调度，正式执行内核代码（前面都是在为这一步做准备）
+*/
 static void notrace start_secondary(void *unused)
 {
 	/*
@@ -1054,6 +1061,11 @@ int common_cpu_up(unsigned int cpu, struct task_struct *idle)
  */
 
 /*xiaojin-do_boot_cpu https://app.yinxiang.com/shard/s65/nl/15273355/eba9e89a-cb95-4103-9141-ab1aa783b5e1/*/
+
+/*作用：
+1、CPU0执行，也就是BSP执行，用于启动所有APs
+2、此时CPU0已经完成内核的初始化，AP可以工作了，但是需要通过start_secondary完成CPU的寄存器初始化。
+*/
 static int do_boot_cpu(int apicid, int cpu, struct task_struct *idle,
 		       int *cpu0_nmi_registered)
 {
@@ -1241,6 +1253,7 @@ int native_cpu_up(unsigned int cpu, struct task_struct *tidle)
 	check_tsc_sync_source(cpu);
 	local_irq_restore(flags);
 
+	/*等待APs完成初始化*/
 	while (!cpu_online(cpu)) {
 		cpu_relax();
 		touch_nmi_watchdog();

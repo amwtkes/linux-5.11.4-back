@@ -1950,6 +1950,12 @@ void cpu_init_exception_handling(void)
  * and IDT. We reload them nevertheless, this function acts as a
  * 'CPU state barrier', nothing should get across.
  */
+
+/*主要设置跟AP CPU相关的
+1 一些寄存器——tss的TR，cr4，ldt，syscall的msr
+2 tss的设置，每个cpu一个tss跟当前线程相关的数据，控制IO访问，切换进程的时候会更改
+3 gdt的设置
+4 ucode补丁*/
 void cpu_init(void)
 {
 	struct tss_struct *tss = this_cpu_ptr(&cpu_tss_rw);
@@ -1958,7 +1964,7 @@ void cpu_init(void)
 
 	wait_for_master_cpu(cpu);
 
-	ucode_cpu_init(cpu); //可以看手册8.7.11
+	ucode_cpu_init(cpu); //可以看手册8.7.11. Microcode可以看做是给CPU打补丁的过程，如meltdown可以通过这样来打补丁解决，防止召回。
 
 #ifdef CONFIG_NUMA
 	if (this_cpu_read(numa_node) == 0 &&

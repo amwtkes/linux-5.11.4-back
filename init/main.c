@@ -1068,6 +1068,8 @@ asmlinkage __visible void __init __no_sanitize_address start_kernel(void)
 	/* Do the rest non-__init'ed, we're now alive */
 	/*xiaojin-percpu_kthread_cpu0_run.0 开始做多核MP的初始化了。包括percpu的kthread也是在这个里面创建的
 	在此之前percpu变量已经由cpu0准备好了。
+
+	CPU0把所有的内核需要的子系统包括内存，文件系统，中断，调度，percpu等等都完成初始化完成后才会唤醒其他AP进行初始化寄存器，然后开始参与调度。
 	*/
 	arch_call_rest_init();
 
