@@ -75,10 +75,11 @@ extern void queued_spin_lock_slowpath(struct qspinlock *lock, u32 val);
  * queued_spin_lock - acquire a queued spinlock
  * @lock: Pointer to queued spinlock structure
  */
+/*xiaojin-spinlock 3.6-smp(x86)-lock  queued_spin_lock*/
 static __always_inline void queued_spin_lock(struct qspinlock *lock)
 {
 	int val = 0;
-
+	//原子指令来比较是否获得了锁。如果val是0，则说明获取了锁，把锁变成_Q_LOCKED_VAL==1
 	if (likely(atomic_try_cmpxchg_acquire(&lock->val, &val, _Q_LOCKED_VAL)))
 		return;
 
@@ -114,6 +115,7 @@ static __always_inline bool virt_spin_lock(struct qspinlock *lock)
 #define arch_spin_is_locked(l)		queued_spin_is_locked(l)
 #define arch_spin_is_contended(l)	queued_spin_is_contended(l)
 #define arch_spin_value_unlocked(l)	queued_spin_value_unlocked(l)
+/*xiaojin-spinlock 3.5-smp(x86)-lock  define arch_spin_lock(l)		queued_spin_lock(l)*/
 #define arch_spin_lock(l)		queued_spin_lock(l)
 #define arch_spin_trylock(l)		queued_spin_trylock(l)
 #define arch_spin_unlock(l)		queued_spin_unlock(l)

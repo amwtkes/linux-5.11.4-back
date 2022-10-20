@@ -32,6 +32,7 @@ extern void __cmpxchg_wrong_size(void)
  * store NEW in MEM.  Return the initial value in MEM.  Success is
  * indicated by comparing RETURN with OLD.
  */
+/*xiaojin-spinlock 3.7-smp(x86)-lock  __raw_cmpxchg 用lock prefiex实现的，会锁总线。性能不太好哦。*/
 #define __raw_cmpxchg(ptr, old, new, size, lock)			\
 ({									\
 	__typeof__(*(ptr)) __ret;					\

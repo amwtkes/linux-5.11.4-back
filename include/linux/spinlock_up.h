@@ -61,6 +61,7 @@ static inline void arch_spin_unlock(arch_spinlock_t *lock)
 #else /* DEBUG_SPINLOCK */
 #define arch_spin_is_locked(lock)	((void)(lock), 0)
 /* for sched/core.c and kernel_lock.c: */
+/*xiaojin-spinlock 3.3-up-lock arch_spin_lock(lock)什么都没做*/
 # define arch_spin_lock(lock)		do { barrier(); (void)(lock); } while (0)
 # define arch_spin_lock_flags(lock, flags)	do { barrier(); (void)(lock); } while (0)
 # define arch_spin_unlock(lock)	do { barrier(); (void)(lock); } while (0)

@@ -25,7 +25,7 @@
  * variables, and to add the proper checker annotations:
  */
 
-/*xiaojin-spinlock 3.2-up ___LOCK(lock) 根据上面的注释可以看到，则up系统下不需要实际的lock过程，为了防止编译器报警（定义了lock但是没有操作）所以用___LOCK(lock)来消除编译器报警。这里只是preempt_disable() 禁止了进程切换就能达到。*/
+/*xiaojin-spinlock 3.2-up-lock ___LOCK(lock) 根据上面的注释可以看到，则up系统下不需要实际的lock过程，为了防止编译器报警（定义了lock但是没有操作）所以用___LOCK(lock)来消除编译器报警。这里只是preempt_disable() 禁止了进程切换就能达到。*/
 #define ___LOCK(lock) \
   do { __acquire(lock); (void)(lock); } while (0)
 
@@ -57,7 +57,7 @@
 #define __UNLOCK_IRQRESTORE(lock, flags) \
   do { local_irq_restore(flags); __UNLOCK(lock); } while (0)
 
-/*xiaojin-spinlock 3.1-up lock -define _raw_spin_lock(lock)			__LOCK(lock)*/
+/*xiaojin-spinlock 3.1-up-lock -define _raw_spin_lock(lock)			__LOCK(lock)*/
 #define _raw_spin_lock(lock)			__LOCK(lock)
 #define _raw_spin_lock_nested(lock, subclass)	__LOCK(lock)
 #define _raw_read_lock(lock)			__LOCK(lock)

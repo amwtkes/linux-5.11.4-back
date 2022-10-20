@@ -222,7 +222,7 @@ static inline void do_raw_spin_unlock(raw_spinlock_t *lock) __releases(lock)
  */
 #define raw_spin_trylock(lock)	__cond_lock(lock, _raw_spin_trylock(lock))
 
-/*xiaojin-spinlock 3.0 _raw_spin_lock 加锁过程*/
+/*xiaojin-spinlock 3.0-lock _raw_spin_lock 加锁过程*/
 #define raw_spin_lock(lock)	_raw_spin_lock(lock)
 
 #ifdef CONFIG_DEBUG_LOCK_ALLOC
