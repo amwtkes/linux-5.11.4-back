@@ -320,7 +320,10 @@ static __always_inline u32  __pv_wait_head_or_lock(struct qspinlock *lock,
 */
 
 /*xiaojin-spinlock-qspinlock -5 queued_spin_lock
-https://app.yinxiang.com/shard/s65/nl/15273355/aca32ad8-d3cd-453e-88af-4af0b5fcfbd8/
+https://app.yinxiang.com/shard/s65/nl/15273355/aca32ad8-d3cd-453e-88af-4af0b5fcfbd8/  (系列3)
+https://app.yinxiang.com/shard/s65/nl/15273355/ce2b4805-1bd0-44d8-b97d-6218bdc68db4/  （系列4）
+
+spinlock的上下文一定是关闭中断的，这才使得这个percpu static DEFINE_PER_CPU_ALIGNED(struct qnode, qnodes[MAX_NODES]) 不会超过4层。spinlock是不会让出cpu的，所以适合锁住小而且精悍的代码。要快速返回，又要加锁同步。
 */
 void queued_spin_lock_slowpath(struct qspinlock *lock, u32 val)
 {
@@ -344,6 +347,7 @@ void queued_spin_lock_slowpath(struct qspinlock *lock, u32 val)
 	 */
 	if (val == _Q_PENDING_VAL) {
 		int cnt = _Q_PENDING_LOOPS;
+		/*像atomic_cond_read_acquire()这种函数，其实就是Linux中的原子操作这篇文章介绍的atomic_read()加上"cond"和"acquire"，其中"cond"代表condition，表示spin基于的对象，而"acquire"用于设置Memory Barrier。这是为了保证应该在获取spinlock之后才能执行的代码，不要因为Memory Order的调换，在成功获取spinlock之前就执行了，那样就失去了保护Critical Section/Region的目的。*/
 		val = atomic_cond_read_relaxed(&lock->val,
 					       (VAL != _Q_PENDING_VAL) || !cnt--);
 	}
@@ -407,7 +411,7 @@ void queued_spin_lock_slowpath(struct qspinlock *lock, u32 val)
 queue:
 	lockevent_inc(lock_slowpath);
 pv_queue:
-	node = this_cpu_ptr(&qnodes[0].mcs);
+	node = this_cpu_ptr(&qnodes[0].mcs);//第0个node
 	idx = node->count++;
 	tail = encode_tail(smp_processor_id(), idx);
 
@@ -427,7 +431,7 @@ pv_queue:
 		goto release;
 	}
 
-	node = grab_mcs_node(node, idx);
+	node = grab_mcs_node(node, idx);//node就是第0个，+idx个获得一个node。最多4个node的percpu qnode数组。难道是nesting个数。
 
 	/*
 	 * Keep counts of non-zero index values:
