@@ -8,6 +8,9 @@
 
 #define TICKET_SHIFT	16
 
+/*xiaojin-spinlock 2.2 一般情况 arch_spinlock_t同样也是32位的int，但是用了ticket算法来排队，所以更公平。
+https://app.yinxiang.com/shard/s65/nl/15273355/e6b21781-3aab-4f5a-b53c-fc716c6dbf0f/
+*/
 typedef struct {
 	union {
 		u32 slock;

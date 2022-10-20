@@ -15,6 +15,9 @@ xiaojin-rcu rcu_gp_kthread -- rcu核心线程的过程
 xiaojin-rcu-eqs --- rcu的eqs解释
 xiaojin-rcu-event ----rcu状态机
 
+=========spinlock
+xiaojin-spinlock ---
+
 =========syscall
 xiaojin-syscall -- 系统调用相关
 

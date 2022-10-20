@@ -6,6 +6,7 @@
 #ifndef __ASM_SPINLOCK_TYPES_H
 #define __ASM_SPINLOCK_TYPES_H
 
+/*xiaojin-spinlock 2.2 一般情况 arch_spinlock_t。就是一个unsigned int slock的32位变量*/
 typedef struct {
 	volatile unsigned int slock;
 } arch_spinlock_t;

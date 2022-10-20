@@ -17,6 +17,7 @@
 
 #include <linux/lockdep_types.h>
 
+/*xiaojin-spinlock 1 struct raw_spinlock raw_spinlock_t*/
 typedef struct raw_spinlock {
 	arch_spinlock_t raw_lock;
 #ifdef CONFIG_DEBUG_SPINLOCK
@@ -68,6 +69,7 @@ typedef struct raw_spinlock {
 
 #define DEFINE_RAW_SPINLOCK(x)	raw_spinlock_t x = __RAW_SPIN_LOCK_UNLOCKED(x)
 
+/*xiaojin-spinlock 0 struct spinlock {*/
 typedef struct spinlock {
 	union {
 		struct raw_spinlock rlock;

@@ -21,7 +21,9 @@ typedef struct {
 #define __ARCH_SPIN_LOCK_UNLOCKED { 1 }
 
 #else
-
+/*xiaojin-spinlock 2.1 up系统的定义是空，什么都没有，一切都是空啊。当然，这也符合前面的分析，对于UP，即便是打开的preempt选项，所谓的spin lock也不过就是disable preempt而已，不需定义什么spin lock的变量。
+禁止中断就相当于这段代码可以一直由这个进程执行完，虽然并发差，但是只有一个CPU不会有太大影响。
+*/
 typedef struct { } arch_spinlock_t;
 
 #define __ARCH_SPIN_LOCK_UNLOCKED { }
