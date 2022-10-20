@@ -77,6 +77,7 @@ extern void queued_spin_lock_slowpath(struct qspinlock *lock, u32 val);
  */
 /*xiaojin-spinlock 3.6-smp(x86)-lock  queued_spin_lock
 */
+/*xiaojin-spinlock-qspinlock -4 queued_spin_lock*/
 static __always_inline void queued_spin_lock(struct qspinlock *lock)
 {
 	int val = 0;

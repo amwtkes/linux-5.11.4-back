@@ -11,6 +11,9 @@
 
 #include <linux/types.h>
 
+/*xiaojin-spinlock-qspinlock -0 qspinlock typedef struct
+https://app.yinxiang.com/shard/s65/nl/15273355/aca32ad8-d3cd-453e-88af-4af0b5fcfbd8/
+*/
 typedef struct qspinlock {
 	union {
 		atomic_t val;

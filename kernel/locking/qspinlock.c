@@ -78,6 +78,7 @@
  * want to penalize pvqspinlocks to optimize for a rare case in native
  * qspinlocks.
  */
+/*xiaojin-spinlock-qspinlock -1.1 qnode struct*/
 struct qnode {
 	struct mcs_spinlock mcs;
 #ifdef CONFIG_PARAVIRT_SPINLOCKS
@@ -105,7 +106,8 @@ struct qnode {
  *
  * PV doubles the storage and uses the second cacheline for PV state.
  */
-static DEFINE_PER_CPU_ALIGNED(struct qnode, qnodes[MAX_NODES]);
+/*xiaojin-spinlock-qspinlock -1 DEFINE_PER_CPU_ALIGNED(struct qnode, qnodes[MAX_NODES])*/
+static DEFINE_PER_CPU_ALIGNED(struct qnode, qnodes[MAX_NODES]); //MAX_NODES=4
 
 /*
  * We must be able to distinguish between no-tail and the tail at 0:0,
@@ -315,6 +317,10 @@ static __always_inline u32  __pv_wait_head_or_lock(struct qspinlock *lock,
 /*xiaojin-spinlock 3.8-smp(x86)-lock queued_spin_lock_slowpath
 参考系列文章：https://app.yinxiang.com/shard/s65/nl/15273355/895ced64-c9d6-4518-863e-639f7466c6e3/ (MCS相关)
 
+*/
+
+/*xiaojin-spinlock-qspinlock -5 queued_spin_lock
+https://app.yinxiang.com/shard/s65/nl/15273355/aca32ad8-d3cd-453e-88af-4af0b5fcfbd8/
 */
 void queued_spin_lock_slowpath(struct qspinlock *lock, u32 val)
 {
