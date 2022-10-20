@@ -312,6 +312,9 @@ static __always_inline u32  __pv_wait_head_or_lock(struct qspinlock *lock,
  * contended             :    (*,x,y) +--> (*,0,0) ---> (*,0,1) -'  :
  *   queue               :         ^--'                             :
  */
+/*xiaojin-spinlock 3.8-smp(x86)-lock queued_spin_lock_slowpath
+参考系列文章：https://app.yinxiang.com/shard/s65/nl/15273355/9e0f62c2-a8d3-40c7-a4c1-2423531ca37b/
+*/
 void queued_spin_lock_slowpath(struct qspinlock *lock, u32 val)
 {
 	struct mcs_spinlock *prev, *next, *node;
