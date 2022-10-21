@@ -106,7 +106,9 @@ struct qnode {
  *
  * PV doubles the storage and uses the second cacheline for PV state.
  */
-/*xiaojin-spinlock-qspinlock -1 DEFINE_PER_CPU_ALIGNED(struct qnode, qnodes[MAX_NODES])*/
+/*xiaojin-spinlock-qspinlock -1 DEFINE_PER_CPU_ALIGNED(struct qnode, qnodes[MAX_NODES])
+一个cpu上可以同时运行的spinlock最多4个——task, softirq, hardirq, nmi。所以用数组4表示这个层次。
+*/
 static DEFINE_PER_CPU_ALIGNED(struct qnode, qnodes[MAX_NODES]); //MAX_NODES=4
 
 /*
