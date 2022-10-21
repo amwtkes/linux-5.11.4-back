@@ -355,7 +355,28 @@ void queued_spin_lock_slowpath(struct qspinlock *lock, u32 val)
 	/*
 	 * If we observe any contention; queue.
 	 */
-	if (val & ~_Q_LOCKED_MASK)
+	/*
+ * Bitfields in the atomic value:
+ * 三元组（queue tail, pending bit, lock value）
+ * When NR_CPUS < 16K
+ *  0- 7: locked byte ----这就是lock value
+ *     8: pending  ----- 这就是pending bit
+ *  9-15: not used
+ * 16-17: tail index
+ * 18-31: tail cpu (+1) ---- 这就是queue tail
+ *
+ * When NR_CPUS >= 16K
+ *  0- 7: locked byte
+ *     8: pending
+ *  9-10: tail index
+ * 11-31: tail cpu (+1)
+ */
+
+/* 
+~_Q_LOCKED_MASK = 1111 1111 1000 0000
+如果是真，说明pending位为1.
+*/
+	if (val & ~_Q_LOCKED_MASK) //_Q_LOCKED_MASK 0000 0000 0111 1111 7个1
 		goto queue;
 
 	/*
