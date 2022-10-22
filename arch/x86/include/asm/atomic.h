@@ -235,11 +235,12 @@ static __always_inline void arch_atomic_or(int i, atomic_t *v)
 			: "memory");
 }
 
+/*xiaojin-spinlock-qspinlock-M arch_atomic_fetch_or*/
 static __always_inline int arch_atomic_fetch_or(int i, atomic_t *v)
 {
-	int val = arch_atomic_read(v);
+	int val = arch_atomic_read(v); //READ_ONCE
 
-	do { } while (!arch_atomic_try_cmpxchg(v, &val, val | i));
+	do { } while (!arch_atomic_try_cmpxchg(v, &val, val | i)); //直接与，设置位
 
 	return val;
 }
