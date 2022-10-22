@@ -389,6 +389,7 @@ _Q_LOCKED_MASK 0000 0000 0111 1111 7个1
 	 * trylock || pending
 	 *
 	 * 0,0,* -> 0,1,* -> 0,0,1 pending, trylock
+	 * 将pending位设置成1
 	 */
 	val = queued_fetch_set_pending_acquire(lock);
 
