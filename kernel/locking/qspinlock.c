@@ -347,9 +347,12 @@ void queued_spin_lock_slowpath(struct qspinlock *lock, u32 val)
 	 *
 	 * 0,1,0 -> 0,0,1
 	 */
-	if (val == _Q_PENDING_VAL) {
-		int cnt = _Q_PENDING_LOOPS;
-		/*像atomic_cond_read_acquire()这种函数，其实就是Linux中的原子操作这篇文章介绍的atomic_read()加上"cond"和"acquire"，其中"cond"代表condition，表示spin基于的对象，而"acquire"用于设置Memory Barrier。这是为了保证应该在获取spinlock之后才能执行的代码，不要因为Memory Order的调换，在成功获取spinlock之前就执行了，那样就失去了保护Critical Section/Region的目的。*/
+	if (val == _Q_PENDING_VAL) { //第8位为1 这个状态就是pending位被设置，但是前面的线程已经退出了，所以val短暂的变成了（0,1,0）。所以等着变回0,0,1）
+		int cnt = _Q_PENDING_LOOPS; //第9位为1
+		/*像atomic_cond_read_acquire()这种函数，其实就是Linux中的原子操作这篇文章介绍的atomic_read()加上"cond"和"acquire"，其中"cond"代表condition，表示spin基于的对象，而"acquire"用于设置Memory Barrier。这是为了保证应该在获取spinlock之后才能执行的代码，不要因为Memory Order的调换，在成功获取spinlock之前就执行了，那样就失去了保护Critical Section/Region的目的。
+		
+		等待从0,1,0 -> 0,0,1 最多等512-1次cpu_relax()。如果511次relax还没变成1，则返回。
+		*/
 		val = atomic_cond_read_relaxed(&lock->val,
 					       (VAL != _Q_PENDING_VAL) || !cnt--);
 	}

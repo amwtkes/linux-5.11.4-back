@@ -94,7 +94,8 @@ static inline bool virt_spin_lock(struct qspinlock *lock)
 	 * back to a Test-and-Set spinlock, because fair locks have
 	 * horrible lock 'holder' preemption issues.
 	 */
-
+	
+	/*xiaojin-spinlock-special 这里是非公平的实现。virt_spin_lock*/
 	do {
 		while (atomic_read(&lock->val) != 0)
 			cpu_relax();
