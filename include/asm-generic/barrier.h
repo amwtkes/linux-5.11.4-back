@@ -211,11 +211,12 @@ do {									\
  * pre-named variable @VAL to be used in @cond.
  */
 #ifndef smp_cond_load_relaxed
+/*xiaojin-spinlock-qspinlock -6 smp_cond_load_relaxed 自旋等待一个变量 用于spinlock*/
 #define smp_cond_load_relaxed(ptr, cond_expr) ({		\
 	typeof(ptr) __PTR = (ptr);				\
 	__unqual_scalar_typeof(*ptr) VAL;			\
 	for (;;) {						\
-		VAL = READ_ONCE(*__PTR);			\
+		VAL = READ_ONCE(*__PTR);			\/*赋值指令在x86-64下是原子的*/
 		if (cond_expr)					\
 			break;					\
 		cpu_relax();					\
