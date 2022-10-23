@@ -81,7 +81,9 @@ extern void queued_spin_lock_slowpath(struct qspinlock *lock, u32 val);
 static __always_inline void queued_spin_lock(struct qspinlock *lock)
 {
 	int val = 0;
-	//原子指令来比较是否获得了锁。如果val是0，则说明获取了锁，把锁变成_Q_LOCKED_VAL==1。参考3.7
+	//原子指令来比较是否获得了锁。如果lock->val是0(val)，则说明获取了锁，把lock->val变成_Q_LOCKED_VAL==1。参考3.7
+	//如果lock->val == val==0 则lock->val=1,返回val==0；获得锁；
+	//如果lock->val != val，则val=lock->val，返回lock->val
 	if (likely(atomic_try_cmpxchg_acquire(&lock->val, &val, _Q_LOCKED_VAL)))
 		return;
 

@@ -71,7 +71,7 @@ typedef struct qspinlock {
 				      << _Q_ ## type ## _OFFSET)
 #define _Q_LOCKED_OFFSET	0
 #define _Q_LOCKED_BITS		8
-#define _Q_LOCKED_MASK		_Q_SET_MASK(LOCKED) //0111 1111（把前7位置1）
+#define _Q_LOCKED_MASK		_Q_SET_MASK(LOCKED) //1111 1111（把前8位置1,0-7位置1）
 
 #define _Q_PENDING_OFFSET	(_Q_LOCKED_OFFSET + _Q_LOCKED_BITS) //8
 #if CONFIG_NR_CPUS < (1U << 14)
@@ -79,7 +79,7 @@ typedef struct qspinlock {
 #else
 #define _Q_PENDING_BITS		1
 #endif
-#define _Q_PENDING_MASK		_Q_SET_MASK(PENDING) //0111 1111 0000 0000(pengding位1 9-15位没用)
+#define _Q_PENDING_MASK		_Q_SET_MASK(PENDING) //1111 1111 0000 0000(8-15位为1)
 
 #define _Q_TAIL_IDX_OFFSET	(_Q_PENDING_OFFSET + _Q_PENDING_BITS) //16
 #define _Q_TAIL_IDX_BITS	2

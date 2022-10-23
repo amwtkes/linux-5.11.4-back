@@ -82,6 +82,8 @@ extern void __add_wrong_size(void)
  * store NEW in MEM.  Return the initial value in MEM.  Success is
  * indicated by comparing RETURN with OLD.
  */
+
+/*xiaojin-spinlock 3.7-smp(x86)-lock __raw_cmpxchg lock--- lockprefix*/
 #define __raw_cmpxchg(ptr, old, new, size, lock)			\
 ({									\
 	__typeof__(*(ptr)) __ret;					\

@@ -378,9 +378,9 @@ void queued_spin_lock_slowpath(struct qspinlock *lock, u32 val)
  */
 
 /* 
-_Q_LOCKED_MASK 0000 0000 0111 1111 7个1
-~_Q_LOCKED_MASK = 1111 1111 1000 0000
-如果是真，说明pending位为1.
+_Q_LOCKED_MASK 0000 0000 1111 1111 8个1
+~_Q_LOCKED_MASK = 1111 1111 0000 0000
+如果是真，说明pending或者tail cpu位为1。
 */
 	if (val & ~_Q_LOCKED_MASK) 
 		goto queue;
@@ -389,7 +389,7 @@ _Q_LOCKED_MASK 0000 0000 0111 1111 7个1
 	 * trylock || pending
 	 *
 	 * 0,0,* -> 0,1,* -> 0,0,1 pending, trylock
-	 * 将pending位设置成1
+	 * 将pending位设置成1，val变成(0,1,1) 。
 	 */
 	val = queued_fetch_set_pending_acquire(lock);
 
@@ -400,10 +400,10 @@ _Q_LOCKED_MASK 0000 0000 0111 1111 7个1
 	 * n,0,0 -> 0,0,0 transition fail and it will now be waiting
 	 * on @next to become !NULL.
 	 */
-	if (unlikely(val & ~_Q_LOCKED_MASK)) {
+	if (unlikely(val & ~_Q_LOCKED_MASK)) {// pending或者tail cpu有设置
 
 		/* Undo PENDING if we set it. */
-		if (!(val & _Q_PENDING_MASK))
+		if (!(val & _Q_PENDING_MASK)) //如果pending没有被设置，则去掉pending，感觉很奇怪。
 			clear_pending(lock);
 
 		goto queue;
