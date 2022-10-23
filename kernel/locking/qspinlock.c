@@ -415,10 +415,10 @@ _Q_LOCKED_MASK 0000 0000 1111 1111 8个1
 	 * n,0,0 -> 0,0,0 transition fail and it will now be waiting
 	 * on @next to become !NULL.
 	 */
-	if (unlikely(val & ~_Q_LOCKED_MASK)) {// pending或者tail cpu有设置
+	if (unlikely(val & ~_Q_LOCKED_MASK)) {// val是设置lock-》val的pending位之前的值，此时已经设置了！如果抢先被别人设置了pending位或者已经tail——cpu了，要进入queue阶段。
 
 		/* Undo PENDING if we set it. */
-		if (!(val & _Q_PENDING_MASK)) //如果pending没有被设置，则去掉pending，感觉很奇怪。
+		if (!(val & _Q_PENDING_MASK)) //val是抢完之前的值，如果没有设置pending，也就是此时我已经错误的将lock-》val已经设置了，所以要退回去，恢复之前的状态。也就是进入tail_cpu阶段，且（cpu,0,0）的状态了。
 			clear_pending(lock);
 
 		goto queue;
