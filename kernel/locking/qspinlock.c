@@ -381,6 +381,9 @@ void queued_spin_lock_slowpath(struct qspinlock *lock, u32 val)
 _Q_LOCKED_MASK 0000 0000 1111 1111 8个1
 ~_Q_LOCKED_MASK = 1111 1111 0000 0000
 如果是真，说明pending或者tail cpu位为1。
+
+说明前一步等到（0，0,1）或者步数过了以后，pending或者tail cpu有值。说明还是有竞争。因为如果等到了（0,0,1）现在又不是了，或者甚至已经到tail了。又或者，等到超过自旋次数了还是在pending，还没有回到（0，0,1）不过当loop设定成512次以后前一种的情况可能性更高，也就是出现了激烈的竞争。
+没办法进入队列处理。
 */
 	if (val & ~_Q_LOCKED_MASK) 
 		goto queue;
@@ -389,9 +392,21 @@ _Q_LOCKED_MASK 0000 0000 1111 1111 8个1
 	 * trylock || pending
 	 *
 	 * 0,0,* -> 0,1,* -> 0,0,1 pending, trylock
-	 * 将pending位设置成1，val变成(0,1,1) 。
+	 * 如果如愿以偿的到达（0,0,1）说明自己是第二个竞争的人，不用说，将pending位设置成1，val变成(0,1,1) 。
+	 * 
+	 * 实际调用：atomic_fetch_or_acquire(_Q_PENDING_VAL, &lock->val)
+	 * 最后调用到：
+	 * 
+	 * static __always_inline int arch_atomic_fetch_or(int i, atomic_t *v)
+		{
+			int val = arch_atomic_read(v); //READ_ONCE
+			do { } while (!arch_atomic_try_cmpxchg(v, &val, val | i)); //lock->val就是v，i就是_Q_PENDING_VAL
+			return val;
+		}
+
+		也就是，如果根据lock->val取到的值val跟当前lock->val的值相等则将v这个地址赋值val|i，同时返回true，退出while，并返回老的lock-》val值！
 	 */
-	val = queued_fetch_set_pending_acquire(lock);
+	val = queued_fetch_set_pending_acquire(lock);//这里一定是设置val|之前的lock-》val值。可能因为竞争被其他cpu抢先设置了pending为，也可能正常的不带pending位！！！！
 
 	/*
 	 * If we observe contention, there is a concurrent locker.

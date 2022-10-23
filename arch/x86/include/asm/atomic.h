@@ -235,11 +235,12 @@ static __always_inline void arch_atomic_or(int i, atomic_t *v)
 			: "memory");
 }
 
-/*xiaojin-spinlock-qspinlock-M arch_atomic_fetch_or*/
+/*xiaojin-spinlock-qspinlock-M arch_atomic_fetch_or 如果v跟val值一致，则设置v的值为val|i*/
 static __always_inline int arch_atomic_fetch_or(int i, atomic_t *v)
 {
 	int val = arch_atomic_read(v); //READ_ONCE
 
+/*xiaojin-spinlock-qspinlock-M arch_atomic_try_cmpxchg 如果v跟&val指向的值相等，则将val|i赋值给v指向的值，返回true；否则，将v的指向的值赋值给&val指向的值，然后返回false。这里相当于一致循环直到val的值与v的值相等，并给v地址的值赋值成功。返回的是设置之前的值val也就是old值。*/
 	do { } while (!arch_atomic_try_cmpxchg(v, &val, val | i)); //直接与，设置位
 
 	return val;
