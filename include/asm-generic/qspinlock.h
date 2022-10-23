@@ -100,11 +100,13 @@ static __always_inline void queued_spin_lock(struct qspinlock *lock)
  * queued_spin_unlock - release a queued spinlock
  * @lock : Pointer to queued spinlock structure
  */
+/*xiaojin-spinlock-qspinlock -6 queued_spin_unlock*/
 static __always_inline void queued_spin_unlock(struct qspinlock *lock)
 {
 	/*
 	 * unlock() needs release semantics:
 	 */
+	//注意知识把locled变成了0，可能pending还是1.
 	smp_store_release(&lock->locked, 0);
 }
 #endif
