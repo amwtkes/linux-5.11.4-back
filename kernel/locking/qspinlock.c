@@ -352,9 +352,11 @@ void queued_spin_lock_slowpath(struct qspinlock *lock, u32 val)
 		/*像atomic_cond_read_acquire()这种函数，其实就是Linux中的原子操作这篇文章介绍的atomic_read()加上"cond"和"acquire"，其中"cond"代表condition，表示spin基于的对象，而"acquire"用于设置Memory Barrier。这是为了保证应该在获取spinlock之后才能执行的代码，不要因为Memory Order的调换，在成功获取spinlock之前就执行了，那样就失去了保护Critical Section/Region的目的。
 		
 		等待从0,1,0 -> 0,0,1 最多等512-1次cpu_relax()。如果511次relax还没变成1，则返回。
+
+		val是最近的lock-》val的值。
 		*/
 		val = atomic_cond_read_relaxed(&lock->val,
-					       (VAL != _Q_PENDING_VAL) || !cnt--);
+					       (VAL != _Q_PENDING_VAL) || !cnt--);//val不等于2^8或者到了spin的次数。其实有可能走到了queue也说不定。
 	}
 
 	/*
@@ -385,7 +387,7 @@ _Q_LOCKED_MASK 0000 0000 1111 1111 8个1
 说明前一步等到（0，0,1）或者步数过了以后，pending或者tail cpu有值。说明还是有竞争。因为如果等到了（0,0,1）现在又不是了，或者甚至已经到tail了。又或者，等到超过自旋次数了还是在pending，还没有回到（0，0,1）不过当loop设定成512次以后前一种的情况可能性更高，也就是出现了激烈的竞争。
 没办法进入队列处理。
 */
-	if (val & ~_Q_LOCKED_MASK) 
+	if (val & ~_Q_LOCKED_MASK) //接上面，果然到了queue这个阶段了，不止2个CPU抢到了锁，我其实应该去Percpu的本地锁自旋了。
 		goto queue;
 
 	/*
@@ -404,7 +406,8 @@ _Q_LOCKED_MASK 0000 0000 1111 1111 8个1
 			return val;
 		}
 
-		也就是，如果根据lock->val取到的值val跟当前lock->val的值相等则将v这个地址赋值val|i，同时返回true，退出while，并返回老的lock-》val值！
+		也就是，如果v==val 则将val=v（返回v更新前的值）；v=val|i；返回true；
+		如果v!=val 则val=v；返回false
 	 */
 	val = queued_fetch_set_pending_acquire(lock);//这里一定是设置val|之前的lock-》val值。可能因为竞争被其他cpu抢先设置了pending为，也可能正常的不带pending位！！！！
 
@@ -415,7 +418,7 @@ _Q_LOCKED_MASK 0000 0000 1111 1111 8个1
 	 * n,0,0 -> 0,0,0 transition fail and it will now be waiting
 	 * on @next to become !NULL.
 	 */
-	if (unlikely(val & ~_Q_LOCKED_MASK)) {// val是设置lock-》val的pending位之前的值，此时已经设置了！如果抢先被别人设置了pending位或者已经tail——cpu了，要进入queue阶段。简单来说在执行queued_fetch_set_pending_acquire（lock）之前其实lock-》val的pending位已经在其他CPU上设置了，而queued_fetch_set_pending_acquire函数不会检测到是否已经将pending设置，而是只要条件允许就设置pending。哪怕已经设置过了。所以自己不是第二个了，要进入queue阶段继续。甚至可能要回滚。
+	if (unlikely(val & ~_Q_LOCKED_MASK)) {// 正常情况，val应该是（0,0,1）所以分支是进不来的，而且大部分情况如此（没有激烈的contention）所以unlikely暗示CPU不要预测true；但是在contention的情况，lock可能已经超过两个cpu在等待了，此时依然可以设置pending位成功，所以针对这种情况需要做当前的判断。如果真的发生contention，则需要queue。
 
 		/* Undo PENDING if we set it. */
 		if (!(val & _Q_PENDING_MASK)) //val是抢完之前的值，如果没有设置pending，也就是此时我已经错误的将lock-》val已经设置了，所以要退回去，恢复之前的状态。也就是执行queued_fetch_set_pending_acquire完成之前，qspinlock变量已经进入tail_cpu阶段了，且（cpu,0,0）的状态了。所以要回滚！！！！
