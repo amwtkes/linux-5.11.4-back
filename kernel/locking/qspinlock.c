@@ -546,6 +546,8 @@ pv_queue:
 	 *
 	 * p,*,* -> n,*,*
 	 */
+
+	/*更新lock->tail=tail，返回old就是更新之前的值。应该指向之前最后一个cpu的mcs。*/
 	old = xchg_tail(lock, tail);
 	next = NULL;
 
@@ -554,9 +556,12 @@ pv_queue:
 	 * head of the waitqueue.
 	 */
 	if (old & _Q_TAIL_MASK) {
+
+		/*获取old对应的cpu的percpu qnodes队列，并取出之前最后一个msc对象。因为idx与cpu都编码到了old变量里面所以可以轻松拿到。*/
 		prev = decode_tail(old);
 
 		/* Link @node into the waitqueue. */
+		/*是不是很简单，尾插法嘛*/
 		WRITE_ONCE(prev->next, node);
 
 		pv_wait_node(node, prev);
