@@ -345,9 +345,9 @@ void queued_spin_lock_slowpath(struct qspinlock *lock, u32 val)
 	 * Wait for in-progress pending->locked hand-overs with a bounded
 	 * number of spins so that we guarantee forward progress.
 	 *
-	 * 0,1,0 -> 0,0,1
+	 * 0,1,0 -> 0,0,1 在这里设置{clear_pending_set_locked(lock);}
 	 */
-	if (val == _Q_PENDING_VAL) { //第8位为1 这个状态就是pending位被设置，但是前面的线程已经退出了，所以val短暂的变成了（0,1,0）。所以等着变回0,0,1）
+	if (val == _Q_PENDING_VAL) { //第8位为1 这个状态就是pending位被设置，持有锁的线程已经释放了锁，第二个线程还在自旋等待，还没将其变成（0，0，1），所以val短暂的变成了（0,1,0）。所以等着变回0,0,1）
 		int cnt = _Q_PENDING_LOOPS; //第9位为1
 		/*像atomic_cond_read_acquire()这种函数，其实就是Linux中的原子操作这篇文章介绍的atomic_read()加上"cond"和"acquire"，其中"cond"代表condition，表示spin基于的对象，而"acquire"用于设置Memory Barrier。这是为了保证应该在获取spinlock之后才能执行的代码，不要因为Memory Order的调换，在成功获取spinlock之前就执行了，那样就失去了保护Critical Section/Region的目的。
 		
@@ -438,6 +438,9 @@ _Q_LOCKED_MASK 0000 0000 1111 1111 8个1
 	 * clear_pending_set_locked() implementations imply full
 	 * barriers.
 	 */
+	/*第一个等待的CPU在这里自旋！！！
+	此时val正常应该是（0,0,1）这其实是说自己在等待前面获得锁的CPU释放锁。此时lock->val == (0,1,1)
+	那么就在这里自旋，谁叫自己是第一个等待的CPU呢？自旋等待lock->变成（0,1,0）也就是等待持有锁的CPU释放锁。条件是(VAL & _Q_LOCKED_MASK) */
 	if (val & _Q_LOCKED_MASK)
 		atomic_cond_read_acquire(&lock->val, !(VAL & _Q_LOCKED_MASK));
 
@@ -446,6 +449,7 @@ _Q_LOCKED_MASK 0000 0000 1111 1111 8个1
 	 *
 	 * 0,1,0 -> 0,0,1
 	 */
+	/*这里就呼应了开头{if (val == _Q_PENDING_VAL) 这个分支}*/
 	clear_pending_set_locked(lock);
 	lockevent_inc(lock_pending);
 	return;
