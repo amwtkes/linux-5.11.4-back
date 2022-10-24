@@ -484,7 +484,7 @@ pv_queue:
 		goto release;
 	}
 
-	node = grab_mcs_node(node, idx);//node就是第0个，+idx个获得一个node。最多4个node的percpu qnode数组。难道是nesting个数。
+	node = grab_mcs_node(node, idx);//node初始化为qnodes[0].mcs percpu数组的第0个mcs。一共有4个，表示每个CPU上不管多少个qspinlock对象最多也只能嵌套4层（task si hi nmi）所以每个数组成员表示一层。这里就是根据idex取出相应层的mcs对象。
 
 	/*
 	 * Keep counts of non-zero index values:
