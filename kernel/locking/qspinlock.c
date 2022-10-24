@@ -496,9 +496,9 @@ pv_queue:
 	 * the actual node. If the compiler is kind enough to reorder these
 	 * stores, then an IRQ could overwrite our assignments.
 	 */
-	barrier();
+	barrier(); //就是防止编译器reorder后面对node的操作必须要在得到正确的node之后才能进行，否则会乱套。因为intel是强一致性内存模型。intel内存模型，memery-reorder 参考：https://app.yinxiang.com/shard/s65/nl/15273355/b9569249-ef01-4141-927f-8ae713b8770a/
 
-	node->locked = 0;
+	node->locked = 0; //mcs spinlock的locked字段为1的时候说明占有了锁。
 	node->next = NULL;
 	pv_init_node(node);
 
@@ -507,9 +507,25 @@ pv_queue:
 	 * attempt the trylock once more in the hope someone let go while we
 	 * weren't watching.
 	 */
+	/*
+	static __always_inline int queued_spin_trylock(struct qspinlock *lock)
+	{
+		int val = atomic_read(&lock->val);
+
+		if (unlikely(val))
+			return 0;
+
+		return likely(atomic_try_cmpxchg_acquire(&lock->val, &val, _Q_LOCKED_VAL));
+	}
+	如果此时lock->val==0也就是没锁了，毕竟此时已经很久没看看lock的值了。都释放了，那么自己可以尝试去抢得锁，通过cmpxchg指令抢到，并返回true，此时lock->val的值也被设置成了（0,0,1）。可以进入release流程了。
+	否则，也就是lock->val不是0，至少自己还要等，则return 0出来了。不能走release。
+
+	所以这个过程就是在进行queue之前再看看是否要走queue的流程。毕竟CPU很快嘛。
+	*/
 	if (queued_spin_trylock(lock))
 		goto release;
 
+	/****************************下面正式走queue的流程。/
 	/*
 	 * Ensure that the initialisation of @node is complete before we
 	 * publish the updated tail via xchg_tail() and potentially link
