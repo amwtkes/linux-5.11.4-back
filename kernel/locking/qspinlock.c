@@ -531,6 +531,12 @@ pv_queue:
 	 * publish the updated tail via xchg_tail() and potentially link
 	 * @node into the waitqueue via WRITE_ONCE(prev->next, node) below.
 	 */
+	
+	/*
+	#define wmb()	asm volatile("sfence" ::: "memory")
+	store fence后面的指令不能提前到这个之前
+	保证没有做完判断、取到正确的node不做更新。
+	*/
 	smp_wmb();
 
 	/*
