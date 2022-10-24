@@ -458,12 +458,15 @@ _Q_LOCKED_MASK 0000 0000 1111 1111 8个1
 	 * End of pending bit optimistic spinning and beginning of MCS
 	 * queuing.
 	 */
+
+	/*下面都是大于1个等待线程的处理情况*/
+
 queue:
 	lockevent_inc(lock_slowpath);
 pv_queue:
 	node = this_cpu_ptr(&qnodes[0].mcs);//第0个node
 	idx = node->count++;
-	tail = encode_tail(smp_processor_id(), idx);
+	tail = encode_tail(smp_processor_id(), idx);//设置tail_cpu的值， 9-10: tail index 11-31: tail cpu (+1)——加1是为了避免0表示没有CPU设置，但是有表示第0号CPU，所以有矛盾，干脆就+1.
 
 	/*
 	 * 4 nodes are allocated based on the assumption that there will
