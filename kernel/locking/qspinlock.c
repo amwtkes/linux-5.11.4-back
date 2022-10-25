@@ -346,6 +346,7 @@ void queued_spin_lock_slowpath(struct qspinlock *lock, u32 val)
 	 * number of spins so that we guarantee forward progress.
 	 *
 	 * 0,1,0 -> 0,0,1 在这里设置{clear_pending_set_locked(lock);}
+	 * 程序解释：如果当前lock->val处于pending为被独自设置的状态，自己肯定是第三了，而且此时第一已经释放锁了，第二碰巧还没设置成（0,0,1），自己应该是第二，所以等真正的第二设置完成我就不要进入队列了，yes！所以我在这里自旋下。
 	 */
 	if (val == _Q_PENDING_VAL) { //第8位为1 这个状态就是pending位被设置，持有锁的线程已经释放了锁，第二个线程还在自旋等待，还没将其变成（0，0，1），所以val短暂的变成了（0,1,0）。所以等着变回0,0,1）
 		int cnt = _Q_PENDING_LOOPS; //第9位为1
@@ -384,13 +385,14 @@ _Q_LOCKED_MASK 0000 0000 1111 1111 8个1
 ~_Q_LOCKED_MASK = 1111 1111 0000 0000
 如果是真，说明pending或者tail cpu位为1。
 
-说明前一步等到（0，0,1）或者步数过了以后，pending或者tail cpu有值。说明还是有竞争。因为如果等到了（0,0,1）现在又不是了，或者甚至已经到tail了。又或者，等到超过自旋次数了还是在pending，还没有回到（0，0,1）不过当loop设定成512次以后前一种的情况可能性更高，也就是出现了激烈的竞争。
-没办法进入队列处理。
+程序解释：说明前一步等到（0，0,1）或者步数过了以后，pending或者tail cpu有值。说明自己没有当成第二，肯定不是前三了，要去排队了。好伤心！
 */
 	if (val & ~_Q_LOCKED_MASK) //接上面，果然到了queue这个阶段了，不止2个CPU抢到了锁，我其实应该去Percpu的本地锁自旋了。
 		goto queue;
 
 	/*
+	将自己当做第二个CPU（当然可能不是），然后设置lock->val的pending位。
+
 	 * trylock || pending
 	 *
 	 * 0,0,* -> 0,1,* -> 0,0,1 pending, trylock
@@ -406,8 +408,10 @@ _Q_LOCKED_MASK 0000 0000 1111 1111 8个1
 			return val;
 		}
 
-		也就是，如果v==val 则将val=v（返回v更新前的值）；v=val|i；返回true；
+		程序解释：也就是，如果v==val 则将val=v（返回v更新前的值）；v=val|i；返回true；
 		如果v!=val 则val=v；返回false
+
+		程序解释：到这里来了，说明自己很幸运，自己可能抢到了第二把交椅。但是，也不能高兴太早，可能在执行上面的if时，其他CPU把第二把交椅抢了。但是，不管怎么样，先原子的设置pending位。涉及到cmpxchg指令，val的值是设置pending位之前的lock->val值！
 	 */
 	val = queued_fetch_set_pending_acquire(lock);//这里一定是设置val|之前的lock-》val值。可能因为竞争被其他cpu抢先设置了pending为，也可能正常的不带pending位！！！！
 
@@ -418,10 +422,14 @@ _Q_LOCKED_MASK 0000 0000 1111 1111 8个1
 	 * n,0,0 -> 0,0,0 transition fail and it will now be waiting
 	 * on @next to become !NULL.
 	 */
+
+	/*
+	程序解释：补丁程序，因为是无锁编程，所以自己在设置完pending位后可能不是第二个CPU了，要去排队了…… 如果进入if，太遗憾了，在第二次竞争中没有获胜，可能还需要撤掉多设置的pending。
+	*/
 	if (unlikely(val & ~_Q_LOCKED_MASK)) {// 正常情况，val应该是（0,0,1）所以分支是进不来的，而且大部分情况如此（没有激烈的contention）所以unlikely暗示CPU不要预测true；但是在contention的情况，lock可能已经超过两个cpu在等待了，此时依然可以设置pending位成功，所以针对这种情况需要做当前的判断。如果真的发生contention，则需要queue。
 
 		/* Undo PENDING if we set it. */
-		if (!(val & _Q_PENDING_MASK)) //val是抢完之前的值，如果没有设置pending，也就是此时我已经错误的将lock-》val已经设置了，所以要退回去，恢复之前的状态。也就是执行queued_fetch_set_pending_acquire完成之前，qspinlock变量已经进入tail_cpu阶段了，且（cpu,0,0）的状态了。所以要回滚！！！！
+		if (!(val & _Q_PENDING_MASK)) //因为进入了if，所以自己肯定不是第二了，要进入队列，此时应该不要设置lock的pending位，老实去排队。但是，之前连消带打已经设置了，所以如果设置之前的lock->pending也就是val的pending位已经被设置，说明此前只是重复设置了，没事。但是如果之前没有设置pending，自己应该直接去排队，这里要回滚！
 			clear_pending(lock);
 
 		goto queue;
@@ -438,7 +446,7 @@ _Q_LOCKED_MASK 0000 0000 1111 1111 8个1
 	 * clear_pending_set_locked() implementations imply full
 	 * barriers.
 	 */
-	/*第一个等待的CPU在这里自旋！！！
+	/*SPIN-1:第一个等待的CPU在这里自旋！！！
 	此时val正常应该是（0,0,1）这其实是说自己在等待前面获得锁的CPU释放锁。此时lock->val == (0,1,1)
 	那么就在这里自旋，谁叫自己是第一个等待的CPU呢？自旋等待lock->变成（0,1,0）也就是等待持有锁的CPU释放锁。条件是(VAL & _Q_LOCKED_MASK) */
 	if (val & _Q_LOCKED_MASK)
@@ -559,7 +567,7 @@ pv_queue:
 	 * head of the waitqueue.
 	 */
 
-	/*判断自己是否为queue的第一个元素*/
+	/*判断自己是否为queue的第一个元素,if退出以后node就是了，要在这里做自旋等待msc->locked变成1*/
 	if (old & _Q_TAIL_MASK) {//如果不是
 
 		/*找到自己的前驱节点。*/
@@ -589,6 +597,8 @@ pv_queue:
 
 		解释：如果msc->locked==1,也就是VAL==1，说明轮到自己执行了，自己获得了锁，所以cpu_relax()结束。否则自旋。
 		说白了就是等待自己的percpu msc被别的CPU因为释放锁而设置成1.
+
+		执行完以后node就是队列头了！
 		*/
 		arch_mcs_spin_lock_contended(&node->locked);
 
@@ -598,6 +608,7 @@ pv_queue:
 		 * the next pointer & prefetch the cacheline for writing
 		 * to reduce latency in the upcoming MCS unlock operation.
 		 */
+		/*下一个节点缓存预热下*/
 		next = READ_ONCE(node->next);
 		if (next)
 			prefetchw(next);
@@ -627,8 +638,30 @@ pv_queue:
 	if ((val = pv_wait_head_or_lock(lock, node)))
 		goto locked;
 
-	/*如果是queue中的头节点----------------》old是0 也就是自己就是第一个queue即第3个cpu。*/
+	/*现在node是queue中的头节点----------------》也就是自己就是第一个queue即第3个cpu。*/
 
+	/*
+	_Q_LOCKED_PENDING_MASK == 0000 0001 1111 1111
+	有两种情况到这里：
+	1、old==0 也就是一开始node就是队列头，说明有2个CPU在等锁，一个占有锁；
+	2、node的msc->locked被设置成1，此时自己占有了锁。
+
+	展开：
+		#define smp_cond_load_relaxed(ptr, cond_expr) ({		\
+		typeof(ptr) __PTR = (ptr);				\
+		__unqual_scalar_typeof(*ptr) VAL;			\
+		for (;;) {						\
+			VAL = READ_ONCE(*__PTR);			\
+			if (cond_expr)					\
+				break;					\
+			cpu_relax();					\
+		}							\
+		(typeof(*ptr))VAL;					\
+		})
+
+	两种情况都在这里自旋。第一种情况等待前面两个CPU释放锁，轮到自己就退出。
+	第二种情况，应该不用自旋。因为val
+	*/
 	val = atomic_cond_read_acquire(&lock->val, !(VAL & _Q_LOCKED_PENDING_MASK)); //_Q_LOCKED_PENDING_MASK lock->val前两个字节全部是1。如果lock与pending都没有了，也就是第1第2都释放了，就轮到queue的第一个了。也就是我！val是最新拿到的lock-》val。
 
 locked:
