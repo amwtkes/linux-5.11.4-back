@@ -484,6 +484,7 @@ pv_queue:
 		goto release;
 	}
 
+	/*node是本CPU的空mcs节点，应该是空的没用过的。*/
 	node = grab_mcs_node(node, idx);//node初始化为qnodes[0].mcs percpu数组的第0个mcs。一共有4个，表示每个CPU上不管多少个qspinlock对象最多也只能嵌套4层（task si hi nmi）所以每个数组成员表示一层。这里就是根据idex取出相应层的mcs对象。
 
 	/*
@@ -499,7 +500,7 @@ pv_queue:
 	barrier(); //就是防止编译器reorder后面对node的操作必须要在得到正确的node之后才能进行，否则会乱套。因为intel是强一致性内存模型。intel内存模型，memery-reorder 参考：https://app.yinxiang.com/shard/s65/nl/15273355/b9569249-ef01-4141-927f-8ae713b8770a/
 
 	node->locked = 0; //mcs spinlock的locked字段为1的时候说明占有了锁。
-	node->next = NULL;
+	node->next = NULL;//因为自己应该是tail所以没有next。
 	pv_init_node(node);
 
 	/*
@@ -507,6 +508,7 @@ pv_queue:
 	 * attempt the trylock once more in the hope someone let go while we
 	 * weren't watching.
 	 */
+
 	/*
 	static __always_inline int queued_spin_trylock(struct qspinlock *lock)
 	{
@@ -517,7 +519,7 @@ pv_queue:
 
 		return likely(atomic_try_cmpxchg_acquire(&lock->val, &val, _Q_LOCKED_VAL));
 	}
-	如果此时lock->val==0也就是没锁了，毕竟此时已经很久没看看lock的值了。都释放了，那么自己可以尝试去抢得锁，通过cmpxchg指令抢到，并返回true，此时lock->val的值也被设置成了（0,0,1）。可以进入release流程了。
+	如果此时lock->val==0也就是第一第二CPU都释放了，毕竟此时已经很久没看看lock的值了。都释放了，那么自己可以尝试去抢得qspinlock锁，通过cmpxchg指令抢到，并返回true，此时lock->val的值也被设置成了（0,0,1）。可以进入release流程了。
 	否则，也就是lock->val不是0，至少自己还要等，则return 0出来了。不能走release。
 
 	所以这个过程就是在进行queue之前再看看是否要走queue的流程。毕竟CPU很快嘛。
@@ -547,7 +549,8 @@ pv_queue:
 	 * p,*,* -> n,*,*
 	 */
 
-	/*更新lock->tail=tail，返回old就是更新之前的值。应该指向之前最后一个cpu的mcs。*/
+	/*lock->tail_cpu就是指向当前最后一个cpu node；现在我们要更新lock->tail字段，使用xchg_tail方法。
+	更新lock->tail=tail，返回old就是更新之前的值。应该指向之前最后一个cpu的mcs。*/
 	old = xchg_tail(lock, tail);
 	next = NULL;
 
@@ -555,14 +558,16 @@ pv_queue:
 	 * if there was a previous node; link it and wait until reaching the
 	 * head of the waitqueue.
 	 */
-	if (old & _Q_TAIL_MASK) {
 
-		/*获取old对应的cpu的percpu qnodes队列，并取出之前最后一个msc对象。因为idx与cpu都编码到了old变量里面所以可以轻松拿到。*/
-		prev = decode_tail(old);
+	/*判断自己是否为queue的第一个元素*/
+	if (old & _Q_TAIL_MASK) {//如果不是
+
+		/*找到自己的前驱节点。*/
+		prev = decode_tail(old); //获取old对应的cpu的percpu qnodes队列，并取出之前最后一个msc对象。因为idx与cpu都编码到了old变量里面所以可以轻松拿到。
 
 		/* Link @node into the waitqueue. */
 		/*是不是很简单，尾插法嘛*/
-		WRITE_ONCE(prev->next, node);
+		WRITE_ONCE(prev->next, node); //前驱的next原来是NULL。
 
 		pv_wait_node(node, prev);
 		arch_mcs_spin_lock_contended(&node->locked);
@@ -602,7 +607,9 @@ pv_queue:
 	if ((val = pv_wait_head_or_lock(lock, node)))
 		goto locked;
 
-	val = atomic_cond_read_acquire(&lock->val, !(VAL & _Q_LOCKED_PENDING_MASK));
+	/*如果是queue中的头节点----------------》old是0 也就是自己就是第一个queue即第3个cpu。*/
+
+	val = atomic_cond_read_acquire(&lock->val, !(VAL & _Q_LOCKED_PENDING_MASK)); //_Q_LOCKED_PENDING_MASK lock->val前两个字节全部是1。如果lock与pending都没有了，也就是第1第2都释放了，就轮到queue的第一个了。也就是我！val是最新拿到的lock-》val。
 
 locked:
 	/*
@@ -626,7 +633,7 @@ locked:
 	 *       above wait condition, therefore any concurrent setting of
 	 *       PENDING will make the uncontended transition fail.
 	 */
-	if ((val & _Q_TAIL_MASK) == tail) {
+	if ((val & _Q_TAIL_MASK) == tail) {//自己就是tail也是head
 		if (atomic_try_cmpxchg_relaxed(&lock->val, &val, _Q_LOCKED_VAL))
 			goto release; /* No contention */
 	}

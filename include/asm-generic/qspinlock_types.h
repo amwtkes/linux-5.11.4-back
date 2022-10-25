@@ -90,7 +90,7 @@ typedef struct qspinlock {
 #define _Q_TAIL_CPU_MASK	_Q_SET_MASK(TAIL_CPU) //将18-31位 置1
 
 #define _Q_TAIL_OFFSET		_Q_TAIL_IDX_OFFSET //16
-#define _Q_TAIL_MASK		(_Q_TAIL_IDX_MASK | _Q_TAIL_CPU_MASK) //tail index那两位值1 16-17
+#define _Q_TAIL_MASK		(_Q_TAIL_IDX_MASK | _Q_TAIL_CPU_MASK) //从16到31位都是1
 
 #define _Q_LOCKED_VAL		(1U << _Q_LOCKED_OFFSET) //1
 #define _Q_PENDING_VAL		(1U << _Q_PENDING_OFFSET) //2^8
