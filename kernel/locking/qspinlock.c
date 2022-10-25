@@ -385,7 +385,7 @@ _Q_LOCKED_MASK 0000 0000 1111 1111 8个1
 ~_Q_LOCKED_MASK = 1111 1111 0000 0000
 如果是真，说明pending或者tail cpu位为1。
 
-程序解释：说明前一步等到（0，0,1）或者步数过了以后，pending或者tail cpu有值。说明自己没有当成第二，肯定不是前三了，要去排队了。好伤心！
+程序解释：说明前一步等到（0，0,1）或者步数过了以后，pending或者tail cpu有值。进入if，说明自己没有当成第二，肯定不是前三了，要去排队了。好伤心！
 */
 	if (val & ~_Q_LOCKED_MASK) //接上面，果然到了queue这个阶段了，不止2个CPU抢到了锁，我其实应该去Percpu的本地锁自旋了。
 		goto queue;
@@ -424,7 +424,7 @@ _Q_LOCKED_MASK 0000 0000 1111 1111 8个1
 	 */
 
 	/*
-	程序解释：补丁程序，因为是无锁编程，所以自己在设置完pending位后可能不是第二个CPU了，要去排队了…… 如果进入if，太遗憾了，在第二次竞争中没有获胜，可能还需要撤掉多设置的pending。
+	程序解释：补丁程序，因为是无锁编程，所以自己在设置完pending位后可能不是第二个CPU了，要去排队了…… 如果进入if，太遗憾了，在第二次竞争中没有获胜（tail-cpu或者pending被其他CPU占有了），可能还需要撤掉多设置的pending。
 	*/
 	if (unlikely(val & ~_Q_LOCKED_MASK)) {// 正常情况，val应该是（0,0,1）所以分支是进不来的，而且大部分情况如此（没有激烈的contention）所以unlikely暗示CPU不要预测true；但是在contention的情况，lock可能已经超过两个cpu在等待了，此时依然可以设置pending位成功，所以针对这种情况需要做当前的判断。如果真的发生contention，则需要queue。
 
@@ -459,8 +459,9 @@ _Q_LOCKED_MASK 0000 0000 1111 1111 8个1
 			(typeof(*ptr))VAL;					\
 		})
 
-	程序解释：太幸运了，自己就是第二名，前面的CPU占有了锁，它执行完就是我了！开心！在这里自旋下吧，马上了。等着VAL & _Q_LOCKED_MASK变成0.也就是（0,0,0）
-	SPIN-1:第一个等待的CPU在这里自旋！！！
+	程序解释：（走到这里val是(0,0,1）lock->val是(0,1,1)),太幸运了，自己就是第二名，前面的CPU占有了锁，它执行完就是我了！开心！在这里自旋下吧，马上了。等着VAL & _Q_LOCKED_MASK变成0.也就是（0,0,0）
+
+	SPIN-1:第一个等待的CPU在这里自旋！！！等待从(0,1,1)到（0,1,0）因为spin_unlock()只会将lock->val的lock字段清除，所以只能变成(0,1,0)。
 	此时val正常应该是（0,0,1）这其实是说自己在等待前面获得锁的CPU释放锁。此时lock->val == (0,1,1)
 	那么就在这里自旋，谁叫自己是第一个等待的CPU呢？自旋等待lock->变成（0,1,0）也就是等待持有锁的CPU释放锁。条件是(VAL & _Q_LOCKED_MASK) */
 	if (val & _Q_LOCKED_MASK)
@@ -473,8 +474,8 @@ _Q_LOCKED_MASK 0000 0000 1111 1111 8个1
 	 */
 	/*程序解释：好了，我是老大了，设置成（0,0,1）我抢到锁了，退出去干正事了~~开心！
 	
-	这里就呼应了开头{if (val == _Q_PENDING_VAL) 这个分支}*/
-	clear_pending_set_locked(lock);
+	SPIN-1.1 这里就呼应了开头{if (val == _Q_PENDING_VAL) 这个分支}*/
+	clear_pending_set_locked(lock); //从（0,1,0）变成（0,0,1） 这就是为什么开头判断val==_Q_PENDING_VAL的含义。等的就是这个操作。
 	lockevent_inc(lock_pending);
 	return;
 
@@ -485,8 +486,8 @@ _Q_LOCKED_MASK 0000 0000 1111 1111 8个1
 
 	/*程序解释：下面都是大于1个等待线程的处理情况，排队把……没办法。
 	自己可能是第三或者很后面，这里要分开对待。
+	lock->val的值tail_cpu或者pending不同时是0.
 	*/
-
 queue:
 	lockevent_inc(lock_slowpath);
 pv_queue:
@@ -547,7 +548,8 @@ pv_queue:
 
 		return likely(atomic_try_cmpxchg_acquire(&lock->val, &val, _Q_LOCKED_VAL));
 	}
-	程序解释：嗷嗷嗷！！！如果此时lock->val==0，也就是都释放干净了，太有趣了吧！！！以为自己要排队，结果转了一圈发现就剩自己了！！！！自己要从发配边疆马上要到继承大统，这过山车坐得。这个指令，我连皇冠都带上了！
+
+	程序解释：嗷嗷嗷！！！如果此时lock->val==0，（进入了if）也就是都释放干净了，太有趣了吧！！！以为自己要排队，结果转了一圈发现就剩自己了！！！！自己要从发配边疆马上要到继承大统，这过山车坐得。这个指令，我连皇冠都带上了！
 	已经（0,0,1）了。直接去release。将嵌套counter回收下就去当皇帝了。
 	*/
 	if (queued_spin_trylock(lock))
@@ -575,7 +577,7 @@ pv_queue:
 	 * p,*,* -> n,*,*
 	 */
 
-	/*程序解释：好了，正常流程，不幸要开始排队了！xchg_tail连消带打，一条指令将lock->tail_cpu设置成自己，自己先排到最后，然后保存前面的cpu。*/
+	/*程序解释：好了，正常流程，不幸要开始排队了！xchg_tail连消带打，一条指令将lock->tail_cpu设置成自己，自己先排到最后，然后保存前面的tail_cpu值到old中。*/
 	old = xchg_tail(lock, tail);
 	next = NULL;
 
@@ -612,7 +614,8 @@ pv_queue:
 		(typeof(*ptr))VAL;					\
 		})
 
-		程序解释：好了开始等待通知了，击鼓传花的方式，我看看花啥时候到我手里了。在这自旋把。SPIN-2 在自己CPU上自旋。等待自己变成队头。
+		SPIN-2 在自己CPU上自旋。等待自己变成队头。node->locked==1的情况发生。
+		程序解释：好了开始等待通知了，击鼓传花的方式，我看看花啥时候到我手里了。在这自旋把。
 		如果msc->locked==1,也就是VAL==1，说明轮到自己执行了，自己获得了锁，所以cpu_relax()结束。否则自旋。
 		说白了就是等待自己的percpu msc被别的CPU因为释放锁而设置成1.
 
@@ -656,13 +659,13 @@ pv_queue:
 	if ((val = pv_wait_head_or_lock(lock, node)))
 		goto locked;
 
-	/*程序解释：现在我-node是队头了！！！----------------》也就是自己就是第一个queue即第3个cpu。*/
+	/*程序解释：走到这里说明现在我-node是队头了！！！----------------》也就是自己就是第一个queue，最多第3个cpu。可能是(n,0,0)或者(n,*,1)*/
 
 	/*
 	_Q_LOCKED_PENDING_MASK == 0000 0001 1111 1111
 	有两种情况到这里：
-	1、old==0 也就是一开始node就是队列头，说明有2个CPU在等锁，一个占有锁；
-	2、node的msc->locked被设置成1，此时自己占有了锁。
+	1、old==0 也就是lock->val的tail_cpu为空。说明一开始node就是队列头，说明此时有2个CPU在等锁（包括自己），一个占有锁；
+	2、在上一步自旋结果中，node的msc->locked被设置成1，此时已经轮到自己占有锁了。
 
 	展开：
 		#define smp_cond_load_relaxed(ptr, cond_expr) ({		\
@@ -677,8 +680,8 @@ pv_queue:
 		(typeof(*ptr))VAL;					\
 		})
 
-	两种情况都在这里自旋。第一种情况等待前面两个CPU释放锁，轮到自己就退出。
-	第二种情况，应该不用自旋。因为val
+	两种情况都在这里自旋。SPIN-3 也就是等待(n,*,1)到（n,0,0）自己已经是队列头了，但是也得等qspinlock的前两个CPU释放锁!
+	等待前面两个CPU释放锁（VAL & _Q_LOCKED_PENDING_MASK)也就是lock->val前两位变成0），因为前面已经证明到这里说明自己是队头，执行这条spin后退出说明前面的pending与lock都是0了，说明终于轮到自己了，就结束自旋，等待加冕了~
 	*/
 	val = atomic_cond_read_acquire(&lock->val, !(VAL & _Q_LOCKED_PENDING_MASK)); //_Q_LOCKED_PENDING_MASK lock->val前两个字节全部是1。如果lock与pending都没有了，也就是第1第2都释放了，就轮到queue的第一个了。也就是我！val是最新拿到的lock-》val。
 
