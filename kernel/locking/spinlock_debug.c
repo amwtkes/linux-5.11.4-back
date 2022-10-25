@@ -107,7 +107,7 @@ static inline void debug_spin_unlock(raw_spinlock_t *lock)
  * We are now relying on the NMI watchdog to detect lockup instead of doing
  * the detection here with an unfair lock which can cause problem of its own.
  */
-/*xiaojin-spinlock 3.4-smp(x86)-lock do_raw_spin_lock*/
+/*xiaojin-spinlock 3.4-lock do_raw_spin_lock*/
 void do_raw_spin_lock(raw_spinlock_t *lock)
 {
 	debug_spin_lock_before(lock);

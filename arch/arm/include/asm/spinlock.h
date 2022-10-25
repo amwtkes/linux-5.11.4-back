@@ -52,7 +52,7 @@ static inline void dsb_sev(void)
  * release it, because V6 CPUs are assumed to have weakly ordered
  * memory.
  */
-/*xiaojin-spinlock 3.1-arm-lock void arch_spin_lock ticket算法的实现。会加上ldrex strex锁来保证对counter的原子性操作。如果还没到自己（lockval.tickets.next != lockval.tickets.owner）则进行wfe();相当于放弃cpu等待信号通知。专门为lock设计的指令。可以节约能耗。
+/*xiaojin-spinlock 3.5-arm-lock void arch_spin_lock ticket算法的实现。会加上ldrex strex锁来保证对counter的原子性操作。如果还没到自己（lockval.tickets.next != lockval.tickets.owner）则进行wfe();相当于放弃cpu等待信号通知。专门为lock设计的指令。可以节约能耗。
 
 https://app.yinxiang.com/shard/s65/nl/15273355/e6b21781-3aab-4f5a-b53c-fc716c6dbf0f/
 */

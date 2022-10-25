@@ -446,7 +446,7 @@ do {								\
 #define lock_contended(lockdep_map, ip) do {} while (0)
 #define lock_acquired(lockdep_map, ip) do {} while (0)
 
-/*xiaojin-spinlock 3.3-smp(x86)-lock 实际调用的是do_raw_spin_lock这个函数*/
+/*xiaojin-spinlock 3.3-lock 实际调用的是do_raw_spin_lock这个函数*/
 #define LOCK_CONTENDED(_lock, try, lock) \
 	lock(_lock)
 
