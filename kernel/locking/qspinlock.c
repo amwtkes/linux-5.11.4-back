@@ -446,7 +446,21 @@ _Q_LOCKED_MASK 0000 0000 1111 1111 8个1
 	 * clear_pending_set_locked() implementations imply full
 	 * barriers.
 	 */
-	/*SPIN-1:第一个等待的CPU在这里自旋！！！
+	/*
+		#define smp_cond_load_relaxed(ptr, cond_expr) ({		\
+			typeof(ptr) __PTR = (ptr);				\
+			__unqual_scalar_typeof(*ptr) VAL;			\
+			for (;;) {						\
+				VAL = READ_ONCE(*__PTR);			\
+				if (cond_expr)					\
+					break;					\
+				cpu_relax();					\
+			}							\
+			(typeof(*ptr))VAL;					\
+		})
+
+	程序解释：太幸运了，自己就是第二名，前面的CPU占有了锁，它执行完就是我了！开心！在这里自旋下吧，马上了。等着VAL & _Q_LOCKED_MASK变成0.也就是（0,0,0）
+	SPIN-1:第一个等待的CPU在这里自旋！！！
 	此时val正常应该是（0,0,1）这其实是说自己在等待前面获得锁的CPU释放锁。此时lock->val == (0,1,1)
 	那么就在这里自旋，谁叫自己是第一个等待的CPU呢？自旋等待lock->变成（0,1,0）也就是等待持有锁的CPU释放锁。条件是(VAL & _Q_LOCKED_MASK) */
 	if (val & _Q_LOCKED_MASK)
@@ -457,7 +471,9 @@ _Q_LOCKED_MASK 0000 0000 1111 1111 8个1
 	 *
 	 * 0,1,0 -> 0,0,1
 	 */
-	/*这里就呼应了开头{if (val == _Q_PENDING_VAL) 这个分支}*/
+	/*程序解释：好了，我是老大了，设置成（0,0,1）我抢到锁了，退出去干正事了~~开心！
+	
+	这里就呼应了开头{if (val == _Q_PENDING_VAL) 这个分支}*/
 	clear_pending_set_locked(lock);
 	lockevent_inc(lock_pending);
 	return;
