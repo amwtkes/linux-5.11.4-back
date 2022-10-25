@@ -575,8 +575,7 @@ pv_queue:
 	 * p,*,* -> n,*,*
 	 */
 
-	/*lock->tail_cpu就是指向当前最后一个cpu node；现在我们要更新lock->tail字段，使用xchg_tail方法。
-	更新lock->tail=tail，返回old就是更新之前的值。应该指向之前最后一个cpu的mcs。*/
+	/*程序解释：好了，正常流程，不幸要开始排队了！xchg_tail连消带打，一条指令将lock->tail_cpu设置成自己，自己先排到最后，然后保存前面的cpu。*/
 	old = xchg_tail(lock, tail);
 	next = NULL;
 
@@ -585,8 +584,8 @@ pv_queue:
 	 * head of the waitqueue.
 	 */
 
-	/*判断自己是否为queue的第一个元素,if退出以后node就是了，要在这里做自旋等待msc->locked变成1*/
-	if (old & _Q_TAIL_MASK) {//如果不是
+	/*程序解释：判断自己是否为queue的第一个元素,if退出以后node就是了，要在这里做自旋等待msc->locked变成1*/
+	if (old & _Q_TAIL_MASK) {//如果不是，这是最坏的情况了…………可能要等很久，伤心……
 
 		/*找到自己的前驱节点。*/
 		prev = decode_tail(old); //获取old对应的cpu的percpu qnodes队列，并取出之前最后一个msc对象。因为idx与cpu都编码到了old变量里面所以可以轻松拿到。
@@ -613,7 +612,8 @@ pv_queue:
 		(typeof(*ptr))VAL;					\
 		})
 
-		解释：如果msc->locked==1,也就是VAL==1，说明轮到自己执行了，自己获得了锁，所以cpu_relax()结束。否则自旋。
+		程序解释：好了开始等待通知了，击鼓传花的方式，我看看花啥时候到我手里了。在这自旋把。SPIN-2 在自己CPU上自旋。等待自己变成队头。
+		如果msc->locked==1,也就是VAL==1，说明轮到自己执行了，自己获得了锁，所以cpu_relax()结束。否则自旋。
 		说白了就是等待自己的percpu msc被别的CPU因为释放锁而设置成1.
 
 		执行完以后node就是队列头了！
@@ -656,7 +656,7 @@ pv_queue:
 	if ((val = pv_wait_head_or_lock(lock, node)))
 		goto locked;
 
-	/*现在node是queue中的头节点----------------》也就是自己就是第一个queue即第3个cpu。*/
+	/*程序解释：现在我-node是队头了！！！----------------》也就是自己就是第一个queue即第3个cpu。*/
 
 	/*
 	_Q_LOCKED_PENDING_MASK == 0000 0001 1111 1111
