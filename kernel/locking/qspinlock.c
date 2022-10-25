@@ -483,13 +483,15 @@ _Q_LOCKED_MASK 0000 0000 1111 1111 8个1
 	 * queuing.
 	 */
 
-	/*下面都是大于1个等待线程的处理情况*/
+	/*程序解释：下面都是大于1个等待线程的处理情况，排队把……没办法。
+	自己可能是第三或者很后面，这里要分开对待。
+	*/
 
 queue:
 	lockevent_inc(lock_slowpath);
 pv_queue:
 	node = this_cpu_ptr(&qnodes[0].mcs);//第0个node
-	idx = node->count++;
+	idx = node->count++;//嵌套层数放在了第一个元素的count中。
 	tail = encode_tail(smp_processor_id(), idx);//设置tail_cpu的值， 9-10: tail index 11-31: tail cpu (+1)——加1是为了避免0表示没有CPU设置，但是有表示第0号CPU，所以有矛盾，干脆就+1.
 
 	/*
@@ -508,7 +510,7 @@ pv_queue:
 		goto release;
 	}
 
-	/*node是本CPU的空mcs节点，应该是空的没用过的。*/
+	/*程序解释：node是本CPU的空mcs节点，应该是空的没用过的。*/
 	node = grab_mcs_node(node, idx);//node初始化为qnodes[0].mcs percpu数组的第0个mcs。一共有4个，表示每个CPU上不管多少个qspinlock对象最多也只能嵌套4层（task si hi nmi）所以每个数组成员表示一层。这里就是根据idex取出相应层的mcs对象。
 
 	/*
@@ -523,6 +525,8 @@ pv_queue:
 	 */
 	barrier(); //就是防止编译器reorder后面对node的操作必须要在得到正确的node之后才能进行，否则会乱套。因为intel是强一致性内存模型。intel内存模型，memery-reorder 参考：https://app.yinxiang.com/shard/s65/nl/15273355/b9569249-ef01-4141-927f-8ae713b8770a/
 
+	/*初始化node节点。
+	*/
 	node->locked = 0; //mcs spinlock的locked字段为1的时候说明占有了锁。
 	node->next = NULL;//因为自己应该是tail所以没有next。
 	pv_init_node(node);
@@ -543,10 +547,8 @@ pv_queue:
 
 		return likely(atomic_try_cmpxchg_acquire(&lock->val, &val, _Q_LOCKED_VAL));
 	}
-	如果此时lock->val==0也就是第一第二CPU都释放了，毕竟此时已经很久没看看lock的值了。都释放了，那么自己可以尝试去抢得qspinlock锁，通过cmpxchg指令抢到，并返回true，此时lock->val的值也被设置成了（0,0,1）。可以进入release流程了。
-	否则，也就是lock->val不是0，至少自己还要等，则return 0出来了。不能走release。
-
-	所以这个过程就是在进行queue之前再看看是否要走queue的流程。毕竟CPU很快嘛。
+	程序解释：嗷嗷嗷！！！如果此时lock->val==0，也就是都释放干净了，太有趣了吧！！！以为自己要排队，结果转了一圈发现就剩自己了！！！！自己要从发配边疆马上要到继承大统，这过山车坐得。这个指令，我连皇冠都带上了！
+	已经（0,0,1）了。直接去release。将嵌套counter回收下就去当皇帝了。
 	*/
 	if (queued_spin_trylock(lock))
 		goto release;
