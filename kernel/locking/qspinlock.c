@@ -570,6 +570,26 @@ pv_queue:
 		WRITE_ONCE(prev->next, node); //前驱的next原来是NULL。
 
 		pv_wait_node(node, prev);
+
+		/*
+		smp_cond_load_acquire(l, VAL);	
+		|
+		v
+		#define smp_cond_load_relaxed(ptr, cond_expr) ({		\
+			typeof(ptr) __PTR = (ptr);				\
+			__unqual_scalar_typeof(*ptr) VAL;			\
+			for (;;) {						\
+				VAL = READ_ONCE(*__PTR);			\
+				if (cond_expr)---VAL					\
+					break;					\
+				cpu_relax();					\
+			}							\
+		(typeof(*ptr))VAL;					\
+		})
+
+		解释：如果msc->locked==1,也就是VAL==1，说明轮到自己执行了，自己获得了锁，所以cpu_relax()结束。否则自旋。
+		说白了就是等待自己的percpu msc被别的CPU因为释放锁而设置成1.
+		*/
 		arch_mcs_spin_lock_contended(&node->locked);
 
 		/*
