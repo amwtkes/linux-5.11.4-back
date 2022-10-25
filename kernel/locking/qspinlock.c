@@ -707,6 +707,10 @@ locked:
 	 *       above wait condition, therefore any concurrent setting of
 	 *       PENDING will make the uncontended transition fail.
 	 */
+
+	/*
+	程序说明：自己是队头也是队尾吗？如果是，很幸运，你是最后一个了，直接设置成(0,0,1)然后去愉快的运行把~
+	*/
 	if ((val & _Q_TAIL_MASK) == tail) {//自己就是tail也是head
 		if (atomic_try_cmpxchg_relaxed(&lock->val, &val, _Q_LOCKED_VAL))
 			goto release; /* No contention */
@@ -717,14 +721,30 @@ locked:
 	 * which will then detect the remaining tail and queue behind us
 	 * ensuring we'll see a @next.
 	 */
+	/*程序解释：走到这里说明后面还有tail，自己不是最后一个。所以设置lock->locked=1，说明我拥有锁*/
 	set_locked(lock);
 
 	/*
 	 * contended path; wait for next if not observed yet, release.
 	 */
+
+	/*
+	程序说明：因为要加入一个新的node的过程是：
+	1、old = xchg_tail(lock, tail); 修改lock的tail_cpu字段到当前cpu；
+	2、WRITE_ONCE(prev->next, node);然后再修改的next指针
+	3、因为前面已经判断自己是否是队尾，所以肯定是执行了1、还没到2、。
+	所以，next还是null不能说明没有下一个node，可能还没到。所以自旋等待一下，等next被设置。
+	*/
 	if (!next)
 		next = smp_cond_load_relaxed(&node->next, (VAL));
 
+	/*我走完最后历程从(0,0,1)->(n,*,1)->queued->wait msc->locked to 1->now set next.locked=1
+	我要加冕了。
+	最后一步指定继任者，然后设置它的mcs->locked=1，它可以准备跑了。
+
+	smp_store_release((l), 1) 在X86-64下等价于WRITE_ONCE(prev->next, node);
+	将next->locked设置成1.
+	*/
 	arch_mcs_spin_unlock_contended(&next->locked);
 	pv_kick_node(lock, next);
 
@@ -732,6 +752,8 @@ release:
 	/*
 	 * release the node
 	 */
+
+	/*退出锁，嵌套减回去*/
 	__this_cpu_dec(qnodes[0].mcs.count);
 }
 EXPORT_SYMBOL(queued_spin_lock_slowpath);
