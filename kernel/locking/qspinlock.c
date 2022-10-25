@@ -620,6 +620,10 @@ pv_queue:
 		说白了就是等待自己的percpu msc被别的CPU因为释放锁而设置成1.
 
 		执行完以后node就是队列头了！
+		
+		在哪里设置这个node->locked=1呢？在函数的最后。arch_mcs_spin_unlock_contended(&next->locked);
+		这里有个地方要注意：
+		在前一个CPU获得qspinlock锁以后，也就是lock->val.locked=1的时候，已经指定了下一个mcs node的locked=1了。这里要注意。是先设置“下一个”mcs抢到了lock，然后再设置本CPU的qspinlock.val.locked为1.这样，当前CPU可以去执行业务逻辑，而不用担心下一个CPU获得锁。因为，next会在SPIN-3的地方等待你解锁。也就是将qspinlock.val.locked=0设置成0.
 		*/
 		arch_mcs_spin_lock_contended(&node->locked);
 
