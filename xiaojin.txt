@@ -19,6 +19,7 @@ xiaojin-rcu-event ----rcu状态机
 xiaojin-spinlock ---
 xiaojin-spinlock.*smp --- smp构架
 xiaojin-spinlock.*up --- up architecture
+xiaojin-spinlock.*arm 
 xiaojin-spinlock-qspinlock -- qspinlock相关
 
 =========syscall
