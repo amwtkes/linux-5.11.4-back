@@ -2446,7 +2446,7 @@ device_initcall(cpuhp_sysfs_init);
 #define MASK_DECLARE_4(x)	MASK_DECLARE_2(x), MASK_DECLARE_2(x+2)
 #define MASK_DECLARE_8(x)	MASK_DECLARE_4(x), MASK_DECLARE_4(x+4)
 
-/*xiaojin-cpu_mask -1.1 cpu_bit_bitmap 
+/*xiaojin-cpumask -1.1 cpu_bit_bitmap 
 https://app.yinxiang.com/shard/s65/nl/15273355/858c98c0-c42c-4192-91b7-f1c291c8201a/
 
 unsigned long cpu_bit_bitmap[65][2]大部分cpu	
