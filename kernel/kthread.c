@@ -345,7 +345,9 @@ struct task_struct *__kthread_create_on_node(int (*threadfn)(void *data),
 	create->done = &done;
 
 	spin_lock(&kthread_create_lock);
-	/*xiaojin-percpu_kthread -7.4.1 发到kthread_create_list这个队列上，由kthreadd_task后台线程来异步创建。*/
+	/*xiaojin-percpu_kthread -7.4.1 发到kthread_create_list这个队列上，由kthreadd_task后台线程来异步创建。
+	kthreadd是第2号进程，负责创建内核线程
+	*/
 	list_add_tail(&create->list, &kthread_create_list);
 	spin_unlock(&kthread_create_lock);
 
@@ -500,7 +502,7 @@ struct task_struct *kthread_create_on_cpu(int (*threadfn)(void *data),
 				   cpu);
 	if (IS_ERR(p))
 		return p;
-	/*xiaojin-percpu_kthread -4 绑定的具体函数。*/
+	/*xiaojin-percpu_kthread -4 绑定的具体cpu函数。*/
 	kthread_bind(p, cpu);
 	/* CPU hotplug need to bind once again when unparking the thread. */
 	to_kthread(p)->cpu = cpu;
