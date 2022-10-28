@@ -889,7 +889,7 @@ extern const unsigned long
 	cpu_bit_bitmap[BITS_PER_LONG+1][BITS_TO_LONGS(NR_CPUS)];
 
 /*xiaojin-cpumask -1 get_cpu_mask 这里返回的是一个unsigned long为cpu的bitmap
-https://app.yinxiang.com/shard/s65/nl/15273355/858c98c0-c42c-4192-91b7-f1c291c8201a/*/
+https://app.yinxiang.com/shard/s65/nl/15273355/858c98c0-c42c-4192-91b7-f1c291c8201a/ */
 static inline const struct cpumask *get_cpu_mask(unsigned int cpu)
 {
 	const unsigned long *p = cpu_bit_bitmap[1 + cpu % BITS_PER_LONG];
