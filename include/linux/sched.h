@@ -771,7 +771,7 @@ thread_info可以放在内核栈的栈顶部位，
 
 	int				nr_cpus_allowed;//该进程允许使用的cpu的数量
 	const cpumask_t			*cpus_ptr;
-	cpumask_t			cpus_mask;
+	cpumask_t			cpus_mask; //CPU的亲和度
 	void				*migration_pending;
 #ifdef CONFIG_SMP
 	unsigned short			migration_disabled;
