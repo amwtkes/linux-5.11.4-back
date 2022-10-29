@@ -102,6 +102,8 @@ static inline int __raw_spin_trylock(raw_spinlock_t *lock)
  */
 #if !defined(CONFIG_GENERIC_LOCKBREAK) || defined(CONFIG_DEBUG_LOCK_ALLOC)
 
+/*xiaojin-spinlock 3.1 __raw_spin_lock_irqsave 保存中断上下文，同时还会禁用抢占.因为自旋锁中断或者调度会造成死锁的风险。
+比如在运行自旋，其他cpu在等待锁A，中断或者调度出去以后，调度到的，或者中断上下文可能又会等待A不就永远不会释放了吗？*/
 static inline unsigned long __raw_spin_lock_irqsave(raw_spinlock_t *lock)
 {
 	unsigned long flags;
