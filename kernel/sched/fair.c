@@ -458,7 +458,7 @@ static inline struct cfs_rq *task_cfs_rq(struct task_struct *p)
 	return &task_rq(p)->cfs;
 }
 
-/*xiaojin-sched-data cfs_rq_of 根据task_struct中的sched_entity containof到当前进程的PDB对象，再取出task_struct->cpu当前所在的cpu号，再通过percpu变量拿到当前cpu的rq*/
+/*xiaojin-sched-func cfs_rq_of 根据task_struct中的sched_entity containof到当前进程的PDB对象，再取出task_struct->cpu当前所在的cpu号，再通过percpu变量拿到当前cpu的rq*/
 static inline struct cfs_rq *cfs_rq_of(struct sched_entity *se)
 {
 	struct task_struct *p = task_of(se);
@@ -4212,7 +4212,7 @@ static inline bool cfs_bandwidth_used(void);
  * this way we don't have the most up-to-date min_vruntime on the originating
  * CPU and an up-to-date min_vruntime on the destination CPU.
  */
-
+/*xiaojin-sched-func enqueue_entity*/
 static void
 enqueue_entity(struct cfs_rq *cfs_rq, struct sched_entity *se, int flags)
 {

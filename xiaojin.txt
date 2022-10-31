@@ -63,3 +63,4 @@ xiaojin-cpumask ----cpu的位图相关
 
 =========sched 
 xiaojin-sched-data ---调度相关的数据结构
+xiaojin-sched-func ---调度相关的函数
