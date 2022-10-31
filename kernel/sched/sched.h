@@ -894,6 +894,7 @@ DECLARE_STATIC_KEY_FALSE(sched_uclamp_used);
  * (such as the load balancing or the thread migration code), lock
  * acquire operations must be ordered by ascending &runqueue.
  */
+/*xiaojin struct rq*/
 struct rq {
 	/* runqueue lock: */
 	raw_spinlock_t		lock;
