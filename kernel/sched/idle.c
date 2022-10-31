@@ -484,6 +484,7 @@ static void update_curr_idle(struct rq *rq)
 
 /*
  * Simple, special scheduling class for the per-CPU idle tasks:
+ xiaojin sched_class idle
  */
 DEFINE_SCHED_CLASS(idle) = {
 
