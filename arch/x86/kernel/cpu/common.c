@@ -1740,6 +1740,7 @@ EXPORT_PER_CPU_SYMBOL_GPL(fixed_percpu_data);
  * The following percpu variables are hot.  Align current_task to
  * cacheline size such that they fall in the same cacheline.
  */
+/*xiaojin current_task 指向当前在运行的task_struct*/
 DEFINE_PER_CPU(struct task_struct *, current_task) ____cacheline_aligned =
 	&init_task;
 EXPORT_PER_CPU_SYMBOL(current_task);
