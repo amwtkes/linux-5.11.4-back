@@ -59,3 +59,7 @@ xiaojin-percpu_kthread_cpu0_run ---内核如何启动多核的
     xiaojin RESCHEDULE_VECTOR 这里做idle的唤醒IPI。
 xiaojin-percpu_kthread -- percpu内核线程亲和力的设置
 xiaojin-cpumask ----cpu的位图相关
+
+
+=========sched 
+xiaojin-sched-data ---调度相关的数据结构
