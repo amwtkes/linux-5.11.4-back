@@ -949,6 +949,9 @@ struct rq {
 	 */
 	unsigned long		nr_uninterruptible;
 
+/*xiaojin __rcu什么意思
+https://app.yinxiang.com/shard/s65/nl/15273355/a2cd54ed-9cf3-4591-b340-da07c71bfbdc/
+*/
 	struct task_struct __rcu	*curr;
 	struct task_struct	*idle;
 	struct task_struct	*stop;
