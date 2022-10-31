@@ -458,6 +458,7 @@ static inline struct cfs_rq *task_cfs_rq(struct task_struct *p)
 	return &task_rq(p)->cfs;
 }
 
+/*xiaojin-sched-data cfs_rq_of 根据task_struct中的sched_entity containof到当前进程的PDB对象，再取出task_struct->cpu当前所在的cpu号，再通过percpu变量拿到当前cpu的rq*/
 static inline struct cfs_rq *cfs_rq_of(struct sched_entity *se)
 {
 	struct task_struct *p = task_of(se);
@@ -11236,7 +11237,7 @@ static unsigned int get_rr_interval_fair(struct rq *rq, struct task_struct *task
 
 /*
  * All the scheduling class methods:
- xiaojin DEFINE_SCHED_CLASS fair
+ xiaojin-sched-data DEFINE_SCHED_CLASS fair
  */
 /*xiaojin-percpu_kthread -7.2 fair_sched_class的定义
 

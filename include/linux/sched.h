@@ -450,6 +450,7 @@ struct sched_statistics {
 #endif
 };
 
+/*xiaojin-sched-data sched_entity struct*/
 struct sched_entity {
 	/* For load-balancing: */
 	struct load_weight		load;
