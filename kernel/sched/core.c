@@ -4981,6 +4981,8 @@ restart:
  *
  * WARNING: must be called with preemption disabled!
  */
+
+/*xiaojin-sched-func __schedule 必须要关闭抢占，程序不能在没有运行完就被切换去执行此CPU上的别的内核线程。很容易理解。*/
 static void __sched notrace __schedule(bool preempt)
 {
 	struct task_struct *prev, *next;
@@ -5174,6 +5176,7 @@ static void sched_update_worker(struct task_struct *tsk)
 	}
 }
 
+/*xiaojin-sched-func schedule(void)*/
 asmlinkage __visible void __sched schedule(void)
 {
 	struct task_struct *tsk = current;
