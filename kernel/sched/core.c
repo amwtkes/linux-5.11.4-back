@@ -4992,9 +4992,9 @@ static void __sched notrace __schedule(bool preempt)
 	struct rq *rq;
 	int cpu;
 
-	cpu = smp_processor_id();
-	rq = cpu_rq(cpu);
-	prev = rq->curr;
+	cpu = smp_processor_id(); //通过读取percpu变量cpu_number获取
+	rq = cpu_rq(cpu); //通过cpu number获取cpu的rq对象。
+	prev = rq->curr; //CPU当前正在运行的task，也就是即将称为前任的task
 
 	schedule_debug(prev, preempt);
 

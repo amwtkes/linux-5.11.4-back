@@ -952,7 +952,7 @@ struct rq {
 /*xiaojin __rcu什么意思
 https://app.yinxiang.com/shard/s65/nl/15273355/a2cd54ed-9cf3-4591-b340-da07c71bfbdc/
 */
-	struct task_struct __rcu	*curr;
+	struct task_struct __rcu	*curr; //当前CPU上正在运行的task
 	struct task_struct	*idle;
 	struct task_struct	*stop;
 	unsigned long		next_balance;
