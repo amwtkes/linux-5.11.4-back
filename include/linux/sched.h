@@ -696,7 +696,7 @@ thread_info可以放在内核栈的栈顶部位，
 	unsigned int			ptrace;
 
 #ifdef CONFIG_SMP
-	int				on_cpu;
+	int				on_cpu; //是0的时候迁移到其他的cpu，1的时候不能迁移到其他CPU执行。
 	struct __call_single_node	wake_entry;
 #ifdef CONFIG_THREAD_INFO_IN_TASK
 	/* Current CPU: */
