@@ -26,6 +26,8 @@
  * Since there is only one init_mm in the entire system, keep it simple
  * and size this cpu_bitmask to NR_CPUS.
  */
+
+/*xiaojin-mm-data init_mm 所有内核进程公用一个init_mm*/
 struct mm_struct init_mm = {
 	.mm_rb		= RB_ROOT,
 	.pgd		= swapper_pg_dir,

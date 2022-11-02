@@ -811,7 +811,7 @@ thread_info可以放在内核栈的栈顶部位，
 #endif
 
 	struct mm_struct		*mm; //用户态的虚拟内存映射，内核进程这个字段为NULL.因为，内核对所有的进程都是一样的。遵循简单的偏移映射关系——虚拟内存+offset=虚拟内存。
-	struct mm_struct		*active_mm; //对于用户态进程，mm == active_mm。为了优化一点点，考虑，u1 -> kernel1->k2->u1这个切换过程，因为k12的mm字段都是NULL，为了不做页切换，将u1的mm保存在kernel线程的active_mm中，TLB不刷新，而切换回u1的时候只要做u1->mm = k2->active_mm; u1->active_mm = u1->mm即可。https://app.yinxiang.com/shard/s65/nl/15273355/e1843b14-ce07-4b76-9821-46a867abfa31
+	struct mm_struct		*active_mm; //对于kernel进程来说，这个值就是用来缓存切换到它的用户进程的mm值的，如果切换到其他user，这个值要被清空。对于用户态进程，mm == active_mm。为了优化一点点，考虑，u1 -> kernel1->k2->u1这个切换过程，因为k12的mm字段都是NULL，为了不做页切换，将u1的mm保存在kernel线程的active_mm中，TLB不刷新，而切换回u1的时候只要做u1->mm = k2->active_mm; u1->active_mm = u1->mm即可。https://app.yinxiang.com/shard/s65/nl/15273355/e1843b14-ce07-4b76-9821-46a867abfa31
 
 	/* Per-thread vma caching: */
 	struct vmacache			vmacache;

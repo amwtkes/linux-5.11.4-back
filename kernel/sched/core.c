@@ -4310,11 +4310,11 @@ context_switch(struct rq *rq, struct task_struct *prev,
 	if (!next->mm) {                                // to kernel
 		enter_lazy_tlb(prev->active_mm, next);
 
-		next->active_mm = prev->active_mm;
+		next->active_mm = prev->active_mm; //保存上一个active_mm到next中
 		if (prev->mm)                           // from user
-			mmgrab(prev->active_mm);
+			mmgrab(prev->active_mm); //从user切换到kernel，前一个task的active_mm暂时不要回收。
 		else
-			prev->active_mm = NULL;
+			prev->active_mm = NULL; //如果不是从kernel进程来，将上一个的active_mm放空
 	} else {                                        // to user
 		membarrier_switch_mm(rq, prev->active_mm, next->mm);
 		/*
