@@ -7044,7 +7044,7 @@ pick_next_task_fair(struct rq *rq, struct task_struct *prev, struct rq_flags *rf
 	int new_tasks;
 
 again:
-	if (!sched_fair_runnable(rq))
+	if (!sched_fair_runnable(rq)) //rq->cfs.nr_running > 0 有task在cfs中。没有的话就idle把。
 		goto idle;
 
 #ifdef CONFIG_FAIR_GROUP_SCHED

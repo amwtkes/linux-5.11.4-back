@@ -4900,6 +4900,8 @@ static void put_prev_task_balance(struct rq *rq, struct task_struct *prev,
 /*
  * Pick up the highest-prio task:
  */
+
+/*xiaojin-sched-func pick_next_task*/
 static inline struct task_struct *
 pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
 {
@@ -4912,6 +4914,7 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
 	 * higher scheduling class, because otherwise those lose the
 	 * opportunity to pull in more work from other CPUs.
 	 */
+	//如果全部的tasks都在rq的cfs队列里面的话
 	if (likely(prev->sched_class <= &fair_sched_class &&
 		   rq->nr_running == rq->cfs.h_nr_running)) {
 
