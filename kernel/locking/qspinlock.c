@@ -321,11 +321,13 @@ static __always_inline u32  __pv_wait_head_or_lock(struct qspinlock *lock,
 
 */
 
-/*xiaojin-spinlock-qspinlock -5 queued_spin_lock
+/*xiaojin-spinlock-qspinlock -5!!! queued_spin_lock_slowpath
 https://app.yinxiang.com/shard/s65/nl/15273355/aca32ad8-d3cd-453e-88af-4af0b5fcfbd8/  (系列3)
 https://app.yinxiang.com/shard/s65/nl/15273355/ce2b4805-1bd0-44d8-b97d-6218bdc68db4/  （系列4）
 
 spinlock的上下文一定是关闭中断的，这才使得这个percpu static DEFINE_PER_CPU_ALIGNED(struct qnode, qnodes[MAX_NODES]) 不会超过4层。spinlock是不会让出cpu的，所以适合锁住小而且精悍的代码。要快速返回，又要加锁同步。
+
+对别mcs spinlock的有点是 qsinlock的尺寸小了，只有4个字节。mcs有16个字节。
 */
 void queued_spin_lock_slowpath(struct qspinlock *lock, u32 val)
 {
