@@ -810,7 +810,7 @@ thread_info可以放在内核栈的栈顶部位，
 	struct rb_node			pushable_dl_tasks;
 #endif
 
-	struct mm_struct		*mm;
+	struct mm_struct		*mm; //用户态的虚拟内存映射，内核进程这个字段为NULL
 	struct mm_struct		*active_mm;
 
 	/* Per-thread vma caching: */
