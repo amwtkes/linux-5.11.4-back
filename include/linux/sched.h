@@ -1421,8 +1421,10 @@ thread_info可以放在内核栈的栈顶部位，
 	 */
 	randomized_struct_fields_end
 
-	/* CPU-specific state of this task: */
-	struct thread_struct		thread;
+	/* CPU-specific state of this task: 
+	参考：https://time.geekbang.org/column/article/93396?cid=100024701
+	*/
+	struct thread_struct		thread; //于是，在 task_struct 里面，还有一个我们原来没有注意的成员变量 thread。这里面保留了要切换进程的时候需要修改的寄存器。
 
 	/*
 	 * WARNING: on x86, 'thread_struct' contains a variable-sized
