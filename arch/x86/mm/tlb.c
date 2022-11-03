@@ -282,7 +282,9 @@ static void load_new_mm_cr3(pgd_t *pgdir, u16 new_asid, bool need_flush)
 	 * that load_cr3() is serializing and orders TLB
 	 * fills with respect to the mm_cpumask writes.
 	 */
-	/*xiaojin-mm-cr3 -3.1实际的写入点。*/
+	/*xiaojin-mm-cr3 -3.1实际的写入点。
+参考：https://app.yinxiang.com/shard/s65/nl/15273355/3e430913-ec7c-416d-8081-8c10c8e918f7
+	*/
 	write_cr3(new_mm_cr3);
 }
 
