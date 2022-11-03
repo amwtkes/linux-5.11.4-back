@@ -289,6 +289,7 @@ SYM_CODE_END(entry_SYSCALL_64)
  * %rdi: prev task
  * %rsi: next task
  */
+ /*xiaojin-sched-func __switch_to_asm*/
 .pushsection .text, "ax"
 SYM_FUNC_START(__switch_to_asm)
 	/*
@@ -302,10 +303,10 @@ SYM_FUNC_START(__switch_to_asm)
 	pushq	%r14
 	pushq	%r15
 
-	/* xiaojin-contextswitch -2 切换栈到next
+	/*xiaojin-contextswitch -2 切换栈到next
 	switch stack 
 	内核栈切换到了next的进程*/
-	movq	%rsp, TASK_threadsp(%rdi)
+	movq	%rsp, TASK_threadsp(%rdi) /*将当前rsp寄存器存入 见xiaojin-contextswitch -7*/
 	movq	TASK_threadsp(%rsi), %rsp
 
 #ifdef CONFIG_STACKPROTECTOR
