@@ -53,7 +53,7 @@ struct pt_regs {
 
 #else /* __i386__ */
 
-/*xiaojin
+/*xiaojin-sched-data pt_regs结构
 用来存放用户态的硬件上下文。
 内核的
 放在内核栈栈顶底 entry_64.s*/

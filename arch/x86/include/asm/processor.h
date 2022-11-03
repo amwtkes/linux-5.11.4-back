@@ -494,6 +494,8 @@ struct perf_event;
 /*xiaojin-contextswitch -7 TASK_threadsp宏。__switch_to_asm中，TASK_threadsp宏使用task_struct.thread.sp来保存上pre进程的sp寄存器
 参考：https://app.yinxiang.com/shard/s65/nl/15273355/7e7865f5-2f47-489b-9b30-428ab3b92a4f
 因为进程切换的时候不需要像intel自带的tss那样将老task所有的寄存器保存下来，然后将新task的恢复上去。所以linux用这个结构来保存需要切换的子集。
+
+注意：这里是内核线程的寄存器。用户态的保存在pt_regs
 */
 struct thread_struct {
 	/* Cached TLS descriptors: Thread-Local Storage (TLS) segments*/
