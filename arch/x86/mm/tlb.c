@@ -419,6 +419,7 @@ void cr4_update_pce(void *ignored)
 static inline void cr4_update_pce_mm(struct mm_struct *mm) { }
 #endif
 
+/*xiaojin-mm-func switch_mm_irqs_off 切换进程的mm包括cr3*/
 void switch_mm_irqs_off(struct mm_struct *prev, struct mm_struct *next,
 			struct task_struct *tsk)
 {
