@@ -491,7 +491,9 @@ extern unsigned int fpu_user_xstate_size;
 
 struct perf_event;
 
-/*xiaojin-contextswitch -7 TASK_threadsp宏。__switch_to_asm中，TASK_threadsp宏使用task_struct.thread.sp来保存上pre进程的sp寄存器*/
+/*xiaojin-contextswitch -7 TASK_threadsp宏。__switch_to_asm中，TASK_threadsp宏使用task_struct.thread.sp来保存上pre进程的sp寄存器
+参考：https://app.yinxiang.com/shard/s65/nl/15273355/7e7865f5-2f47-489b-9b30-428ab3b92a4f
+*/
 struct thread_struct {
 	/* Cached TLS descriptors: Thread-Local Storage (TLS) segments*/
 	struct desc_struct	tls_array[GDT_ENTRY_TLS_ENTRIES]; //最多三个。
