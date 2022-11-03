@@ -265,6 +265,7 @@ static inline void invalidate_user_asid(u16 asid)
 		  (unsigned long *)this_cpu_ptr(&cpu_tlbstate.user_pcid_flush_mask));
 }
 
+/*xiaojin-mm-cr3 -3 load_new_mm_cr3 cr3寄存器的值其实是存在mm_struct的pgdir上，这个地址就是全局页表的地址，存在task_struct.mm中。*/
 static void load_new_mm_cr3(pgd_t *pgdir, u16 new_asid, bool need_flush)
 {
 	unsigned long new_mm_cr3;
@@ -281,6 +282,7 @@ static void load_new_mm_cr3(pgd_t *pgdir, u16 new_asid, bool need_flush)
 	 * that load_cr3() is serializing and orders TLB
 	 * fills with respect to the mm_cpumask writes.
 	 */
+	/*xiaojin-mm-cr3 -3.1实际的写入点。*/
 	write_cr3(new_mm_cr3);
 }
 
@@ -419,7 +421,8 @@ void cr4_update_pce(void *ignored)
 static inline void cr4_update_pce_mm(struct mm_struct *mm) { }
 #endif
 
-/*xiaojin-mm-func switch_mm_irqs_off 切换进程的mm包括cr3*/
+/*xiaojin-mm-func switch_mm_irqs_off 切换进程的mm包括cr3的修改*/
+/*xiaojin-mm-cr3 -1 switch_mm_irqs_off 进程切换的时候切换mm结构*/
 void switch_mm_irqs_off(struct mm_struct *prev, struct mm_struct *next,
 			struct task_struct *tsk)
 {
@@ -559,6 +562,8 @@ void switch_mm_irqs_off(struct mm_struct *prev, struct mm_struct *next,
 	if (need_flush) {
 		this_cpu_write(cpu_tlbstate.ctxs[new_asid].ctx_id, next->context.ctx_id);
 		this_cpu_write(cpu_tlbstate.ctxs[new_asid].tlb_gen, next_tlb_gen);
+
+		/*xiaojin-mm-cr3 -2 这里开始切换cr3 load_new_mm_cr3*/
 		load_new_mm_cr3(next->pgd, new_asid, true);
 
 		trace_tlb_flush(TLB_FLUSH_ON_TASK_SWITCH, TLB_FLUSH_ALL);
