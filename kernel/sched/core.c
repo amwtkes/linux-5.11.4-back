@@ -4289,6 +4289,7 @@ asmlinkage __visible void schedule_tail(struct task_struct *prev)
  */
 
 /*xiaojin-sched-func context_switch*/
+/*xiaojin-contextswitch -(-1.5) context_switch()定义*/
 static __always_inline struct rq *
 context_switch(struct rq *rq, struct task_struct *prev,
 	       struct task_struct *next, struct rq_flags *rf)
@@ -4346,7 +4347,7 @@ context_switch(struct rq *rq, struct task_struct *prev,
 	switch_to(prev, next, prev);
 	barrier();
 
-/*xiaojin-contextswitch - (-1) finish_task_switch(prev)*/
+/*xiaojin-contextswitch - 100 finish_task_switch(prev)*/
 	return finish_task_switch(prev);
 }
 
@@ -5115,6 +5116,7 @@ static void __sched notrace __schedule(bool preempt)
 		trace_sched_switch(preempt, prev, next);
 
 		/* Also unlocks the rq: */
+		/*xiaojin-contextswitch -(-1.9) 调用context_switch() from schedule*/
 		rq = context_switch(rq, prev, next, &rf);
 	} else {
 		rq->clock_update_flags &= ~(RQCF_ACT_SKIP|RQCF_REQ_SKIP);
