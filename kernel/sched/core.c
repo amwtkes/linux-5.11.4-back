@@ -4166,6 +4166,8 @@ prepare_task_switch(struct rq *rq, struct task_struct *prev,
  * past. prev == current is still correct but we need to recalculate this_rq
  * because prev may have moved to another CPU.
  */
+
+/*xiaojin-sched-func finish_task_switch(task_struct)*/
 static struct rq *finish_task_switch(struct task_struct *prev)
 	__releases(rq->lock)
 {
@@ -4340,9 +4342,11 @@ context_switch(struct rq *rq, struct task_struct *prev,
 	prepare_lock_switch(rq, next, rf);
 
 	/* Here we just switch the register state and the stack. */
+	/*xiaojin-contextswitch - (-0.1) switch_to(prev,next,prev)*/
 	switch_to(prev, next, prev);
 	barrier();
 
+/*xiaojin-contextswitch - (-1) finish_task_switch(prev)*/
 	return finish_task_switch(prev);
 }
 
@@ -4989,6 +4993,7 @@ restart:
  */
 
 /*xiaojin-sched-func __schedule 必须要关闭抢占，程序不能在没有运行完就被切换去执行此CPU上的别的内核线程。很容易理解。*/
+/*xiaojin-contextswitch - (-2) __schedule(preempt)*/
 static void __sched notrace __schedule(bool preempt)
 {
 	struct task_struct *prev, *next;
