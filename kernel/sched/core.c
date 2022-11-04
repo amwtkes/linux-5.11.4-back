@@ -597,6 +597,16 @@ void wake_up_q(struct wake_q_head *head)
  * might also involve a cross-CPU call to trigger the scheduler on
  * the target CPU.
  */
+/*xiaojin-sched-func resched_curr 标记一个task是否需要被抢占。先标记然后在合适的时机进行抢占。原理解释:抢占如何进行？
+时钟中断，可以判断是否需要被抢占。但是时钟中断不能运行态长时间，不然会影响性能。所以在这里也就是下面这个函数，只是标记抢占是否会发生。
+那么抢占的时机在哪？（注意：所有的进程切换只能调用schedule()完成！——进程调度第一定律。）
+1、系统调用从内核返回用户态。do_syscall_64->syscall_return_slowpath->prepare_exit_to_usermode->exit_to_usermode_loop()
+2、从中断返回用户态，当一个用户态进程在执行的时候，也会响应中断，会直接从用户态的栈切换到中断栈上去执行中断代码，然后返回用户态。这里可以判断是否需要做进程切换。arch/x86/entry/entry_64.S	咱们先来看返回用户态这一部分，先不管返回内核态的那部分代码，retint_user 会调用 prepare_exit_to_usermode，最终调用 exit_to_usermode_loop，和上面的逻辑一样，发现有标记则调用 schedule()。
+3、内核态的进程也能被抢占。如内核线程，不能老是运行。对内核态的执行中，被抢占的时机一般发生在 preempt_enable() 中。在内核态的执行中，有的操作是不能被中断的，所以在进行这些操作之前，总是先调用 preempt_disable() 关闭抢占，当再次打开的时候，就是一次内核态代码被抢占的机会。就像下面代码中展示的一样，preempt_enable() 会调用 preempt_count_dec_and_test()，判断 preempt_count 和 TIF_NEED_RESCHED 是否可以被抢占。如果可以，就调用 preempt_schedule->preempt_schedule_common->__schedule 进行调度。还是满足进程调度第一定律的。
+
+
+参考：https://time.geekbang.org/column/article/93711
+*/
 void resched_curr(struct rq *rq)
 {
 	struct task_struct *curr = rq->curr;
