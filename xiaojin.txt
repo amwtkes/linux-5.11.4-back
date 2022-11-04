@@ -1,3 +1,5 @@
+原理解释 --- 带有原理解释的字样，表示在阐述重要的过程。
+
 xiaojin.*time_interrupt -- 时间中断相关的代码
 xiaojin.*hrtimer_interrupt ---高精度时间中断代码
 xiaojin-lib  --- linux自己的库。跟libc对等的库，可以用于moudle的开发。因为module不能使用第三方库，由linux的模块自己做链接。

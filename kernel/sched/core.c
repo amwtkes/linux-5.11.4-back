@@ -4343,11 +4343,22 @@ context_switch(struct rq *rq, struct task_struct *prev,
 	prepare_lock_switch(rq, next, rf);
 
 	/* Here we just switch the register state and the stack. */
-	/*xiaojin-contextswitch - (-0.1) switch_to(prev,next,prev)*/
+
+	/*xiaojin-contextswitch - (-0.1)！！！原理解释：这个宏会正式的切换到next的环境继续执行。
+	switch_to(prev,next,prev)调用switch_to以后会调用到汇编的switch_to_asm里面，完成从prev到next的切换（主要是内核栈的切换，注意：内核栈中保存了__schedule()返回后的prev的EIP，通过iret自动恢复。也就是每个CPU）。除开EIP！！！
+	1、用户态的EIP是保存在pt_regs里面，返回用户态的时候恢复；当然也是在汇编里面执行；
+	2、内核态的EIP是从来不会保存的，因为，有个重要的前提，所有的进程切换都是通过schedule()函数进行的！这里很重要。
+	比如，A-》B->A的切换。A调用schedule()函数，在switch_to这里变成B，后面的finish_task_switch()其实是B进程在调用了，其作用就是做一些B进程相关的恢复工作。
+	而从B-》A再切回A的时候，A也必然是从这个switch_to继续向下执行（因为B要放弃自己的执行也会调用schedule(),然后运行到switch_to切换到A），后面的finish_task_switch自然就是A的环境下在执行啦。所以内核态不需要保存EIP。因为所有的切换都是在schedule->switch_to来完成。
+
+	简单来说，所有的切换到在switch_to改头换面，所有的恢复都是在finish_task_switch()继续执行。而区分每个内核态进程的下一步执行代码的地址保存在内核栈上，通过iret自动切换。
+	*/
 	switch_to(prev, next, prev);
 	barrier();
 
-/*xiaojin-contextswitch - 100 finish_task_switch(prev)*/
+/*xiaojin-contextswitch - 100 finish_task_switch(prev)
+在调用__schedule的时候会自动保存返回的IP在栈上，通过iret返回的时候会自动跳去执行调用__schedule的下一条指令
+*/
 	return finish_task_switch(prev);
 }
 
