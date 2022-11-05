@@ -16,6 +16,7 @@
 /*
  * Check the APIC IDs in bios_cpu_apicid and choose the APIC mode.
  */
+/*xiaojin-interrupt-apic default_setup_apic_routing 初始化apic变量*/
 void __init default_setup_apic_routing(void)
 {
 	struct apic **drv;
