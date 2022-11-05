@@ -72,7 +72,7 @@ struct x86_init_ops x86_init __initdata = {
 		.find_smp_config	= default_find_smp_config,
 		.get_smp_config		= default_get_smp_config,
 	},
-
+/*xiaojin-interrupt-apic 初始化的地方*/
 	.irqs = {
 		.pre_vector_init	= init_ISA_irqs,
 		.intr_init		= native_init_IRQ,
