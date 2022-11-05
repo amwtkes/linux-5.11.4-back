@@ -1846,6 +1846,7 @@ extern char *__get_task_comm(char *to, size_t len, struct task_struct *tsk);
 })
 
 #ifdef CONFIG_SMP
+/*xiaojin-interrupt-apic scheduler_ipi 收到重新调度的ipi，需要调用这里，设置__preempt_count变量的值*/
 static __always_inline void scheduler_ipi(void)
 {
 	/*
