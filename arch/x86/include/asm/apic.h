@@ -351,7 +351,7 @@ struct apic {
  * always just one such driver in use - the kernel decides via an
  * early probing process which one it picks - and then sticks to it):
  */
-/*xiaojin-interrupt-apic struct apic *apic*/
+/*xiaojin-interrupt-apic apic定义处*/
 extern struct apic *apic;
 
 /*
