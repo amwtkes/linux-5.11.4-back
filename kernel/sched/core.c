@@ -4299,7 +4299,7 @@ asmlinkage __visible void schedule_tail(struct task_struct *prev)
  */
 
 /*xiaojin-sched-func context_switch*/
-/*xiaojin-contextswitch -(-1.5) context_switch()定义*/
+/*xiaojin-contextswitch -(-1.5) context_switch()定义。包括切换mm,switch_mm_irqs_off*/
 static __always_inline struct rq *
 context_switch(struct rq *rq, struct task_struct *prev,
 	       struct task_struct *next, struct rq_flags *rf)
