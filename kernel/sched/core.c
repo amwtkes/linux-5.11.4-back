@@ -597,7 +597,7 @@ void wake_up_q(struct wake_q_head *head)
  * might also involve a cross-CPU call to trigger the scheduler on
  * the target CPU.
  */
-/*xiaojin-sched-func resched_curr 标记一个task是否需要被抢占。先标记然后在合适的时机进行抢占。原理解释:抢占如何进行？
+/*xiaojin-sched-func resched_curr 标记一个task是否需要被抢占。先标记然后在合适的时机进行抢占。原理解释:抢占如何进行？用户态抢占时机？
 时钟中断，可以判断是否需要被抢占。但是时钟中断不能运行态长时间，不然会影响性能。所以在这里也就是下面这个函数，只是标记抢占是否会发生。
 那么抢占的时机在哪？（注意：所有的进程切换只能调用schedule()完成！——进程调度第一定律。）
 1、系统调用从内核返回用户态。do_syscall_64->syscall_return_slowpath->prepare_exit_to_usermode->exit_to_usermode_loop()
