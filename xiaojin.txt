@@ -66,5 +66,6 @@ xiaojin-cpumask ----cpu的位图相关
 
 
 =========sched 
+xiaojin-contextswitch --- 进程第一定律是核心。任何调度都是靠schedule()函数来切换的，其他的切换点只是打标记。为了效率，因为中断与系统调用往往需要更短的执行时间，而真正的调度发生在汇编中，涉及到多个寄存器的切换，所以跟CPU体系架构有关。
 xiaojin-sched-data ---调度相关的数据结构
 xiaojin-sched-func ---调度相关的函数
