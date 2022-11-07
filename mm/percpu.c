@@ -3099,7 +3099,7 @@ static void __init pcpu_dfl_fc_free(void *ptr, size_t size)
 {
 	memblock_free_early(__pa(ptr), size);
 }
-
+/*xiaojin-percpu setup_per_cpu_areas __per_cpu_offset数组存放每个CPU的percpu变量的基地址。*/
 void __init setup_per_cpu_areas(void)
 {
 	unsigned long delta;

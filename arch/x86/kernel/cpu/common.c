@@ -1956,7 +1956,9 @@ void cpu_init_exception_handling(void)
 1 一些寄存器——tss的TR，cr4，ldt，syscall的msr
 2 tss的设置，每个cpu一个tss跟当前线程相关的数据，控制IO访问，切换进程的时候会更改
 3 gdt的设置
-4 ucode补丁*/
+4 ucode补丁
+5、syscall的初始化。在64位系统中，syscall指令通过MSR寄存器保存。
+*/
 void cpu_init(void)
 {
 	struct tss_struct *tss = this_cpu_ptr(&cpu_tss_rw);
@@ -1985,13 +1987,13 @@ void cpu_init(void)
 	 * and set up the GDT descriptor:
 	 */
 	/*xiaojin-percpu_kthread_cpu0_run.9 -4 switch_to_new_gdt到了gs设置了。*/
-	switch_to_new_gdt(cpu);
-	load_current_idt();
+	switch_to_new_gdt(cpu); //段全局描述符表
+	load_current_idt(); //中断向量表
 
 	if (IS_ENABLED(CONFIG_X86_64)) {
 		loadsegment(fs, 0);
 		memset(cur->thread.tls_array, 0, GDT_ENTRY_TLS_ENTRIES * 8);
-		syscall_init(); //每个cpu都要单独初始化
+		syscall_init(); //系统调用的初始化。每个cpu都要单独初始化。
 
 		wrmsrl(MSR_FS_BASE, 0);
 		wrmsrl(MSR_KERNEL_GS_BASE, 0);
