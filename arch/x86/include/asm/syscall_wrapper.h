@@ -13,7 +13,7 @@ extern long __ia32_sys_ni_syscall(const struct pt_regs *regs);
 
 /*
  * Instead of the generic __SYSCALL_DEFINEx() definition, the x86 version takes
- xiaojin-syscall-2
+ xiaojin-syscall-2 所有的系统调用原型函数其实参数都只有一个pt_regs这个用户态的寄存器保存。
  * struct pt_regs *regs as the only argument of the syscall stub(s) named as:
  * __x64_sys_*()         - 64-bit native syscall
  * __ia32_sys_*()        - 32-bit native syscall or common compat syscall
@@ -21,7 +21,7 @@ extern long __ia32_sys_ni_syscall(const struct pt_regs *regs);
  * __x32_compat_sys_*()  - 64-bit X32 compat syscall
  *
  * The registers are decoded according to the ABI:
- * 64-bit: RDI, RSI, RDX, R10, R8, R9  xiaojin-syscall-3
+ * 64-bit: RDI, RSI, RDX, R10, R8, R9  xiaojin-syscall-3 系统调用的寄存器参数。
  * 32-bit: EBX, ECX, EDX, ESI, EDI, EBP
  *
  * The stub then passes the decoded arguments to the __se_sys_*() wrapper to
@@ -236,7 +236,7 @@ __SYS_STUBx(x64, sys##name,					\
 
 #endif /* CONFIG_COMPAT */
 
-/*xiaojin-syscall-3.3 __SYSCALL_DEFINEx 产生了__do_sys+系统调用name的函数，并将实际代码放入后面。主要：这个函数的参数还有宏没解开——__MAP
+/*xiaojin-syscall-3.3 __SYSCALL_DEFINEx 原理解释（系统调用的原型）：产生了__do_sys+系统调用name的函数，并将实际代码放入后面。主要：这个函数的参数还有宏没解开——__MAP
 例如：SYSCALL_DEFINE3(arc_usr_cmpxchg, int *, uaddr, int, expected, int, new){...} //arc_usr_cmpxchg 会先变成_arc_usr_cmpxchg（#define SYSCALL_DEFINE1(name, ...) SYSCALL_DEFINEx(1, _##name, __VA_ARGS__)）
 
 
