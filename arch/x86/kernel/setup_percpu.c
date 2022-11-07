@@ -219,6 +219,8 @@ void __init setup_per_cpu_areas(void)
 		panic("cannot initialize percpu area (err=%d)", rc);
 
 	/* alrighty, percpu areas up and running */
+	/*__per_cpu_start是linuxVM load后的原始地址，load的时候确定的一个全局变量。pcpu_base_addr是percpu data起始的位置。两个都是全局变量。参考：https://app.yinxiang.com/shard/s65/nl/15273355/b75171a4-4d50-4e53-9019-7512b2b3305f/
+	*/
 	delta = (unsigned long)pcpu_base_addr - (unsigned long)__per_cpu_start;
 	for_each_possible_cpu(cpu) {
 		/*xiaojin-percpu -0.2 (赋值了！)给per_cpu_offset变量赋值=delta + pcpu_unit_offsets[cpu] detal=第一个group的基地址 - __per_cpu_start的值*/
