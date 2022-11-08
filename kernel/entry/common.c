@@ -147,7 +147,7 @@ static void handle_signal_work(struct pt_regs *regs, unsigned long ti_work)
 	arch_do_signal_or_restart(regs, ti_work & _TIF_SIGPENDING);
 }
 
-/* xiaojin - 返回用户态 -- exit_to_user_mode_loop*/
+/* xiaojin-fork-func - 返回用户态核心函数 -- exit_to_user_mode_loop*/
 static unsigned long exit_to_user_mode_loop(struct pt_regs *regs,
 					    unsigned long ti_work)
 {
@@ -200,6 +200,7 @@ static unsigned long exit_to_user_mode_loop(struct pt_regs *regs,
 	return ti_work;
 }
 
+/*xiaojin-fork-func exit_to_user_mode_prepare*/
 static void exit_to_user_mode_prepare(struct pt_regs *regs)
 {
 	unsigned long ti_work = READ_ONCE(current_thread_info()->flags);
