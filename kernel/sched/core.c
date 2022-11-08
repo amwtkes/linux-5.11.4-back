@@ -3844,6 +3844,8 @@ unsigned long to_ratio(u64 period, u64 runtime)
  * that must be done for every newly created context, then puts the task
  * on the runqueue and wakes it.
  */
+
+/*xiaojin-fork-func wake_up_new_task新进程加入runqueue*/
 void wake_up_new_task(struct task_struct *p)
 {
 	struct rq_flags rf;
