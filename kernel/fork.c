@@ -1843,6 +1843,7 @@ static void copy_oom_score_adj(u64 clone_flags, struct task_struct *tsk)
  * parts of the process environment (as per the clone
  * flags). The actual kick-off is left to the caller.
  */
+/*xiaojin-fork-func copy_process*/
 static __latent_entropy struct task_struct *copy_process(
 					struct pid *pid,
 					int trace,
