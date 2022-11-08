@@ -139,18 +139,19 @@ int copy_thread(unsigned long clone_flags, unsigned long sp, unsigned long arg,
 	*/
 	childregs = task_pt_regs(p);
 
-	/* xiaojin-fork-exp fork_frame是包含了inactive_task_frame与pt_regs。也就是在内核栈的顶部是pt_regs，紧接着后面跟了inactive_task_frame.原理解释：C语言的这种强制转换并不意味着这个对象就已经存在，正相反，有点像把一块内存格式化一样。这里的inactive_task_frame应该没有填充过。但是类型可以把这块内存格式化成这个结构。
+	/* xiaojin-fork-(exp) fork_frame是包含了inactive_task_frame与pt_regs。也就是在内核栈的顶部是pt_regs，紧接着后面跟了inactive_task_frame.原理解释：C语言的这种强制转换并不意味着这个对象就已经存在，正相反，有点像把一块内存格式化一样。这里的inactive_task_frame应该没有填充过。但是类型可以把这块内存格式化成这个结构。
 	*/
 	fork_frame = container_of(childregs, struct fork_frame, regs);
-	frame = &fork_frame->frame; //就是inactive frame 一堆寄存器的值。
+	frame = &fork_frame->frame; //设置inactive_task_struct的指针。
 
 	frame->bp = encode_frame_pointer(childregs);
-	frame->ret_addr = (unsigned long) ret_from_fork; //ret_from_fork是汇编函数的地址。
-	p->thread.sp = (unsigned long) fork_frame;
+	frame->ret_addr = (unsigned long) ret_from_fork; //ret_from_fork是汇编函数的地址。(entry64.S)
+	p->thread.sp = (unsigned long) fork_frame; //将新产生的进程，内核态栈的sp指向了inactive_fork_frame上面
 	p->thread.io_bitmap = NULL;
 	memset(p->thread.ptrace_bps, 0, sizeof(p->thread.ptrace_bps));
 
 #ifdef CONFIG_X86_64
+	//thread-struct中保存的可能需要切换的寄存器信息也都拷贝自父进程。
 	current_save_fsgs();
 	p->thread.fsindex = current->thread.fsindex;
 	p->thread.fsbase = current->thread.fsbase;
