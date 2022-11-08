@@ -126,6 +126,7 @@ static int set_new_tls(struct task_struct *p, unsigned long tls)
 /*
 sp就是args->stack 用户态栈的地址，栈顶地址。用sp表示。
 */
+/*xiaojin-sched-func copy_thread*/
 int copy_thread(unsigned long clone_flags, unsigned long sp, unsigned long arg,
 		struct task_struct *p, unsigned long tls)
 {
