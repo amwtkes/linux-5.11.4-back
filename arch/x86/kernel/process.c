@@ -126,7 +126,10 @@ static int set_new_tls(struct task_struct *p, unsigned long tls)
 /*
 sp就是args->stack 用户态栈的地址，栈顶地址。用sp表示。
 */
-/*xiaojin-fork-func copy_thread设置fork后新线程开始运行的栈。参考：https://app.yinxiang.com/shard/s65/nl/15273355/666a2858-a505-4f9a-97b3-f0f725d5479c/ */
+/*xiaojin-fork-func copy_thread设置fork后新线程开始运行的栈。参考：https://app.yinxiang.com/shard/s65/nl/15273355/666a2858-a505-4f9a-97b3-f0f725d5479c/ 
+
+retval = copy_thread(clone_flags, args->stack, args->stack_size, p, args->tls);
+*/
 int copy_thread(unsigned long clone_flags, unsigned long sp, unsigned long arg,
 		struct task_struct *p, unsigned long tls)
 {
@@ -173,16 +176,21 @@ int copy_thread(unsigned long clone_flags, unsigned long sp, unsigned long arg,
 
 	/* Kernel thread ? */
 	if (unlikely(p->flags & PF_KTHREAD)) {
-		memset(childregs, 0, sizeof(struct pt_regs));
-		kthread_frame_init(frame, sp, arg);
+		memset(childregs, 0, sizeof(struct pt_regs)); //如果是内核线程，pt_regs就清空
+		/*
+			frame->bx = sp; 
+			frame->r12 = arg;
+		*/
+		kthread_frame_init(frame, sp, arg); //
 		return 0;
 	}
 
-	frame->bx = 0;
-	*childregs = *current_pt_regs();
+	//如果是用户态进程
+	frame->bx = 0; 
+	*childregs = *current_pt_regs(); //将当前进程的用户态栈复制给新进程
 	/*子进程也就是clone出来的进程返回值是0.也就是clone对于子进程pid=0*/
 	childregs->ax = 0;
-	// sp放入了regs里面，栈顶的指针，用户态的栈。
+	// sp放入了regs里面，栈顶的指针，用户态的栈。这里吧在用户态申请的栈内存地址赋值给了sp。转了好大一圈啊。
 	// p-> stack 是内核栈。
 	if (sp)
 		childregs->sp = sp;
