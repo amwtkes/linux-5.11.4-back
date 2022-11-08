@@ -4356,7 +4356,7 @@ context_switch(struct rq *rq, struct task_struct *prev,
 
 	/* Here we just switch the register state and the stack. */
 
-	/*xiaojin-contextswitch - (-0.1)！！！原理解释：这个宏会正式的切换到next的环境继续执行。
+	/*xiaojin-contextswitch - (-0.1)！！！(exp)原理解释switch_to：这个宏会正式的切换到next的环境继续执行。
 	switch_to(prev,next,prev)调用switch_to以后会调用到汇编的switch_to_asm里面，完成从prev到next的切换（主要是内核栈的切换，注意：内核栈中保存了__schedule()返回后的prev的EIP，通过iret自动恢复。也就是每个CPU）。除开EIP！！！
 	0、两个栈，用户程序与内核程序运行不同的栈，栈上保存了函数返回的地址，ret或者iret自动恢复执行；进程切换时用户态的栈保存在pt_regs里面，包括EIP寄存器。内核线程切换不会保存EIP后面分析。
 	1、用户态的EIP是保存在pt_regs里面，返回用户态的时候恢复；当然也是在汇编里面执行；
@@ -5020,7 +5020,12 @@ restart:
  */
 
 /*xiaojin-sched-func __schedule 必须要关闭抢占，程序不能在没有运行完就被切换去执行此CPU上的别的内核线程。很容易理解。*/
-/*xiaojin-contextswitch - (-2) __schedule(preempt)*/
+/*xiaojin-contextswitch - (-2) __schedule(preempt) (exp原理解释)schedule函数。 
+每个cpu的runqueue是没有监听程序的，程序的调度都是通过schedule函数调用来切换与恢复的。
+1、进程切换必须通过schedule函数
+2、进程恢复也必须通过其他进程调用schedule函数来进行。
+3、所以程序都是从schedule函数切换走，新的进程如（fork）出来的进程都是从schedule函数开始执行的。
+*/
 static void __sched notrace __schedule(bool preempt)
 {
 	struct task_struct *prev, *next;

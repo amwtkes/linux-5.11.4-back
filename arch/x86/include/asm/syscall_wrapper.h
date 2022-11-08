@@ -236,7 +236,7 @@ __SYS_STUBx(x64, sys##name,					\
 
 #endif /* CONFIG_COMPAT */
 
-/*xiaojin-syscall-3.3 __SYSCALL_DEFINEx 原理解释（系统调用的原型）：产生了__do_sys+系统调用name的函数，并将实际代码放入后面。主要：这个函数的参数还有宏没解开——__MAP
+/*xiaojin-syscall-3.3 __SYSCALL_DEFINEx （exp）原理解释（系统调用的原型）：产生了__do_sys+系统调用name的函数，并将实际代码放入后面。主要：这个函数的参数还有宏没解开——__MAP
 例如：SYSCALL_DEFINE3(arc_usr_cmpxchg, int *, uaddr, int, expected, int, new){...} //arc_usr_cmpxchg 会先变成_arc_usr_cmpxchg（#define SYSCALL_DEFINE1(name, ...) SYSCALL_DEFINEx(1, _##name, __VA_ARGS__)）
 
 
