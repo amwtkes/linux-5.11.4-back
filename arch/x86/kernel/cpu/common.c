@@ -1752,7 +1752,7 @@ DEFINE_PER_CPU(int, __preempt_count) = INIT_PREEMPT_COUNT;
 EXPORT_PER_CPU_SYMBOL(__preempt_count);
 
 /* May not be marked __init: used by software suspend */
-/*xiaojin-syscall-0.1 MSR寄存器用于保存
+/*xiaojin-syscall-0.1 系统调用真正的入口——MSR寄存器用于保存
 系统调用的入口地址。
 在调用syscall intel指令的时候会跳到这里来找到入口。
 */

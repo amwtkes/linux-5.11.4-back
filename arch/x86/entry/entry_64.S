@@ -147,7 +147,7 @@ SYM_INNER_LABEL(entry_SYSCALL_64_safe_stack, SYM_L_GLOBAL)
 	pushq	%r11					/* pt_regs->flags */
 	pushq	$__USER_CS				/* pt_regs->cs */
 	/*保存返回用户态要执行的指令地址*/
-	pushq	%rcx					/* pt_regs->ip */
+	pushq	%rcx					/* pt_regs->ip fork以后会将这个值直接拷贝给新进程的内核栈的pt_regs里面。在copy_process->copy_thread函数里面完成。*/
 SYM_INNER_LABEL(entry_SYSCALL_64_after_hwframe, SYM_L_GLOBAL)
 	/*保存系统调用号*/
 	pushq	%rax					/* pt_regs->orig_ax */
