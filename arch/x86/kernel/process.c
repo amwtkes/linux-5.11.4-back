@@ -126,7 +126,7 @@ static int set_new_tls(struct task_struct *p, unsigned long tls)
 /*
 sp就是args->stack 用户态栈的地址，栈顶地址。用sp表示。
 */
-/*xiaojin-fork-func copy_thread*/
+/*xiaojin-fork-func copy_thread设置fork后新线程开始运行的栈。参考：https://app.yinxiang.com/shard/s65/nl/15273355/666a2858-a505-4f9a-97b3-f0f725d5479c/ */
 int copy_thread(unsigned long clone_flags, unsigned long sp, unsigned long arg,
 		struct task_struct *p, unsigned long tls)
 {
@@ -135,23 +135,17 @@ int copy_thread(unsigned long clone_flags, unsigned long sp, unsigned long arg,
 	struct pt_regs *childregs;
 	int ret = 0;
 
-	/*内核栈里面保存的用户态栈的值——childregs
-	注意这里是：fork_frame里面的pt_regs
+	/*pt_regs保存用户态寄存器。永远放放在内核栈的顶部。
 	*/
 	childregs = task_pt_regs(p);
 
-	/* xiaojin
-	fork_from是一个不活跃进程的栈结构，不是当前进程的栈。
-	可以看	struct inactive_task_frame { 注释。
-	这里pt_reg的布局应该要跟_switch_to吻合？？？ 不懂
-
-	但是肯定的是，这个还在老进程的系统调用里面，还没实际运行，所以不能取运行时进程的pt_reg.
+	/* xiaojin-fork-exp fork_frame是包含了inactive_task_frame与pt_regs。也就是在内核栈的顶部是pt_regs，紧接着后面跟了inactive_task_frame.原理解释：C语言的这种强制转换并不意味着这个对象就已经存在，正相反，有点像把一块内存格式化一样。这里的inactive_task_frame应该没有填充过。但是类型可以把这块内存格式化成这个结构。
 	*/
 	fork_frame = container_of(childregs, struct fork_frame, regs);
 	frame = &fork_frame->frame; //就是inactive frame 一堆寄存器的值。
 
 	frame->bp = encode_frame_pointer(childregs);
-	frame->ret_addr = (unsigned long) ret_from_fork;
+	frame->ret_addr = (unsigned long) ret_from_fork; //ret_from_fork是汇编函数的地址。
 	p->thread.sp = (unsigned long) fork_frame;
 	p->thread.io_bitmap = NULL;
 	memset(p->thread.ptrace_bps, 0, sizeof(p->thread.ptrace_bps));
