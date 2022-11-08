@@ -289,7 +289,8 @@ SYM_CODE_END(entry_SYSCALL_64)
  * %rdi: prev task
  * %rsi: next task
  */
- /*xiaojin-sched-func __switch_to_asm*/
+ /*xiaojin-sched-func (exp)原理解释：__switch_to_asm是个类似于结界的东西，从A进程到B进程的切换就在这里进行。最终要的就是栈的切换。不包括IP的切换，IP是顺下来的因为栈就是程序运行的最重要的上下文。查看switch_to的(exp)。也就相当于有个房子，一个进来的门一个出去的门，进门后，选一个出去的人，然后从出去的门走。所以所有的进程切换都在这个房子进行。
+ */
 .pushsection .text, "ax"
 SYM_FUNC_START(__switch_to_asm)
 	/*
@@ -303,9 +304,11 @@ SYM_FUNC_START(__switch_to_asm)
 	pushq	%r14
 	pushq	%r15
 
-	/*xiaojin-contextswitch -2 切换栈到next
-	switch stack 
-	内核栈切换到了next的进程*/
+	/*xiaojin-contextswitch -2 切换栈到next。这里就是结界！（exp）原理解释：这里是进程切换的关键，从这里开始A变成了B。主要是切换了内核栈。其中 %rdi代表第一个参数，  %rsi代表第二个参数， 分别代表 prev task， next task将当前栈顶指针放入prev task_struct结构保存在thread_struct的 sp0 中。 将next_task栈顶 指做为当前栈顶指针，完成切换！因为IP没有切换所以next会继续沿着这里的下一条语句继续执行。不过是以next的身份进行的。
+
+TASK_threadsp宏的定义参考：https://app.yinxiang.com/shard/s65/nl/15273355/7e7865f5-2f47-489b-9b30-428ab3b92a4f/
+
+	switch stack */
 	movq	%rsp, TASK_threadsp(%rdi) /*将当前rsp寄存器存入 见xiaojin-contextswitch -7*/
 	movq	TASK_threadsp(%rsi), %rsp
 
@@ -327,7 +330,10 @@ SYM_FUNC_START(__switch_to_asm)
 
 	/* restore callee-saved registers 
 	xiaojin-contextswitch -3 恢复next的内核栈
-	next的inactive_task_frame被恢复了*/
+	next的inactive_task_frame被恢复了
+	参考这里面的图：https://app.yinxiang.com/shard/s65/nl/15273355/666a2858-a505-4f9a-97b3-f0f725d5479c/ 
+	(exp)原理解释：inactive_task_frame的小时。这里恢复了栈指针，然后next的inactive_task_frame因为pop而消失，next的内核栈栈底只有pt_regs了。！！！
+	*/
 	popq	%r15
 	popq	%r14
 	popq	%r13
