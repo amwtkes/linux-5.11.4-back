@@ -5106,6 +5106,9 @@ static void __sched notrace __schedule(bool preempt)
 			 *
 			 * After this, schedule() must not care about p->state any more.
 			 */
+
+			/*xiaojin-sched-func deactivate_task的作用是：如果prev没有未处理的信号，则将它从fair的红黑上拿下来。这是prev已经没有主了……那么什么时候把他加进队列呢？毕竟它以后还要运行啊。答案在下面的核心函数pick_next_task里面。
+			pick_next_task->put_prev_task or put_prev_task_balance->put_prev_entity（重新加入一个组织）->update_curr(当然要更新下vruntime)->__enqueue_entity*/
 			deactivate_task(rq, prev, DEQUEUE_SLEEP | DEQUEUE_NOCLOCK);
 
 			if (prev->in_iowait) {
