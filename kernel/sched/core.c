@@ -3331,6 +3331,7 @@ static void ttwu_queue(struct task_struct *p, int cpu, int wake_flags)
  */
 
 /*xiaojin-rcu synchronize_rcu --5.4*/
+/*xiaojin-sched-func try_to_wake_up(p, TASK_NORMAL, 0) ttwu->try to wake up的意思。参考：https://app.yinxiang.com/shard/s65/nl/15273355/ef311f63-9bd7-4890-a98c-2edb9fa58209 */
 static int
 try_to_wake_up(struct task_struct *p, unsigned int state, int wake_flags)
 {
