@@ -5082,6 +5082,7 @@ static void __sched notrace __schedule(bool preempt)
 	 */
 	prev_state = prev->state;
 	if (!preempt && prev_state) {
+		//判断当前进程是否存在挂起的信号，如果有挂起的信号，那么保持当前进程为running状态，避免反复睡眠唤醒的资源消耗，否则当前进程制定dequeue操作进入休眠状态，并且判断当前进程是否为一个worker，如果是则在workqueue中查看是否有需要被唤醒的worker。
 		if (signal_pending_state(prev_state, prev)) {
 			prev->state = TASK_RUNNING;
 		} else {

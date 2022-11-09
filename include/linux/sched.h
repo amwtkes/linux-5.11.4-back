@@ -716,7 +716,7 @@ thread_info可以放在内核栈的栈顶部位，
 	int				recent_used_cpu;
 	int				wake_cpu;
 #endif
-	int				on_rq;
+	int				on_rq; //任务在rq上的状态。TASK_ON_RQ_QUEUED、DEQUEUE_SLEEP等等
 
 	int				prio;
 	int				static_prio;
