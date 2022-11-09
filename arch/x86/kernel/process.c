@@ -142,7 +142,7 @@ int copy_thread(unsigned long clone_flags, unsigned long sp, unsigned long arg,
 	*/
 	childregs = task_pt_regs(p);
 
-	/* xiaojin-fork-(exp) fork_frame是包含了inactive_task_frame与pt_regs。也就是在内核栈的顶部是pt_regs，紧接着后面跟了inactive_task_frame.原理解释：C语言的这种强制转换并不意味着这个对象就已经存在，正相反，有点像把一块内存格式化一样。这里的inactive_task_frame应该没有填充过。但是类型可以把这块内存格式化成这个结构。
+	/* xiaojin-fork-(exp)原理解释fork_frame是包含了inactive_task_frame与pt_regs。也就是在内核栈的顶部是pt_regs，紧接着后面跟了inactive_task_frame.原理解释：C语言的这种强制转换并不意味着这个对象就已经存在，正相反，有点像把一块内存格式化一样。这里的inactive_task_frame应该没有填充过。但是类型可以把这块内存格式化成这个结构。
 	*/
 	fork_frame = container_of(childregs, struct fork_frame, regs);
 	frame = &fork_frame->frame; //设置inactive_task_struct的指针。

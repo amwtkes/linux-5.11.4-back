@@ -332,7 +332,7 @@ TASK_threadsp宏的定义参考：https://app.yinxiang.com/shard/s65/nl/15273355
 	xiaojin-contextswitch -3 恢复next的内核栈
 	next的inactive_task_frame被恢复了
 	参考这里面的图：https://app.yinxiang.com/shard/s65/nl/15273355/666a2858-a505-4f9a-97b3-f0f725d5479c/ 
-	(exp)原理解释：inactive_task_frame的小时。这里恢复了栈指针，然后next的inactive_task_frame因为pop而消失，next的内核栈栈底只有pt_regs了。！！！
+	xiaojin-(exp)原理解释：inactive_task_frame的小时。这里恢复了栈指针，然后next的inactive_task_frame因为pop而消失，next的内核栈栈底只有pt_regs了。！！！
 	*/
 	popq	%r15
 	popq	%r14

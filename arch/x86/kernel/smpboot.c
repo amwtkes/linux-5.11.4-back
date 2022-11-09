@@ -1131,7 +1131,7 @@ static int do_boot_cpu(int apicid, int cpu, struct task_struct *idle,
 	if (apic->wakeup_secondary_cpu)
 		boot_error = apic->wakeup_secondary_cpu(apicid, start_ip);
 	else
-		/*xiaojin-percpu_kthread_cpu0_run.10+ (exp)激活AP的IPI wakeup_cpu_via_init_nmi 这里是重点拉，发送IPI中断。实际就是触发AP执行刚刚设置的start_secondary函数。在这个函数中通过操作APIC_ICR寄存器，BSP向目标AP发送IPI消息，触发目标AP从start_eip地址处，实模式开始运行。 实际就是触发AP执行刚刚设置的start_secondary函数。initial_code = (unsigned long)start_secondary;
+		/*xiaojin-percpu_kthread_cpu0_run.10+ (exp)原理解释激活AP的IPI wakeup_cpu_via_init_nmi 这里是重点拉，发送IPI中断。实际就是触发AP执行刚刚设置的start_secondary函数。在这个函数中通过操作APIC_ICR寄存器，BSP向目标AP发送IPI消息，触发目标AP从start_eip地址处，实模式开始运行。 实际就是触发AP执行刚刚设置的start_secondary函数。initial_code = (unsigned long)start_secondary;
          */
 		boot_error = wakeup_cpu_via_init_nmi(cpu, start_ip, apicid,
 						     cpu0_nmi_registered);
