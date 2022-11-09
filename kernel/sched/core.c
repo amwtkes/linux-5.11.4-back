@@ -5114,6 +5114,7 @@ static void __sched notrace __schedule(bool preempt)
 		switch_count = &prev->nvcsw;
 	}
 
+/*xiaojin-contextswitch (-1.9) pick_next_task先从rq中选出下一个要运行的task*/
 	next = pick_next_task(rq, prev, &rf);
 	clear_tsk_need_resched(prev);
 	clear_preempt_need_resched();
@@ -5147,7 +5148,7 @@ static void __sched notrace __schedule(bool preempt)
 		trace_sched_switch(preempt, prev, next);
 
 		/* Also unlocks the rq: */
-		/*xiaojin-contextswitch -(-1.9) 调用context_switch() from schedule*/
+		/*xiaojin-contextswitch -(-1.8) 调用context_switch() from schedule*/
 		rq = context_switch(rq, prev, next, &rf);
 	} else {
 		rq->clock_update_flags &= ~(RQCF_ACT_SKIP|RQCF_REQ_SKIP);
