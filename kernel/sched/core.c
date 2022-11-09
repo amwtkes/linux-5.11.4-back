@@ -5020,7 +5020,7 @@ restart:
  */
 
 /*xiaojin-sched-func __schedule 必须要关闭抢占，程序不能在没有运行完就被切换去执行此CPU上的别的内核线程。很容易理解。*/
-/*xiaojin-contextswitch - (-2) __schedule(preempt) (exp原理解释)schedule函数。 
+/*xiaojin-contextswitch - (-2.0) __schedule(preempt) (exp原理解释)schedule函数。 
 每个cpu的runqueue是没有监听程序的，程序的调度都是通过schedule函数调用来切换与恢复的。
 1、进程切换必须通过schedule函数
 2、进程恢复也必须通过其他进程调用schedule函数来进行。
