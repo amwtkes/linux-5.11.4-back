@@ -125,6 +125,8 @@
  * used to determine the order of the priority of each sched class in
  * relation to each other.
  */
+
+/*xiaojin-sched-data __begin_sched_classes，__idle_sched_class，__fair_sched_class，__rt_sched_class，__dl_sched_class，__stop_sched_class，__end_sched_classes汇编定义的代码。几大调度类是全局变量，按照顺序编译与加载进内核。*/
 #define SCHED_DATA				\
 	STRUCT_ALIGN();				\
 	__begin_sched_classes = .;		\

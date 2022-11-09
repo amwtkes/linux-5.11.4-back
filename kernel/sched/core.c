@@ -5025,6 +5025,7 @@ restart:
 1、进程切换必须通过schedule函数
 2、进程恢复也必须通过其他进程调用schedule函数来进行。
 3、所以程序都是从schedule函数切换走，新的进程如（fork）出来的进程都是从schedule函数开始执行的。
+参考：https://app.yinxiang.com/shard/s65/nl/15273355/f1dd9933-251b-4635-bac1-7364a44f3427
 */
 static void __sched notrace __schedule(bool preempt)
 {
