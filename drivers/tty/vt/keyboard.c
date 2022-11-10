@@ -1508,7 +1508,7 @@ static void kbd_keycode(unsigned int keycode, int down, bool hw_raw)
 		kbd->slockstate = 0;
 }
 
-/*xiaojin-keyboard-func -0 kbd_event 键盘事件处理函数*/
+/*xiaojin-keyboard-func -1 kbd_event 键盘事件处理函数*/
 static void kbd_event(struct input_handle *handle, unsigned int event_type,
 		      unsigned int event_code, int value)
 {
@@ -1552,6 +1552,7 @@ static bool kbd_match(struct input_handler *handler, struct input_dev *dev)
  * likes it, it can open it and get events from it. In this (kbd_connect)
  * function, we should decide which VT to bind that keyboard to initially.
  */
+/*xiaojin-keyboard-func -2.3 kbd_connect*/
 static int kbd_connect(struct input_handler *handler, struct input_dev *dev,
 			const struct input_device_id *id)
 {
@@ -1620,7 +1621,7 @@ static const struct input_device_id kbd_ids[] = {
 
 MODULE_DEVICE_TABLE(input, kbd_ids);
 
-/*xiaojin-keyboard-data -1 input_handler kbd_handler键盘中断的处理函数定义处*/
+/*xiaojin-keyboard-data -0 input_handler kbd_handler键盘中断的处理函数定义处*/
 static struct input_handler kbd_handler = {
 	.event		= kbd_event,
 	.match		= kbd_match,
