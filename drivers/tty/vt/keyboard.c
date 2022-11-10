@@ -1618,6 +1618,7 @@ static const struct input_device_id kbd_ids[] = {
 
 MODULE_DEVICE_TABLE(input, kbd_ids);
 
+/*xiaojin-keyboard input_handler kbd_handler键盘中断的处理函数*/
 static struct input_handler kbd_handler = {
 	.event		= kbd_event,
 	.match		= kbd_match,
