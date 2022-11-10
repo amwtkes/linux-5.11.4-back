@@ -434,8 +434,8 @@ SYM_CODE_END(ret_from_fork)
  * The macro emits code to set up the kernel context for straight forward
  * and simple IDT entries. No IST stack, no paranoid entry checks.
  */
- /*xiaojin-interrupt_macro -0 idtentry 实际的中断，异常处理函数的宏。定义了一个以asm_开始的汇编函数 idtentry是宏的名称 */
-.macro idtentry vector asmsym cfunc has_error_code:req
+ /*xiaojin-interrupt_macro -0 idtentry 实际的中断，异常处理函数的宏。定义了一个以asm_开始的汇编函数 idtentry是宏的名称。IDT中的入口就是这个宏生成的函数的虚拟地址。LINUX没有使用分段模型，所以段偏移量就是64位的函数指针地址。*/
+.macro idtentry vector asmsym cfunc has_error_code:req /*宏idtentry*/
 SYM_CODE_START(\asmsym)
 	UNWIND_HINT_IRET_REGS offset=\has_error_code*8
 	ASM_CLAC
@@ -458,7 +458,7 @@ SYM_CODE_START(\asmsym)
 .Lfrom_usermode_no_gap_\@:
 	.endif
 
-	idtentry_body \cfunc \has_error_code /*这里是入口*/
+	idtentry_body \cfunc \has_error_code /*调用宏-idtentry_body，生成处理函数，这里是入口*/
 
 _ASM_NOKPROBE(\asmsym)
 SYM_CODE_END(\asmsym)

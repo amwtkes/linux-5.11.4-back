@@ -97,6 +97,7 @@ For 32-bit we have the following conventions - kernel is built with
 
 #define SIZEOF_PTREGS	21*8
 
+/*xiaojin-interrupt_macro 0.2.1 PUSH_AND_CLEAR_REGS在内核栈栈底压入pt_regs结构。(exp)原理解释：因为CPU支持从用户态直接通过时钟中断跳入内核中断门，所以需要保存用户态寄存器集合到pt_regs*/
 .macro PUSH_AND_CLEAR_REGS rdx=%rdx rax=%rax save_ret=0
 	.if \save_ret
 	pushq	%rsi		/* pt_regs->si */
@@ -122,7 +123,7 @@ For 32-bit we have the following conventions - kernel is built with
 	UNWIND_HINT_REGS
 
 	.if \save_ret
-	pushq	%rsi		/* return address on top of stack */
+	pushq	%rsi		/* return address on top of stack 最后在内核栈底压入返回地址*/
 	.endif
 
 	/*

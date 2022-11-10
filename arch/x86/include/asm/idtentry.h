@@ -442,7 +442,7 @@ __visible noinstr void func(struct pt_regs *regs,			\
 /*
  * The ASM variants for DECLARE_IDTENTRY*() which emit the ASM entry stubs.
  */
-/*xiaojin-interrupt_macro +2 定义asm_函数的地方*/
+/*xiaojin-interrupt_macro +2 定义asm_函数的地方，调用idtentry这个汇编宏生成汇编的中断处理函数。注册到IDT中。*/
 #define DECLARE_IDTENTRY(vector, func)					\
 	idtentry vector asm_##func func has_error_code=0
 
