@@ -1508,6 +1508,7 @@ static void kbd_keycode(unsigned int keycode, int down, bool hw_raw)
 		kbd->slockstate = 0;
 }
 
+/*xiaojin-keyboard-func -0 kbd_event 键盘事件处理函数*/
 static void kbd_event(struct input_handle *handle, unsigned int event_type,
 		      unsigned int event_code, int value)
 {
@@ -1522,6 +1523,7 @@ static void kbd_event(struct input_handle *handle, unsigned int event_type,
 
 	spin_unlock(&kbd_event_lock);
 
+/*xiaojin-keyboard-funccall tasklet_schedule调度了？*/
 	tasklet_schedule(&keyboard_tasklet);
 	do_poke_blanked_console = 1;
 	schedule_console_callback();
@@ -1618,7 +1620,7 @@ static const struct input_device_id kbd_ids[] = {
 
 MODULE_DEVICE_TABLE(input, kbd_ids);
 
-/*xiaojin-keyboard input_handler kbd_handler键盘中断的处理函数*/
+/*xiaojin-keyboard-data -1 input_handler kbd_handler键盘中断的处理函数定义处*/
 static struct input_handler kbd_handler = {
 	.event		= kbd_event,
 	.match		= kbd_match,
@@ -1646,6 +1648,7 @@ int __init kbd_init(void)
 
 	kbd_init_leds();
 
+/*xiaojin-keyboard-func -2 !!!kbd_init 初始化键盘驱动？kbd_handler是个全局变量，注册了一下*/
 	error = input_register_handler(&kbd_handler);
 	if (error)
 		return error;
