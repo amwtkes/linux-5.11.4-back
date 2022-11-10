@@ -3370,7 +3370,7 @@ try_to_wake_up(struct task_struct *p, unsigned int state, int wake_flags)
 	 */
 	raw_spin_lock_irqsave(&p->pi_lock, flags);
 	smp_mb__after_spinlock();
-	if (!(p->state & state))
+	if (!(p->state & state)) //进程p不在state掩码的范围内，不予处理
 		goto unlock;
 
 	trace_sched_waking(p);
