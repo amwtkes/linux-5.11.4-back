@@ -158,7 +158,6 @@ static irqreturn_t sh_keysc_isr(int irq, void *dev_id)
 	return IRQ_HANDLED;
 }
 
-/*xiaojin-input-func -? sh_keysc_probe疑似键盘处理程序*/
 static int sh_keysc_probe(struct platform_device *pdev)
 {
 	struct sh_keysc_priv *priv;
