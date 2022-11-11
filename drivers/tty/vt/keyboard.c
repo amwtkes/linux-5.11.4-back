@@ -1621,7 +1621,9 @@ static const struct input_device_id kbd_ids[] = {
 
 MODULE_DEVICE_TABLE(input, kbd_ids);
 
-/*xiaojin-keyboard-data -0 input_handler kbd_handler键盘中断的处理函数定义处*/
+/*xiaojin-keyboard-data -0 input_handler kbd_handler键盘中断的处理函数定义处。三个结构的关系：input_device表示设备，input_handler表示驱动程序，input_handle联系上面两个对象。前两者的关系是多对多，通过handle来对应起来。参考：https://app.yinxiang.com/shard/s65/nl/15273355/92b8d91d-4b49-4d46-9851-d250b4d49575/
+关于input_handler,input_device,intput_handle的关系参考：https://app.yinxiang.com/shard/s65/nl/15273355/1fb0ae8b-1470-4c87-a6d8-e1d012751521/
+*/
 static struct input_handler kbd_handler = {
 	.event		= kbd_event,
 	.match		= kbd_match,
@@ -1629,7 +1631,7 @@ static struct input_handler kbd_handler = {
 	.disconnect	= kbd_disconnect,
 	.start		= kbd_start,
 	.name		= "kbd",
-	.id_table	= kbd_ids,
+	.id_table	= kbd_ids,//指向次input_handler支持的厂商、设备版本等信息。具体看上面的参考。
 };
 
 int __init kbd_init(void)
