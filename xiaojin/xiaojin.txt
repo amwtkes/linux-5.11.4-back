@@ -17,6 +17,7 @@ xiaojin-rcu rcu_segcblist --- rcu_data中的callback list
 xiaojin-rcu rcu_gp_kthread -- rcu核心线程的过程
 xiaojin-rcu-eqs --- rcu的eqs解释
 xiaojin-rcu-event ----rcu状态机
+xiaojin-rcu-example --- 例子
 
 =========spinlock
 xiaojin-spinlock ---

@@ -2491,6 +2491,10 @@ EXPORT_SYMBOL(input_handler_for_each_handle);
  * This function is supposed to be called from handler's
  * connect() method.
  */
+
+/*xiaojin-input-func -300 input_register_handle 注册一个handle。调用input_register_handle，完成input handler、input handle、input device的关联。
+参考：https://app.yinxiang.com/shard/s65/nl/15273355/f8bb6633-2a80-410d-a094-efe79b9ee1e1/
+*/
 int input_register_handle(struct input_handle *handle)
 {
 	struct input_handler *handler = handle->handler;
@@ -2509,6 +2513,8 @@ int input_register_handle(struct input_handle *handle)
 	 * Filters go to the head of the list, normal handlers
 	 * to the tail.
 	 */
+
+	/*xiaojin-rcu-example input_register_handle*/
 	if (handler->filter)
 		list_add_rcu(&handle->d_node, &dev->h_list);
 	else
