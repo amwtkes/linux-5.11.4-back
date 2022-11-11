@@ -3009,7 +3009,7 @@ ttwu_do_activate(struct rq *rq, struct task_struct *p, int wake_flags,
 	}
 
 	activate_task(rq, p, en_flags);
-	ttwu_do_wakeup(rq, p, wake_flags, rf);
+	ttwu_do_wakeup(rq, p, wake_flags, rf); //设置p的state到running
 }
 
 /*
@@ -3331,7 +3331,14 @@ static void ttwu_queue(struct task_struct *p, int cpu, int wake_flags)
  */
 
 /*xiaojin-rcu synchronize_rcu --5.4*/
-/*xiaojin-sched-func try_to_wake_up(p, TASK_NORMAL, 0) ttwu->try to wake up的意思。参考：https://app.yinxiang.com/shard/s65/nl/15273355/ef311f63-9bd7-4890-a98c-2edb9fa58209 */
+/*xiaojin-sched-func try_to_wake_up(p, TASK_NORMAL, 0) ttwu->try to wake up的意思。参考：https://app.yinxiang.com/shard/s65/nl/15273355/ef311f63-9bd7-4890-a98c-2edb9fa58209 
+感觉让一个进程马上唤醒的步骤：
+1、将他加入到某个CPU的runqueue，当然选择某个CPU是个算法问题，LINUX好像也用了很多启发式的方法去做。比如，它之前在哪个CPU上，那个CPU的load如果很低，比当前低，就放在那个cpu去执行；如果最近运行过，就调度到最近的CPU毕竟缓存还在；参考了《深入理解linux内核》
+2、设置当前rq所在CPU的运行task的thread_info的flag到TIF_NEEDRESCHEDULE，注意，不是马上调用schedule将它赶下来，只是标记；等它在合适的时候调用schedule时切换；因为刚加入rq的task可以马上获得CPU（更新了时间）；
+3、将task的state设置成running状态。
+
+具体可以参考:原理|解释.*schedule，原理|解释.*switch_to
+*/
 static int
 try_to_wake_up(struct task_struct *p, unsigned int state, int wake_flags)
 {
@@ -3487,6 +3494,7 @@ try_to_wake_up(struct task_struct *p, unsigned int state, int wake_flags)
 	cpu = task_cpu(p);
 #endif /* CONFIG_SMP */
 
+//设置的关键
 	ttwu_queue(p, cpu, wake_flags);
 unlock:
 	raw_spin_unlock_irqrestore(&p->pi_lock, flags);
@@ -5023,7 +5031,7 @@ restart:
 /*xiaojin-sched-func __schedule 必须要关闭抢占，程序不能在没有运行完就被切换去执行此CPU上的别的内核线程。很容易理解。*/
 /*xiaojin-contextswitch - (-2.0) __schedule(preempt) (exp原理解释)schedule函数。 
 每个cpu的runqueue是没有监听程序的，程序的调度都是通过schedule函数调用来切换与恢复的。
-1、进程切换必须通过schedule函数
+1、进程切换必须通过schedule函数（进程切换第一定律）
 2、进程恢复也必须通过其他进程调用schedule函数来进行。
 3、所以程序都是从schedule函数切换走，新的进程如（fork）出来的进程都是从schedule函数开始执行的。
 参考：https://app.yinxiang.com/shard/s65/nl/15273355/f1dd9933-251b-4635-bac1-7364a44f3427
