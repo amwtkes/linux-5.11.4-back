@@ -36,7 +36,7 @@ xiaojin-gates define ---- 一些宏定义
 xiaojin-si --- 软中断相关
 xiaojin time_interrupt ---- 时间中断 tick
 xiaojin-interrupt_macro ---- interrupt使用的idt包装宏
-xiaojin-keyboard ---- 键盘中断处理函数
+xiaojin-input ---- 键盘中断处理函数
 
 -=========xiaojin-accounting
 xiaojin-accounting --- cpu统计信息

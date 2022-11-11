@@ -1508,7 +1508,7 @@ static void kbd_keycode(unsigned int keycode, int down, bool hw_raw)
 		kbd->slockstate = 0;
 }
 
-/*xiaojin-keyboard-func -1 kbd_event 键盘事件处理函数*/
+/*xiaojin-input-func -1 kbd_event 键盘事件处理函数*/
 static void kbd_event(struct input_handle *handle, unsigned int event_type,
 		      unsigned int event_code, int value)
 {
@@ -1523,7 +1523,7 @@ static void kbd_event(struct input_handle *handle, unsigned int event_type,
 
 	spin_unlock(&kbd_event_lock);
 
-/*xiaojin-keyboard-funccall tasklet_schedule调度了？*/
+/*xiaojin-input-funccall tasklet_schedule调度了？*/
 	tasklet_schedule(&keyboard_tasklet);
 	do_poke_blanked_console = 1;
 	schedule_console_callback();
@@ -1552,7 +1552,7 @@ static bool kbd_match(struct input_handler *handler, struct input_dev *dev)
  * likes it, it can open it and get events from it. In this (kbd_connect)
  * function, we should decide which VT to bind that keyboard to initially.
  */
-/*xiaojin-keyboard-func -2.3 kbd_connect*/
+/*xiaojin-input-func -2.3 kbd_connect*/
 static int kbd_connect(struct input_handler *handler, struct input_dev *dev,
 			const struct input_device_id *id)
 {
@@ -1621,7 +1621,7 @@ static const struct input_device_id kbd_ids[] = {
 
 MODULE_DEVICE_TABLE(input, kbd_ids);
 
-/*xiaojin-keyboard-data -0 input_handler kbd_handler键盘中断的处理函数定义处。三个结构的关系：input_device表示设备，input_handler表示驱动程序，input_handle联系上面两个对象。前两者的关系是多对多，通过handle来对应起来。参考：https://app.yinxiang.com/shard/s65/nl/15273355/92b8d91d-4b49-4d46-9851-d250b4d49575/
+/*xiaojin-input-data -0 input_handler kbd_handler键盘中断的处理函数定义处。三个结构的关系：input_device表示设备，input_handler表示驱动程序，input_handle联系上面两个对象。前两者的关系是多对多，通过handle来对应起来。参考：https://app.yinxiang.com/shard/s65/nl/15273355/92b8d91d-4b49-4d46-9851-d250b4d49575/
 关于input_handler,input_device,intput_handle的关系参考：https://app.yinxiang.com/shard/s65/nl/15273355/1fb0ae8b-1470-4c87-a6d8-e1d012751521/
 */
 static struct input_handler kbd_handler = {
@@ -1651,7 +1651,7 @@ int __init kbd_init(void)
 
 	kbd_init_leds();
 
-/*xiaojin-keyboard-func -2 !!!kbd_init 初始化键盘驱动？kbd_handler是个全局变量，注册了一下*/
+/*xiaojin-input-func -2 !!!kbd_init 初始化键盘驱动？kbd_handler是个全局变量，注册了一下*/
 	error = input_register_handler(&kbd_handler);
 	if (error)
 		return error;

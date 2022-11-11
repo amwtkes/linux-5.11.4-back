@@ -364,7 +364,7 @@ static int input_get_disposition(struct input_dev *dev,
 	return disposition;
 }
 
-/*xiaojin-keyboard-func -? input_handle_event*/
+/*xiaojin-input-func -? input_handle_event*/
 static void input_handle_event(struct input_dev *dev,
 			       unsigned int type, unsigned int code, int value)
 {
@@ -436,7 +436,7 @@ static void input_handle_event(struct input_dev *dev,
  * to 'seed' initial state of a switch or initial position of absolute
  * axis, etc.
  */
-/*xiaojin-keyboard-func -? input_event*/
+/*xiaojin-input-func -? input_event*/
 void input_event(struct input_dev *dev,
 		 unsigned int type, unsigned int code, int value)
 {
@@ -1025,7 +1025,7 @@ static const struct input_device_id *input_match_device(struct input_handler *ha
 	return NULL;
 }
 
-/*xiaojin-keyboard-func -2.1 input_attach_handler handler与dev绑定*/
+/*xiaojin-input-func -2.1 input_attach_handler handler与dev绑定*/
 static int input_attach_handler(struct input_dev *dev, struct input_handler *handler)
 {
 	const struct input_device_id *id;
@@ -1035,7 +1035,7 @@ static int input_attach_handler(struct input_dev *dev, struct input_handler *han
 	if (!id)
 		return -ENODEV;
 
-/*xiaojin-keyboard-func -2.2 handler与dev绑定，调用kbd_connect*/
+/*xiaojin-input-func -2.2 handler与dev绑定，调用kbd_connect*/
 	error = handler->connect(handler, dev, id);
 	if (error && error != -ENODEV)
 		pr_err("failed to attach handler %s to device %s, error: %d\n",
@@ -2394,7 +2394,7 @@ EXPORT_SYMBOL(input_unregister_device);
  * devices in the system and attaches it to all input devices that
  * are compatible with the handler.
  */
-/*xiaojin-keyboard-func -2 input_register_handler*/
+/*xiaojin-input-func -2 input_register_handler*/
 int input_register_handler(struct input_handler *handler)
 {
 	struct input_dev *dev;

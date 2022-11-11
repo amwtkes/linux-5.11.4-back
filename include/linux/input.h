@@ -134,6 +134,7 @@ enum input_clock_type {
  * Device's close() is called when it is being inhibited and its open()
  * is called when it is being uninhibited.
  */
+/*xiaojin-input-data input_dev*/
 struct input_dev {
 	const char *name;
 	const char *phys;

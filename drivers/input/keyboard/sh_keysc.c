@@ -158,7 +158,7 @@ static irqreturn_t sh_keysc_isr(int irq, void *dev_id)
 	return IRQ_HANDLED;
 }
 
-/*xiaojin-keyboard-func -? sh_keysc_probe疑似键盘处理程序*/
+/*xiaojin-input-func -? sh_keysc_probe疑似键盘处理程序*/
 static int sh_keysc_probe(struct platform_device *pdev)
 {
 	struct sh_keysc_priv *priv;
@@ -226,7 +226,7 @@ static int sh_keysc_probe(struct platform_device *pdev)
 	input->keycodesize = sizeof(pdata->keycodes[0]);
 	input->keycodemax = ARRAY_SIZE(pdata->keycodes);
 
-/*xiaojin-keyboard-funccall request_threaded_irq调用点*/
+/*xiaojin-input-funccall request_threaded_irq调用点*/
 	error = request_threaded_irq(irq, NULL, sh_keysc_isr, IRQF_ONESHOT,
 				     dev_name(&pdev->dev), pdev);
 	if (error) {
@@ -323,7 +323,7 @@ static int sh_keysc_resume(struct device *dev)
 static SIMPLE_DEV_PM_OPS(sh_keysc_dev_pm_ops,
 			 sh_keysc_suspend, sh_keysc_resume);
 
-/*xiaojin-keyboard-data sh_keysc_device_driver结构*/
+/*xiaojin-input-data sh_keysc_device_driver结构*/
 static struct platform_driver sh_keysc_device_driver = {
 	.probe		= sh_keysc_probe,
 	.remove		= sh_keysc_remove,
