@@ -2398,7 +2398,7 @@ EXPORT_SYMBOL(input_unregister_device);
  * devices in the system and attaches it to all input devices that
  * are compatible with the handler.
  */
-/*xiaojin-input-func -2 input_register_handler*/
+/*xiaojin-input-func -2 -202> input_register_handler*/
 int input_register_handler(struct input_handler *handler)
 {
 	struct input_dev *dev;
@@ -2412,6 +2412,7 @@ int input_register_handler(struct input_handler *handler)
 
 	list_add_tail(&handler->node, &input_handler_list);
 
+/*xiaojin-input-func -202.1> 绑定input_dev与input_handler*/
 	list_for_each_entry(dev, &input_dev_list, node)
 		input_attach_handler(dev, handler);
 

@@ -1621,8 +1621,10 @@ static const struct input_device_id kbd_ids[] = {
 
 MODULE_DEVICE_TABLE(input, kbd_ids);
 
-/*xiaojin-input-data -0 input_handler kbd_handler键盘中断的处理函数定义处。三个结构的关系：input_device表示设备，input_handler表示驱动程序，input_handle联系上面两个对象。前两者的关系是多对多，通过handle来对应起来。参考：https://app.yinxiang.com/shard/s65/nl/15273355/92b8d91d-4b49-4d46-9851-d250b4d49575/
+/*xiaojin-input-data -0 -200> input_handler kbd_handler键盘中断的处理函数定义处。三个结构的关系：input_device表示设备，input_handler表示驱动程序，input_handle联系上面两个对象。前两者的关系是多对多，通过handle来对应起来。参考：https://app.yinxiang.com/shard/s65/nl/15273355/92b8d91d-4b49-4d46-9851-d250b4d49575/
 关于input_handler,input_device,intput_handle的关系参考：https://app.yinxiang.com/shard/s65/nl/15273355/1fb0ae8b-1470-4c87-a6d8-e1d012751521/
+
+创建input_handler对象
 */
 static struct input_handler kbd_handler = {
 	.event		= kbd_event,
@@ -1651,7 +1653,9 @@ int __init kbd_init(void)
 
 	kbd_init_leds();
 
-/*xiaojin-input-func -2 !!!kbd_init 初始化键盘驱动？kbd_handler是个全局变量，注册了一下*/
+/*xiaojin-input-func -2 -201> !!!kbd_init 初始化键盘驱动？kbd_handler是个全局变量，注册了一下
+注册input_handler
+*/
 	error = input_register_handler(&kbd_handler);
 	if (error)
 		return error;
