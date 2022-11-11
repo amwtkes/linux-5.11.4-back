@@ -357,8 +357,8 @@ struct input_handle {
 	struct input_dev *dev;
 	struct input_handler *handler;
 
-	struct list_head	d_node; //加入input_device的handle集合
-	struct list_head	h_node; //加入input_handler的handle集合
+	struct list_head	d_node; //把自己加入input_device的handle集合
+	struct list_head	h_node; //把自己加入input_handler的handle集合
 };
 
 struct input_dev __must_check *input_allocate_device(void);
