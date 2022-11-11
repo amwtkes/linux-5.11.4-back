@@ -134,7 +134,7 @@ enum input_clock_type {
  * Device's close() is called when it is being inhibited and its open()
  * is called when it is being uninhibited.
  */
-/*xiaojin-input-data input_dev*/
+/*xiaojin-input-data input_dev一个input_dev可以对应多个input_handle*/
 struct input_dev {
 	const char *name;
 	const char *phys;
@@ -143,6 +143,7 @@ struct input_dev {
 
 	unsigned long propbit[BITS_TO_LONGS(INPUT_PROP_CNT)];
 
+//evbit、keybit、relbit、absbit等变量标识该input device的类型、支持事件的code类型等
 	unsigned long evbit[BITS_TO_LONGS(EV_CNT)];
 	unsigned long keybit[BITS_TO_LONGS(KEY_CNT)];
 	unsigned long relbit[BITS_TO_LONGS(REL_CNT)];
@@ -198,7 +199,7 @@ struct input_dev {
 
 	struct device dev;
 
-	struct list_head	h_list;
+	struct list_head	h_list; //跟input_handle关联的数组成员。
 	struct list_head	node;
 
 	unsigned int num_vals;
@@ -308,6 +309,8 @@ struct input_handle;
  * Note that input core serializes calls to connect() and disconnect()
  * methods.
  */
+
+/*xiaojin-input-data input_handler 一个handler可以对应多个handle对象。*/
 struct input_handler {
 
 	void *private;
@@ -327,7 +330,7 @@ struct input_handler {
 
 	const struct input_device_id *id_table;
 
-	struct list_head	h_list;
+	struct list_head	h_list; //跟input_handle关联的数组成员变量。
 	struct list_head	node;
 };
 
@@ -343,6 +346,7 @@ struct input_handler {
  * @h_node: used to put the handle on handler's list of handles from which
  *	it gets events
  */
+/*xiaojin-input-data input_handle 链接input_device与input_handler。但是一个input_handle只会跟一个input_device与input_handler关联。结构中有指针指向。*/
 struct input_handle {
 
 	void *private;
@@ -353,8 +357,8 @@ struct input_handle {
 	struct input_dev *dev;
 	struct input_handler *handler;
 
-	struct list_head	d_node;
-	struct list_head	h_node;
+	struct list_head	d_node; //加入input_device的handle集合
+	struct list_head	h_node; //加入input_handler的handle集合
 };
 
 struct input_dev __must_check *input_allocate_device(void);
