@@ -90,6 +90,7 @@ static void input_stop_autorepeat(struct input_dev *dev)
  * filtered out, through all open handles. This function is called with
  * dev->event_lock held and interrupts disabled.
  */
+/*xiaojin-input-func -401 input_to_handler 通过handler处理设备消息。调用event或者events接口完成。*/
 static unsigned int input_to_handler(struct input_handle *handle,
 			struct input_value *vals, unsigned int count)
 {
@@ -125,6 +126,8 @@ static unsigned int input_to_handler(struct input_handle *handle,
  * filtered out, through all open handles. This function is called with
  * dev->event_lock held and interrupts disabled.
  */
+
+/*xiaojin-input-func -400 input_dev通过这个接口发送消息到input_handler处理*/
 static void input_pass_values(struct input_dev *dev,
 			      struct input_value *vals, unsigned int count)
 {
@@ -133,13 +136,14 @@ static void input_pass_values(struct input_dev *dev,
 
 	if (!count)
 		return;
-
+/*xiaojin-rcu-example rcu_read_lock unlock*/
 	rcu_read_lock();
 
 	handle = rcu_dereference(dev->grab);
 	if (handle) {
 		count = input_to_handler(handle, vals, count);
 	} else {
+		//通过handle找到跟此input_dev对应的input_handler
 		list_for_each_entry_rcu(handle, &dev->h_list, d_node)
 			if (handle->open) {
 				count = input_to_handler(handle, vals, count);
