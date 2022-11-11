@@ -1025,7 +1025,7 @@ static const struct input_device_id *input_match_device(struct input_handler *ha
 	return NULL;
 }
 
-/*xiaojin-input-func -2.1 input_attach_handler handler与dev绑定*/
+/*xiaojin-input-func -2.1 -103 input_attach_handler handler与dev绑定*/
 static int input_attach_handler(struct input_dev *dev, struct input_handler *handler)
 {
 	const struct input_device_id *id;
@@ -1035,7 +1035,7 @@ static int input_attach_handler(struct input_dev *dev, struct input_handler *han
 	if (!id)
 		return -ENODEV;
 
-/*xiaojin-input-func -2.2 handler与dev绑定，调用kbd_connect*/
+/*xiaojin-input-func -2.2 -103.1 调用connect函数handler与dev绑定，如：调用kbd_connect*/
 	error = handler->connect(handler, dev, id);
 	if (error && error != -ENODEV)
 		pr_err("failed to attach handler %s to device %s, error: %d\n",
@@ -1909,6 +1909,9 @@ EXPORT_SYMBOL_GPL(input_class);
  * registered; input_unregister_device() should be used for already
  * registered devices.
  */
+
+/*xiaojin-input-func -100 input_allocate_device 创建input_dev结构。参考：https://app.yinxiang.com/shard/s65/nl/15273355/f8bb6633-2a80-410d-a094-efe79b9ee1e1/ 
+*/
 struct input_dev *input_allocate_device(void)
 {
 	static atomic_t input_no = ATOMIC_INIT(-1);
@@ -1974,6 +1977,7 @@ static void devm_input_device_release(struct device *dev, void *res)
  * NOTE: the owner device is set up as parent of input device and users
  * should not override it.
  */
+/*xiaojin-input-func -101 devm_input_allocate_device*/
 struct input_dev *devm_input_allocate_device(struct device *dev)
 {
 	struct input_dev *input;
@@ -2260,6 +2264,7 @@ EXPORT_SYMBOL_GPL(input_device_enabled);
  * happen later, when devres stack is unwound to the point where device
  * allocation was made.
  */
+/*xiaojin-input_func -102 input_register_device*/
 int input_register_device(struct input_dev *dev)
 {
 	struct input_devres *devres = NULL;
@@ -2335,6 +2340,7 @@ int input_register_device(struct input_dev *dev)
 
 	list_add_tail(&dev->node, &input_dev_list);
 
+/*xiaojin-input-func -102.1 调用input_attach_handler，关联input_handler。*/
 	list_for_each_entry(handler, &input_handler_list, node)
 		input_attach_handler(dev, handler);
 
