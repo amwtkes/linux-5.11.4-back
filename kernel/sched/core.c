@@ -3332,7 +3332,7 @@ static void ttwu_queue(struct task_struct *p, int cpu, int wake_flags)
 
 /*xiaojin-rcu synchronize_rcu --5.4*/
 /*xiaojin-sched-func try_to_wake_up(p, TASK_NORMAL, 0) ttwu->try to wake up的意思。参考：https://app.yinxiang.com/shard/s65/nl/15273355/ef311f63-9bd7-4890-a98c-2edb9fa58209 
-(exp)原理解释:try_to_wake_up->感觉让一个进程马上唤醒的步骤：
+xiaojin-(exp)原理解释:try_to_wake_up->感觉让一个进程马上唤醒的步骤：
 1、将他加入到某个CPU的runqueue，当然选择某个CPU是个算法问题，LINUX好像也用了很多启发式的方法去做。比如，它之前在哪个CPU上，那个CPU的load如果很低，比当前低，就放在那个cpu去执行；如果最近运行过，就调度到最近的CPU毕竟缓存还在；参考了《深入理解linux内核》
 2、设置当前rq所在CPU的运行task的thread_info的flag到TIF_NEEDRESCHEDULE，注意，不是马上调用schedule将它赶下来，只是标记；等它在合适的时候调用schedule时切换；因为刚加入rq的task可以马上获得CPU（更新了时间）；
 3、将task的state设置成running状态。
