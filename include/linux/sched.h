@@ -649,8 +649,8 @@ struct kmap_ctrl {
 
 /*xiaojin-task_struct*/
 struct task_struct {
-/* xiaojin-thread_info
-thread_info可以放在内核栈的栈顶部位，
+/* xiaojin-thread_info 参考：https://app.yinxiang.com/shard/s65/nl/15273355/666a2858-a505-4f9a-97b3-f0f725d5479c/
+thread_info放在内核栈的栈顶部位，
 这里可以看到，如果thread_info包含在task_struct中的，它在第一个位置，而且不被打乱，可以看后面，都被打乱了
 原因是可以通过拿到thread_info的地址，就拿到了task_struct的地址。
 */
