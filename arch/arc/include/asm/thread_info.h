@@ -68,7 +68,7 @@ static inline __attribute_const__ struct thread_info *current_thread_info(void)
 #endif /* !__ASSEMBLY__ */
 
 /*
- * xiaojin-term TIF: thread information flags
+ * xiaojin-term TIF: thread information flags 在thread_info里面
  * - these are process state flags that various assembly files may need to
  *   access
  * - pending work-to-be-done flags are in LSW
