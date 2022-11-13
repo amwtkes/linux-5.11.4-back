@@ -509,11 +509,15 @@ extern bool force_irqthreads;
 #ifndef local_softirq_pending
 
 #ifndef local_softirq_pending_ref
+
+/*xiaojin-si-raise -3.1 or_softirq_pending */
 #define local_softirq_pending_ref irq_stat.__softirq_pending
 #endif
 
 #define local_softirq_pending()	(__this_cpu_read(local_softirq_pending_ref))
 #define set_softirq_pending(x)	(__this_cpu_write(local_softirq_pending_ref, (x)))
+
+/*xiaojin-si-raise -3 or_softirq_pending */
 #define or_softirq_pending(x)	(__this_cpu_or(local_softirq_pending_ref, (x)))
 
 #endif /* local_softirq_pending */

@@ -230,7 +230,7 @@ static inline void invoke_softirq(void)
 		wakeup_softirqd();
 	}
 }
-/*xiaojin-si do_softirq-1*/
+/*xiaojin-si -1 do_softirq-1*/
 asmlinkage __visible void do_softirq(void)
 {
 	__u32 pending;
@@ -313,7 +313,7 @@ static inline bool lockdep_softirq_start(void) { return false; }
 static inline void lockdep_softirq_end(bool in_hardirq) { }
 #endif
 
-/*xiaojin-si softirq __do_softirq-2
+/*xiaojin-si -2 softirq __do_softirq
 所以软中断执行全靠一个pending的percpu变量来维系。
 而且不用上锁。效率很高的。
 */
@@ -484,7 +484,7 @@ void irq_exit(void)
 /*
  * This function must run with irqs disabled!
  */
-/*xiaojin-si -2 调用逻辑
+/*xiaojin-si-raise -1 调用逻辑
 	<1>、最重要的，就是置相应的位图，等待将来被处理；__raise_softirq_irqoff(nr)这里完成
 	<2>、如果此时已经没有在中断上下文中，则立即调用(其实是内核线程的唤醒操作)，现在就是将来；
 */
@@ -505,7 +505,7 @@ inline void raise_softirq_irqoff(unsigned int nr)
 		wakeup_softirqd();
 }
 
-/*xiaojin-si raise_softirq-0
+/*xiaojin-si-raise -0 raise_softirq
 软中断-softirq
 	0、最重要的一点是，软中断是先被挂起，然后由固定的点或者ksoftirq内核线程去异步执行的。所以也是分两部分的。
 	1、内核延迟调用的一种机制
@@ -533,10 +533,7 @@ void __raise_softirq_irqoff(unsigned int nr)
 {
 	lockdep_assert_irqs_disabled();
 	trace_softirq_raise(nr);
-	/*xiaojin-si raise_softirq-1 or_softirq_pending  挂起一个软中断，待运行
-		内核用一个数据结构来标记曾经有“软中断”发生过（或者说成软中断被触发过）
-		__softirq_pending 共32bit，即每个bit对应软中断的一个向量，实际使用了6个bit
-		第n个bit置1，即softirq_vec[n]有软中断发生。
+	/*xiaojin-si-raise -2 raise_softirq-1 or_softirq_pending  (exp)原理解释-软中断发起:挂起一个软中断，待运行。内核用一个数据结构来标记曾经有“软中断”发生过（或者说成软中断被触发过）__softirq_pending 共32bit，即每个bit对应软中断的一个向量，实际使用了6个bit，第n个bit置1，即softirq_vec[n]有软中断发生。
 
 		#define local_softirq_pending()	(__this_cpu_read(local_softirq_pending_ref)) //softirq_pending是个percpu变量，这也说明，中断可以多CPU并行，但是同一个U不能并行与嵌套(由in_interrupt()控制，因为嵌套的话会造成第一个中断很长时间执行不完，中断不能嵌套的原因)。
 		#define local_softirq_pending_ref irq_stat.__softirq_pending
@@ -792,7 +789,7 @@ static struct smp_hotplug_thread softirq_threads = {
 };
 /*xiaojin-si spawn_ksoftirqd kthread softirq的percup线程启动 run_ksoftirqd ksoftirqd
 */
-/*xiaojin-si __softirq_pending与ksoftirqd都是percup的，每个逻辑CPU都可以处理软中断。*/
+/*xiaojin-si -0 __softirq_pending与ksoftirqd都是percup的，每个逻辑CPU都可以处理软中断。*/
 static __init int spawn_ksoftirqd(void)
 {
 	cpuhp_setup_state_nocalls(CPUHP_SOFTIRQ_DEAD, "softirq:dead", NULL,
