@@ -1381,6 +1381,7 @@ fail_nomem:
 	return NULL;
 }
 
+/*xiaojin-fork-func -3-copy_mm */
 static int copy_mm(unsigned long clone_flags, struct task_struct *tsk)
 {
 	struct mm_struct *mm, *oldmm;
