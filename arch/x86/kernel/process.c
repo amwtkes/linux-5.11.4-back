@@ -126,7 +126,7 @@ static int set_new_tls(struct task_struct *p, unsigned long tls)
 /*
 sp就是args->stack 用户态栈的地址，栈顶地址。用sp表示。
 */
-/*xiaojin-fork-func -3 copy_thread设置fork后新线程开始运行的栈。参考：https://app.yinxiang.com/shard/s65/nl/15273355/666a2858-a505-4f9a-97b3-f0f725d5479c/ 
+/*xiaojin-fork-func -3-copy_thread：设置fork后新线程开始运行的栈。参考：https://app.yinxiang.com/shard/s65/nl/15273355/666a2858-a505-4f9a-97b3-f0f725d5479c/ 
 
 retval = copy_thread(clone_flags, args->stack, args->stack_size, p, args->tls);
 */
