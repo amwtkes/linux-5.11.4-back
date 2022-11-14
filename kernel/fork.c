@@ -1843,7 +1843,7 @@ static void copy_oom_score_adj(u64 clone_flags, struct task_struct *tsk)
  * parts of the process environment (as per the clone
  * flags). The actual kick-off is left to the caller.
  */
-/*xiaojin-fork-func copy_process*/
+/*xiaojin-fork-func -2 copy_process*/
 static __latent_entropy struct task_struct *copy_process(
 					struct pid *pid,
 					int trace,
@@ -2421,6 +2421,8 @@ struct mm_struct *copy_init_mm(void)
  *
  * args->exit_signal is expected to be checked for sanity by the caller.
  */
+
+/*xiaojin-fork-func -1 kernel_clone*/
 pid_t kernel_clone(struct kernel_clone_args *args)
 {
 	u64 clone_flags = args->flags;
@@ -2519,6 +2521,8 @@ pid_t kernel_thread(int (*fn)(void *), void *arg, unsigned long flags)
 }
 
 #ifdef __ARCH_WANT_SYS_FORK
+
+/*xiaojin-fork-func -0 SYSCALL_DEFINE0(fork)*/
 SYSCALL_DEFINE0(fork)
 {
 #ifdef CONFIG_MMU
