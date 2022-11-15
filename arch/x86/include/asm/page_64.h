@@ -15,7 +15,7 @@ extern unsigned long page_offset_base;
 extern unsigned long vmalloc_base;
 extern unsigned long vmemmap_base;
 
-/*xiaojin-mm-data-page __phys_addr_nodebug虚拟内存转物理内存，内核部分。*/
+/*xiaojin-mm-data-page __phys_addr_nodebug虚拟内存转物理内存，内核部分。就是虚拟地址加上一个偏移量就是物理地址了。*/
 static inline unsigned long __phys_addr_nodebug(unsigned long x)
 {
 	unsigned long y = x - __START_KERNEL_map; //内核虚拟地址的开始地址。y是x变量的偏移。0xffffffff80000000UL 33个1网上走的地址是内核空间
