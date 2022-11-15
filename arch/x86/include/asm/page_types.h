@@ -40,7 +40,10 @@
 #define __PHYSICAL_START	ALIGN(CONFIG_PHYSICAL_START, \
 				      CONFIG_PHYSICAL_ALIGN)
 
-/*xiaojin-mm-data-page __START_KERNEL __START_KERNEL_map + 0x1000000 = 0xffffffff81000000  __PHYSICAL_START物理地址是 0x1000000*/
+/*xiaojin-mm-data-page __START_KERNEL __START_KERNEL_map + 0x1000000 = 0xffffffff81000000  __PHYSICAL_START物理地址是 0x1000000 16M的物理地址位置。注意：1000就是一页=4k
+参考：https://app.yinxiang.com/shard/s65/nl/15273355/72d5ccd1-22fd-4d93-b186-b7476c5c305c/
+     https://app.yinxiang.com/shard/s65/nl/15273355/34fa295d-c2cc-43fc-8500-ceebb64b2c37/
+*/
 #define __START_KERNEL		(__START_KERNEL_map + __PHYSICAL_START)
 
 #ifdef CONFIG_X86_64
