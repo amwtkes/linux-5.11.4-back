@@ -358,7 +358,7 @@ EXPORT_SYMBOL_GPL(rcu_read_lock_any_held);
  * Awaken the corresponding task now that a grace period has elapsed.
  */
 
-/*xiaojin-rcu synchronize_rcu-5 wakeme_after_rcu
+/*xiaojin-rcu-synchronize_rcu-5 wakeme_after_rcu
 synchronize_rcu()的唤醒函数，是在回调中的。
 将completion上面等待的线程唤醒。通常只会等待一个线程。
 当
@@ -377,7 +377,7 @@ void wakeme_after_rcu(struct rcu_head *head)
 }
 EXPORT_SYMBOL_GPL(wakeme_after_rcu);
 
-/*xiaojin-rcu synchronize_rcu-3
+/*xiaojin-rcu-synchronize_rcu-3
 两个数组都只有一个元素了都是 call_rcu
 
 struct rcu_synchronize {
@@ -408,10 +408,7 @@ void __wait_rcu_gp(bool checktiny, int n, call_rcu_func_t *crcu_array,
 			init_rcu_head_on_stack(&rs_array[i].head);
 			/* 初始化complete结构，用来通知完成的信息 线程会阻塞在completion这个结构上 用wakeme_after_rcu函数来唤醒。结束GP。*/
 			init_completion(&rs_array[i].completion);
-			/*xiaojin-rcu synchronize_rcu-4 
-			(crcu_array[i]) 就是call_rcu()
-			用call_rcu()注册一个回调函数wakeme_after_rcu
-
+			/*xiaojin-rcu-synchronize_rcu-4  (crcu_array[i]) 就是call_rcu()。用call_rcu()注册一个回调函数wakeme_after_rcu
 			详解：
 			rcu_synchronize.rcu_head注册到rcu_data.cblist里面去。
 			唤醒的时候，调用wakeme_after_rcu回调函数。
@@ -429,7 +426,7 @@ void __wait_rcu_gp(bool checktiny, int n, call_rcu_func_t *crcu_array,
 			if (crcu_array[j] == crcu_array[i])
 				break;
 		if (j == i) {
-			/*xiaojin-rcu wait_for_completion 在completion上做循环等待
+			/*xiaojin-rcu-synchronize_rcu-5 wait_for_completion 在completion上做循环等待.这里会调用schedule。
 			直到done>0为止*/
 			wait_for_completion(&rs_array[i].completion);
 			destroy_rcu_head_on_stack(&rs_array[i].head);

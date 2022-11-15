@@ -25,7 +25,7 @@
  * If this function wakes up a task, it executes a full memory barrier before
  * accessing the task state.
  */
-/*xiaojin-rcu synchronize_rcu --5.1*/
+/*xiaojin-rcu-synchronize_rcu --5.1*/
 void complete(struct completion *x)
 {
 	unsigned long flags;
@@ -69,7 +69,7 @@ void complete_all(struct completion *x)
 }
 EXPORT_SYMBOL(complete_all);
 
-/*xiaojin-rcu-synchronize_rcu -5.0.3 最后调用逻辑
+/*xiaojin-rcu-synchronize_rcu -5.0.3 最后调用逻辑. 调用do_wait_for_common
 x - call_rcu的唤醒信号，x->done表示可以唤醒了。同时会有current在里面。
 action - schedule_timeout休眠函数
 */

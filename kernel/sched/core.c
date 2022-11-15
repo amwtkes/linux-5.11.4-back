@@ -3330,7 +3330,7 @@ static void ttwu_queue(struct task_struct *p, int cpu, int wake_flags)
  *	   %false otherwise.
  */
 
-/*xiaojin-rcu synchronize_rcu --5.4*/
+/*xiaojin-rcu-synchronize_rcu --5.4*/
 /*xiaojin-sched-func try_to_wake_up(p, TASK_NORMAL, 0) ttwu->try to wake up的意思。参考：https://app.yinxiang.com/shard/s65/nl/15273355/ef311f63-9bd7-4890-a98c-2edb9fa58209 
 xiaojin-(exp)原理解释:try_to_wake_up->感觉让一个进程马上唤醒的步骤：
 1、将他加入到某个CPU的runqueue，当然选择某个CPU是个算法问题，LINUX好像也用了很多启发式的方法去做。比如，它之前在哪个CPU上，那个CPU的load如果很低，比当前低，就放在那个cpu去执行；如果最近运行过，就调度到最近的CPU毕竟缓存还在；参考了《深入理解linux内核》
@@ -3562,7 +3562,7 @@ bool try_invoke_on_locked_down_task(struct task_struct *p, bool (*func)(struct t
  *
  * This function executes a full memory barrier before accessing the task state.
  */
-/*xiaojin-rcu synchronize_rcu --5.3*/
+/*xiaojin-rcu-synchronize_rcu --5.3*/
 int wake_up_process(struct task_struct *p)
 {
 	return try_to_wake_up(p, TASK_NORMAL, 0);

@@ -19,7 +19,7 @@ EXPORT_SYMBOL(__init_swait_queue_head);
  * If for some reason it would return 0, that means the previously waiting
  * task is already running, so it will observe condition true (or has already).
  */
-/*xiaojin-rcu synchronize_rcu --5.2
+/*xiaojin-rcu-synchronize_rcu --5.2
 只唤醒第一个。最近加入的元素退出了。
 */
 void swake_up_locked(struct swait_queue_head *q)

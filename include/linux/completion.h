@@ -26,7 +26,7 @@
 /* xiaojin-rcu struct completion rcu的等待结构 */
 struct completion {
 	unsigned int done;
-	struct swait_queue_head wait;
+	struct swait_queue_head wait; //有一个自旋锁+一个双向队列头
 };
 
 #define init_completion_map(x, m) init_completion(x)
@@ -85,7 +85,7 @@ static inline void complete_release(struct completion *x) {}
 static inline void init_completion(struct completion *x)
 {
 	x->done = 0;
-	init_swait_queue_head(&x->wait);
+	init_swait_queue_head(&x->wait); //初始化completion中的wait_queue的自旋锁与队列头。队列头尾都指向自己。
 }
 
 /**
