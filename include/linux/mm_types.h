@@ -388,6 +388,8 @@ struct core_state {
 };
 
 struct kioctx_table;
+
+/*xiaojin-mm-data mm_struct*/
 struct mm_struct {
 	struct {
 		struct vm_area_struct *mmap;		/* list of VMAs */
