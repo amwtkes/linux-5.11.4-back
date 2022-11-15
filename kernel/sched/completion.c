@@ -121,8 +121,7 @@ do_wait_for_common(struct completion *x,
 	return timeout ?: 1;
 }
 
-/*xiaojin-rcu-synchronize_rcu -5.0.2 __wait_for_common
-包装函数
+/*xiaojin-rcu-synchronize_rcu -5.0.2 __wait_for_common包装函数。action-schedule_timeout。
 */
 static inline long __sched
 __wait_for_common(struct completion *x,
