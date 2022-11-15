@@ -18,10 +18,10 @@ extern unsigned long vmemmap_base;
 /*xiaojin-mm-data-page __phys_addr_nodebug虚拟内存转物理内存，内核部分。*/
 static inline unsigned long __phys_addr_nodebug(unsigned long x)
 {
-	unsigned long y = x - __START_KERNEL_map; //0xffffffff80000000UL 33个1网上走的地址是内核空间
+	unsigned long y = x - __START_KERNEL_map; //内核虚拟地址的开始地址。y是x变量的偏移。0xffffffff80000000UL 33个1网上走的地址是内核空间
 
 	/* use the carry flag to determine if x was < __START_KERNEL_map */
-	x = y + ((x > y) ? phys_base : (__START_KERNEL_map - PAGE_OFFSET));
+	x = y + ((x > y) ? phys_base : (__START_KERNEL_map - PAGE_OFFSET)); // x大概率会大于y，所以可以看到x的物理地址是，内核物理地址的起始位置+y这个偏移量。
 
 	return x;
 }
