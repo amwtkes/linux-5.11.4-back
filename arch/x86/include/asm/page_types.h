@@ -40,6 +40,7 @@
 #define __PHYSICAL_START	ALIGN(CONFIG_PHYSICAL_START, \
 				      CONFIG_PHYSICAL_ALIGN)
 
+/*xiaojin-mm-data-page __START_KERNEL __START_KERNEL_map + 0x1000000 = 0xffffffff81000000 */
 #define __START_KERNEL		(__START_KERNEL_map + __PHYSICAL_START)
 
 #ifdef CONFIG_X86_64

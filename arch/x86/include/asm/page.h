@@ -40,7 +40,7 @@ static inline void copy_user_page(void *to, void *from, unsigned long vaddr,
 
 #ifndef __pa
 
-/*xiaojin-mm-data-pa __pa(x)红包装，获得虚拟地址的物理地址。*/
+/*xiaojin-mm-data-page __pa(x)红包装，获得虚拟地址的物理地址。*/
 #define __pa(x)		__phys_addr((unsigned long)(x))
 #endif
 

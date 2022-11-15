@@ -15,10 +15,10 @@ extern unsigned long page_offset_base;
 extern unsigned long vmalloc_base;
 extern unsigned long vmemmap_base;
 
-/*xiaojin-mm-data-pa __phys_addr_nodebug虚拟内存转物理内存，内核部分。*/
+/*xiaojin-mm-data-page __phys_addr_nodebug虚拟内存转物理内存，内核部分。*/
 static inline unsigned long __phys_addr_nodebug(unsigned long x)
 {
-	unsigned long y = x - __START_KERNEL_map;
+	unsigned long y = x - __START_KERNEL_map; //0xffffffff80000000UL 33个1网上走的地址是内核空间
 
 	/* use the carry flag to determine if x was < __START_KERNEL_map */
 	x = y + ((x > y) ? phys_base : (__START_KERNEL_map - PAGE_OFFSET));
@@ -31,7 +31,7 @@ extern unsigned long __phys_addr(unsigned long);
 extern unsigned long __phys_addr_symbol(unsigned long);
 #else
 
-/*xiaojin-mm-data-pa __phys_addr宏包装*/
+/*xiaojin-mm-data-page __phys_addr宏包装*/
 #define __phys_addr(x)		__phys_addr_nodebug(x)
 #define __phys_addr_symbol(x) \
 	((unsigned long)(x) - __START_KERNEL_map + phys_base)
