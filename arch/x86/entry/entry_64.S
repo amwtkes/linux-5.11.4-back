@@ -103,7 +103,7 @@ SYM_CODE_END(native_usergs_sysret64)
 8. 切换gs寄存器，执行sysret指令。
 */
 
-/*xiaojin-syscall-0*/
+/*xiaojin-syscall-0 系统调用汇编入口*/
 SYM_CODE_START(entry_SYSCALL_64) 
 	UNWIND_HINT_EMPTY
 /* Interrupts are off on entry. */

@@ -44,7 +44,7 @@ __visible noinstr void do_syscall_64(unsigned long nr, struct pt_regs *regs)
 	if (likely(nr < NR_syscalls)) {
 		nr = array_index_nospec(nr, NR_syscalls);
 		/*
-		xiaojin-syscall-1 系统调用的入口*/
+		xiaojin-syscall-1 系统调用的C语言入口*/
 		/* 通过系统调用跳转表，调用系统调用号对应的函数。
          * 函数返回值保存在 regs->ax 里，最后将这个值，保存到 rax 寄存器传递到用户空间。 */
 
