@@ -157,6 +157,7 @@ SYM_INNER_LABEL(entry_SYSCALL_64_after_hwframe, SYM_L_GLOBAL)
 .macro PUSH_AND_CLEAR_REGS rdx=%rdx rax=%rax save_ret=0 //calling.h 
 保存剩余的用户态寄存器信息
 */
+/*xiaojin-syscall-0.1 保存用户态寄存器.PUSH_AND_CLEAR_REGS*/
 	PUSH_AND_CLEAR_REGS rax=$-ENOSYS
 
 	/* IRQs are off. */
