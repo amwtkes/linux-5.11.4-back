@@ -12,11 +12,12 @@ typedef u64	p4dval_t;
 typedef u64	pgdval_t;
 typedef u64	pgprotval_t;
 
+/*xiaojin-unknown*/
 typedef union {
 	struct {
-		unsigned long pte_low, pte_high;
+		unsigned long pte_low, pte_high; //这里的unsigned long是32位。可能是在asm底下的数据类型是按照c99？不知道。
 	};
-	pteval_t pte;
+	pteval_t pte; //这里是unsigned long long 64位
 } pte_t;
 #endif	/* !__ASSEMBLY__ */
 
