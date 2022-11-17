@@ -639,7 +639,7 @@ static inline void cpumask_copy(struct cpumask *dstp,
 /*xiaojin-cpumask -0  cpumask_of 作用是，返回这个CPU编号的bitmap。例如：0x00000000 100000000正好是第65个位为1
 这是为啥只初始化二维数组第一个元素的原因。
 
-https://app.yinxiang.com/shard/s65/nl/15273355/858c98c0-c42c-4192-91b7-f1c291c8201a/*/
+https://app.yinxiang.com/shard/s65/nl/15273355/858c98c0-c42c-4192-91b7-f1c291c8201a/ */
 #define cpumask_of(cpu) (get_cpu_mask(cpu))
 
 /**
