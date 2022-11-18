@@ -18,8 +18,10 @@ typedef unsigned long	p4dval_t;
 typedef unsigned long	pgdval_t;
 typedef unsigned long	pgprotval_t;
 
-/*xiaojin-mm-page-table pte_t*/
-typedef struct { pteval_t pte; } pte_t;
+/*xiaojin-mm-page-table pte_t
+参考：https://app.yinxiang.com/shard/s65/nl/15273355/209c5e6b-683b-43e1-a881-a37a16bfb707/
+*/
+typedef struct { pteval_t pte; } pte_t; //包装是为了C语言的类型检查
 
 #ifdef CONFIG_X86_5LEVEL
 extern unsigned int __pgtable_l5_enabled;
