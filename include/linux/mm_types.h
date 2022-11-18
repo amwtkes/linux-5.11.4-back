@@ -66,7 +66,7 @@ struct mem_cgroup;
 #define _struct_page_alignment
 #endif
 
-/*xiaojin-mm-datastructure-3 page summary:https://time.geekbang.org/column/article/96103
+/*xiaojin-mm-datastructure-3 struct page --- summary:https://time.geekbang.org/column/article/96103
 第一种模式，要用就用一整页。这一整页的内存，或者直接和虚拟地址空间建立映射关系，我们把这种称为匿名页（Anonymous Page）。或者用于关联一个文件，然后再和虚拟地址空间建立映射关系，这样的文件，我们称为内存映射文件（Memory-mapped File）。如果某一页是这种使用模式，则会使用 union 中的以下变量：struct address_space *mapping 就是用于内存映射，如果是匿名页，最低位为 1；如果是映射文件，最低位为 0；pgoff_t index 是在映射区的偏移量；atomic_t _mapcount，每个进程都有自己的页表，这里指有多少个页表项指向了这个页；struct list_head lru 表示这一页应该在一个链表上，例如这个页面被换出，就在换出页的链表中；compound 相关的变量用于复合页（Compound Page），就是将物理上连续的两个或多个页看成一个独立的大页。
 
 第二种模式，仅需分配小块内存。有时候，我们不需要一下子分配这么多的内存，例如分配一个 task_struct 结构，只需要分配小块的内存，去存储这个进程描述结构的对象。为了满足对这种小内存块的需要，Linux 系统采用了一种被称为 slab allocator 的技术，用于分配称为 slab 的一小块内存。它的基本原理是从内存管理模块申请一整块页，然后划分成多个小块的存储池，用复杂的队列来维护这些小块的状态（状态包括：被分配了 / 被放回池子 / 应该被回收）。也正是因为 slab allocator 对于队列的维护过于复杂，后来就有了一种不使用队列的分配器 slub allocator，后面我们会解析这个分配器。但是你会发现，它里面还是用了很多 slab 的字眼，因为它保留了 slab 的用户接口，可以看成 slab allocator 的另一种实现。还有一种小块内存的分配器称为 slob，非常简单，主要使用在小型的嵌入式系统。如果某一页是用于分割成一小块一小块的内存进行分配的使用模式，则会使用 union 中的以下变量：s_mem 是已经分配了正在使用的 slab 的第一个对象；freelist 是池子中的空闲对象；rcu_head 是需要释放的列表。
