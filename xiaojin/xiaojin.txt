@@ -58,6 +58,7 @@ xiaojin-mm-datastructure  --- 数据结构
 xiaojin-percpu --- 每cpu变量
 xiaojin-mm-cr3 ---- cr3的更新
 xiaojin-mm-data-page --- 内核虚拟内存 页转换宏 __START_KERNEL __START_KERNEL_map 等等
+xiaojin-mm-page-table --- page table entry相关的宏
 
 ------------kthread 这块
 xiaojin-kthread -内核线程创建这块
