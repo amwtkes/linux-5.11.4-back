@@ -7017,6 +7017,7 @@ static void __ref alloc_node_mem_map(struct pglist_data *pgdat)
 		if (!map)
 			panic("Failed to allocate %ld bytes for node %d memory map\n",
 			      size, pgdat->node_id);
+	/*xiaojin-mm-mem_map-setup -12 */
 		pgdat->node_mem_map = map + offset;
 	}
 	pr_debug("%s: node %d, pgdat %08lx, node_mem_map %08lx\n",
@@ -7027,6 +7028,7 @@ static void __ref alloc_node_mem_map(struct pglist_data *pgdat)
 	 * With no DISCONTIG, the global mem_map is just set as node 0's
 	 */
 	if (pgdat == NODE_DATA(0)) {
+		/*xiaojin-mm-mem_map-setup -11 NODE_DATA(0)->node_mem_map*/
 		mem_map = NODE_DATA(0)->node_mem_map;
 		if (page_to_pfn(mem_map) != pgdat->node_start_pfn)
 			mem_map -= offset;
@@ -7066,6 +7068,7 @@ static void __init free_area_init_node(int nid)
 		end_pfn ? ((u64)end_pfn << PAGE_SHIFT) - 1 : 0);
 	calculate_node_totalpages(pgdat, start_pfn, end_pfn);
 
+/*xiaojin-mm-mem_map-setup -10 alloc_node_mem_map*/
 	alloc_node_mem_map(pgdat);
 	pgdat_set_deferred_range(pgdat);
 
@@ -7585,6 +7588,7 @@ void __init free_area_init(unsigned long *max_zone_pfn)
 	init_unavailable_mem();
 	for_each_online_node(nid) {
 		pg_data_t *pgdat = NODE_DATA(nid);
+		/*xiaojin-mm-mem_map-setup -9 free_area_init_node*/
 		free_area_init_node(nid);
 
 		/* Any memory on that node */

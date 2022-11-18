@@ -337,6 +337,8 @@ SYM_CODE_END(vc_boot_ghcb)
 	/* Both SMP bootup and ACPI suspend change these variables */
 	__REFDATA
 	.balign	8
+/*xiaojin-mm-mem_map-setup -0 在head64.S中定义x86_64_start_kernel方法
+参考：https://app.yinxiang.com/shard/s65/nl/15273355/34fa295d-c2cc-43fc-8500-ceebb64b2c37/ */
 SYM_DATA(initial_code,	.quad x86_64_start_kernel)
 SYM_DATA(initial_gs,	.quad INIT_PER_CPU_VAR(fixed_percpu_data))
 #ifdef CONFIG_AMD_MEM_ENCRYPT

@@ -1004,7 +1004,7 @@ void __init zone_sizes_init(void)
 #ifdef CONFIG_HIGHMEM
 	max_zone_pfns[ZONE_HIGHMEM]	= max_pfn;
 #endif
-
+/*xiaojin-mm-mem_map-setup -8 free_area_init*/
 	free_area_init(max_zone_pfns);
 }
 

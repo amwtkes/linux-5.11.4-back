@@ -1161,6 +1161,7 @@ void __init setup_arch(char **cmdline_p)
 	if (!early_xdbc_setup_hardware())
 		early_xdbc_register_console();
 
+/*xiaojin-mm-mem_map-setup -4 pagetable_init()*/
 	x86_init.paging.pagetable_init();
 
 	kasan_init();

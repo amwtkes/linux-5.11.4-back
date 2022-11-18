@@ -1027,6 +1027,9 @@ extern char numa_zonelist_order[];
 #ifndef CONFIG_NEED_MULTIPLE_NODES
 
 extern struct pglist_data contig_page_data;
+
+/*xiaojin-mm-mem_map-setup -12？ 具体这个config_page_data在哪里初始化的没有找到*/
+/*xiaojin-unknown 在哪里初始化NUMA node的 contig_page_data  struct pglist_data contig_page_data;*/
 #define NODE_DATA(nid)		(&contig_page_data)
 #define NODE_MEM_MAP(nid)	mem_map
 

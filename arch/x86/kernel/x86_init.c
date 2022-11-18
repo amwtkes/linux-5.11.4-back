@@ -86,6 +86,7 @@ struct x86_init_ops x86_init __initdata = {
 		.banner			= default_banner,
 	},
 
+/*xiaojin-mm-mem_map-setup -5 .pagetable_init = native_pagetable_init*/
 	.paging = {
 		.pagetable_init		= native_pagetable_init,
 	},

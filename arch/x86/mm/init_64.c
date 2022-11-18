@@ -822,7 +822,7 @@ void __init paging_init(void)
 	 */
 	node_clear_state(0, N_MEMORY);
 	node_clear_state(0, N_NORMAL_MEMORY);
-
+/*xiaojin-mm-mem_map-setup -7 zone_sizes_init*/
 	zone_sizes_init();
 }
 

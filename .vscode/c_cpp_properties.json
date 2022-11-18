@@ -19,7 +19,8 @@
                 "__x86_64__",
                 // "__ASSEMBLY__", //编译汇编的时候可以打开
                 "CONFIG_X86_LOCAL_APIC",
-                "CONFIG_GENERIC_SMP_IDLE_THREAD"
+                "CONFIG_GENERIC_SMP_IDLE_THREAD",
+                "CONFIG_FLAT_NODE_MEM_MAP"
                 // "CONFIG_PREEMPT_RCU"
             ],
             "macFrameworkPath": [

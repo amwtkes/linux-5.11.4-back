@@ -533,6 +533,7 @@ void set_pte_vaddr(unsigned long vaddr, pte_t pte);
 #ifdef CONFIG_X86_32
 extern void native_pagetable_init(void);
 #else
+/*xiaojin-mm-mem_map-setup -6 #define native_pagetable_init        paging_init*/
 #define native_pagetable_init        paging_init
 #endif
 

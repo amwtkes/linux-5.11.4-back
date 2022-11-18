@@ -875,6 +875,8 @@ asmlinkage __visible void __init __no_sanitize_address start_kernel(void)
 	page_address_init();
 	pr_notice("%s", linux_banner);
 	early_security_init();
+	
+	/*xiaojin-mm-mem_map-setup -3 setup_arch*/
 	setup_arch(&command_line);
 	setup_boot_config(command_line);
 	setup_command_line(command_line);

@@ -502,7 +502,7 @@ asmlinkage __visible void __init x86_64_start_kernel(char * real_mode_data)
 
 	/* set init_top_pgt kernel high mapping*/
 	init_top_pgt[511] = early_top_pgt[511];
-
+/*xiaojin-mm-mem_map-setup -1 x86_64_start_reservations*/
 	x86_64_start_reservations(real_mode_data);
 }
 
@@ -521,7 +521,7 @@ void __init x86_64_start_reservations(char *real_mode_data)
 	default:
 		break;
 	}
-
+/*xiaojin-mm-mem_map-setup -2 start_kernel*/
 	start_kernel();
 }
 
