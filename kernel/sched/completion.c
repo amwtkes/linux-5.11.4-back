@@ -25,7 +25,7 @@
  * If this function wakes up a task, it executes a full memory barrier before
  * accessing the task state.
  */
-/*xiaojin-rcu-synchronize_rcu --5.1*/
+/*xiaojin-rcu-synchronize_rcu --5.1  complete函数体*/
 void complete(struct completion *x)
 {
 	unsigned long flags;
