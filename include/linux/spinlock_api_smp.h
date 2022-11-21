@@ -116,7 +116,7 @@ static inline unsigned long __raw_spin_lock_irqsave(raw_spinlock_t *lock)
 	 * do_raw_spin_lock_flags() code, because lockdep assumes
 	 * that interrupts are not re-enabled during lock-acquire:
 	 */
-#ifdef CONFIG_LOCKDEP
+#ifdef CONFIG_LOCKDEP //走到这里来了吧,直接可以跳到3.5继续。因为3.2是不带irqsave的一般形式，但最终都会到LOCK_CONTENDED(lock, do_raw_spin_trylock, do_raw_spin_lock);这里来。
 	LOCK_CONTENDED(lock, do_raw_spin_trylock, do_raw_spin_lock);
 #else
 	do_raw_spin_lock_flags(lock, &flags);
