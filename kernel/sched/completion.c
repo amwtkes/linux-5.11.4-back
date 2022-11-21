@@ -34,8 +34,12 @@ void complete(struct completion *x)
 	//先done+1，使得done>0 <do_wait_for_common>
 	if (x->done != UINT_MAX)
 		x->done++;
-	//然后唤醒线程
-	swake_up_locked(&x->wait);
+	
+	/*然后唤醒线程:跟5.0.3对应
+	curr = list_first_entry(&q->task_list, typeof(*curr), task_list);
+	wake_up_process(curr->task);
+	*/
+	swake_up_locked(&x->wait); 
 	raw_spin_unlock_irqrestore(&x->wait.lock, flags);
 }
 EXPORT_SYMBOL(complete);
