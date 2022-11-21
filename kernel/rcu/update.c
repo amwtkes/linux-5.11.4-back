@@ -412,6 +412,8 @@ void __wait_rcu_gp(bool checktiny, int n, call_rcu_func_t *crcu_array,
 			详解：
 			rcu_synchronize.rcu_head注册到rcu_data.cblist里面去。
 			唤醒的时候，调用wakeme_after_rcu回调函数。
+
+			call_rcu()会注册这个回调，然后软中断RCU_SOFTIRQ-》rcu_core_si->rcu_core->rcu_do_batch->wakeme_after_rcu调起
 			*/
 			(crcu_array[i])(&rs_array[i].head, wakeme_after_rcu);
 		}
@@ -427,7 +429,7 @@ void __wait_rcu_gp(bool checktiny, int n, call_rcu_func_t *crcu_array,
 				break;
 		if (j == i) {
 			/*xiaojin-rcu-synchronize_rcu-5 wait_for_completion 在completion上做循环等待.这里会调用schedule。
-			直到done>0为止*/
+			直到done>0为止。wakeme_after_rcu会将done设置done++*/
 			wait_for_completion(&rs_array[i].completion);
 			destroy_rcu_head_on_stack(&rs_array[i].head);
 		}

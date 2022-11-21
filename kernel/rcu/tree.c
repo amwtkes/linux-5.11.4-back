@@ -2599,6 +2599,8 @@ static void rcu_do_batch(struct rcu_data *rdp)
 
 	/* Invoke callbacks. 
 	xiaojin-rcu rcu_cblist callback 调起点-wakeme_after_rcu
+
+	/*xiaojin-rcu-synchronize_rcu-4.2 软中断RCU_SOFTIRQ-》rcu_core_si->rcu_core->rcu_do_batch->wakeme_after_rcu会在这里调起。*/
 	*/
 	tick_dep_set_task(current, TICK_DEP_BIT_RCU);
 	rhp = rcu_cblist_dequeue(&rcl);
@@ -2911,7 +2913,7 @@ static void invoke_rcu_core(void)
 	if (!cpu_online(smp_processor_id()))
 		return;
 	if (use_softirq)
-		raise_softirq(RCU_SOFTIRQ);
+		raise_softirq(RCU_SOFTIRQ); //调起open_softirq(RCU_SOFTIRQ, rcu_core_si)
 	else/*xiaojin nocb*/
 		invoke_rcu_core_kthread();
 }
@@ -3208,6 +3210,7 @@ __call_rcu(struct rcu_head *head, rcu_callback_t func)
  * more than one CPU).
  */
 /*xiaojin-call_rcu-1 call_rcu*/
+/*xiaojin-rcu-synchronize_rcu-4.1 call_rcu函数本体。注册回调函数，非常重要。跟5.0.0的唤醒是呼应的。就是这里唤醒等到线程的。*/
 void call_rcu(struct rcu_head *head, rcu_callback_t func)
 {
 	__call_rcu(head, func);
