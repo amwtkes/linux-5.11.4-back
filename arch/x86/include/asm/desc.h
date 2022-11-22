@@ -45,9 +45,11 @@ struct gdt_page {
 	struct desc_struct gdt[GDT_ENTRIES];
 } __attribute__((aligned(PAGE_SIZE)));
 
+/*xiaojin-gdt-data gdt_page的percpu变量。代表每个CPU的GDT表。*/
 DECLARE_PER_CPU_PAGE_ALIGNED(struct gdt_page, gdt_page);
 
 /* Provide the original GDT */
+/*xiaojin-gdt-func get_cpu_gdt_rw获取每个CPU的gdt地址。*/
 static inline struct desc_struct *get_cpu_gdt_rw(unsigned int cpu)
 {
 	return per_cpu(gdt_page, cpu).gdt;
