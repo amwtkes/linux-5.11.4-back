@@ -13,6 +13,8 @@
 #include <linux/types.h>
 
 /* 8 byte segment descriptor Thread-Local Storage (TLS) segments*/
+
+/*xiaojin-gdt-data desc_struct*/
 struct desc_struct {
 	u16	limit0;
 	u16	base0;
