@@ -22,6 +22,8 @@
  * It simply copies the PMD entry (pointer to 2nd level page table or hugepage)
  * from swapper pgdir to task pgdir. The 2nd level table/page is thus shared
  */
+
+/*xiaojin-mm-page-kernel handle_kernel_vaddr_fault*/
 noinline static int handle_kernel_vaddr_fault(unsigned long address)
 {
 	/*
