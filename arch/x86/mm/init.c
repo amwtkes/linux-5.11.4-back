@@ -705,6 +705,7 @@ static void __init init_trampoline(void)
 #endif
 }
 
+/*xiaojin-mm-page-kernel -1 init_mem_mapping函数*/
 void __init init_mem_mapping(void)
 {
 	unsigned long end;

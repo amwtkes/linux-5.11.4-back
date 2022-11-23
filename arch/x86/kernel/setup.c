@@ -1085,6 +1085,7 @@ void __init setup_arch(char **cmdline_p)
 	trim_platform_memory_ranges();
 	trim_low_memory_range();
 
+/*（设置内核页表） xiaojin-mm-page-kernel -0 setup_arch->init_mem_mapping*/
 	init_mem_mapping();
 
 	idt_setup_early_pf();
