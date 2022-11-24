@@ -874,7 +874,7 @@ static inline unsigned long pud_page_vaddr(pud_t pud)
 
 // PAGE_OFFSET = #define __PAGE_OFFSET_BASE_L4	= _AC(0xffff888000000000, UL)	
 // #define __va(x)			((void *)((unsigned long)(x)+PAGE_OFFSET))
-// __va就是获得内核地址空间一个物理地址的线性地址,就是在物理地址上加上一个偏移，在X64系统中是0xffff888000000000。
+// (exp)原理解释- 宏__va()的原理，内核直接映射区域的起始地址是：ffff887fffffffff，可以参考：Documentation/x86/x86_64/mm.rst文档4级页目录。__va就是获得内核地址空间一个物理地址的线性地址,就是在物理地址上加上一个偏移，在X64系统中是0xffff888000000000。一共有64T的直接映射区，足够用了.所以没有HIGH MEMORY REGION了。
 	return (unsigned long)__va(pud_val(pud) & pud_pfn_mask(pud)); 
 }
 
