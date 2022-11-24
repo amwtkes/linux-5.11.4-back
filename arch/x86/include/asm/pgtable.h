@@ -102,7 +102,7 @@ extern pmdval_t early_pmd_flags;
 #endif
 
 #ifndef __PAGETABLE_PUD_FOLDED
-#define pud_val(x)	native_pud_val(x)
+#define pud_val(x)	native_pud_val(x) //return pud.pud;
 #define __pud(x)	native_make_pud(x)
 #endif
 
@@ -868,7 +868,9 @@ static inline int pud_present(pud_t pud)
 /* xiaojin-mm-page-table pmd_offset -1 pud_page_vaddr*/
 static inline unsigned long pud_page_vaddr(pud_t pud)
 {
-	return (unsigned long)__va(pud_val(pud) & pud_pfn_mask(pud));
+	//pud_val(pud) & pud_pfn_mask(pud)应该是mid directory的物理地址
+	//pud_val(pud)就是pud.pud
+	return (unsigned long)__va(pud_val(pud) & pud_pfn_mask(pud)); 
 }
 
 /*
