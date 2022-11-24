@@ -273,6 +273,17 @@ enum page_cache_mode {
 #include <linux/types.h>
 
 /* Extracts the PFN from a (pte|pmd|pud|pgd)val_t of a 4KB page */
+
+/*xiaojin-mm-page-table pmd_offset -3 （exp）原理解释：页表项的取地址如何进行——正好就是intel手册Vol 3A 4-27里面描述的页表项指向下一级目录的页表的物理地址的掩码。
+pteval_t = unsigned long
+
+#define PAGE_MASK		(~(PAGE_SIZE-1)) 0X1111 1111 1111 1000 （12个0，其他都是1）
+#define __PHYSICAL_MASK		((phys_addr_t)((1ULL << __PHYSICAL_MASK_SHIFT) - 1))   0X0001 1111 1111 1111 (1-52位都是1，后面都是0)
+
+PHYSICAL_PAGE_MASK = (((signed long)PAGE_MASK) & __PHYSICAL_MASK) 0X0001 1111 1111 1000 (从13位开始40个1)
+
+正好就是intel手册Vol 3A 4-27里面描述的页表项指向下一级目录的页表的物理地址的掩码。
+*/
 #define PTE_PFN_MASK		((pteval_t)PHYSICAL_PAGE_MASK)
 
 /*
@@ -423,10 +434,11 @@ static inline p4dval_t p4d_flags(p4d_t p4d)
 {
 	return native_p4d_val(p4d) & p4d_flags_mask(p4d);
 }
-
+/*xiaojin-mm-page-table pmd_offset -2 
+*/
 static inline pudval_t pud_pfn_mask(pud_t pud)
 {
-	if (native_pud_val(pud) & _PAGE_PSE)
+	if (native_pud_val(pud) & _PAGE_PSE) //_PAGE_PSE =7 如果第7位是1，则pud直接指向是2MB页的物理地址。
 		return PHYSICAL_PUD_PAGE_MASK;
 	else
 		return PTE_PFN_MASK;
