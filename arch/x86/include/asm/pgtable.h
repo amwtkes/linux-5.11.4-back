@@ -865,6 +865,7 @@ static inline int pud_present(pud_t pud)
 	return pud_flags(pud) & _PAGE_PRESENT;
 }
 
+/* xiaojin-mm-page-table pmd_offset -1 pud_page_vaddr*/
 static inline unsigned long pud_page_vaddr(pud_t pud)
 {
 	return (unsigned long)__va(pud_val(pud) & pud_pfn_mask(pud));

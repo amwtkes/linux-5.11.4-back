@@ -18,7 +18,7 @@ typedef unsigned long	p4dval_t;
 typedef unsigned long	pgdval_t;
 typedef unsigned long	pgprotval_t;
 
-/*xiaojin-mm-page-table pte_t
+/*xiaojin-mm-page-table pte_t数据结构包装
 参考：https://app.yinxiang.com/shard/s65/nl/15273355/209c5e6b-683b-43e1-a881-a37a16bfb707/
 */
 typedef struct { pteval_t pte; } pte_t; //包装是为了只能用pte_t类型来访问pteval类型

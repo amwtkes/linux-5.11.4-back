@@ -356,6 +356,7 @@ static inline p4dval_t native_p4d_val(p4d_t p4d)
 #endif
 
 #if CONFIG_PGTABLE_LEVELS > 3
+/*xiaojin-mm-page-table 也表项结构定义 pud_t*/
 typedef struct { pudval_t pud; } pud_t;
 
 static inline pud_t native_make_pud(pmdval_t val)

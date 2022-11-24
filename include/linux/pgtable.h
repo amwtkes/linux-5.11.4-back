@@ -86,6 +86,7 @@ static inline pte_t *pte_offset_kernel(pmd_t *pmd, unsigned long address)
 
 /* Find an entry in the second-level page table.. */
 #ifndef pmd_offset
+/*xiaojin-mm-page-table pmd_offset -0 根据pud的一个项与一个线性地址获取相应pmd项的线性地址。*/
 static inline pmd_t *pmd_offset(pud_t *pud, unsigned long address)
 {
 	return (pmd_t *)pud_page_vaddr(*pud) + pmd_index(address);
