@@ -865,7 +865,7 @@ static inline int pud_present(pud_t pud)
 	return pud_flags(pud) & _PAGE_PRESENT;
 }
 
-/* xiaojin-mm-page-table pmd_offset -1 pud_page_vaddr*/
+/* xiaojin-mm-page-table pmd_offset -1 pud_page_vaddr 就是取出pud所包含的下一级目录或者pageframe的页的线性地址*/
 static inline unsigned long pud_page_vaddr(pud_t pud)
 {
 	//pud_val(pud) & pud_pfn_mask(pud)应该是mid directory的物理地址
@@ -882,6 +882,11 @@ static inline unsigned long pud_page_vaddr(pud_t pud)
  * Currently stuck as a macro due to indirect forward reference to
  * linux/mmzone.h's __section_mem_map_addr() definition:
  */
+/*xiaojin-mm-page-table pud_page(pud) pfn_to_page(页号) 获取pud指向下一级目录或者物理地址的页号，并最后返回这个页号对应的page对象。
+参考： https://app.yinxiang.com/shard/s65/nl/15273355/dae28e7f-a57d-4ad0-8a07-00f40cd0208d/
+  pud_pfn(pud) 获得中间40位所指向page frame的物理页号。页号就是物理地址>>12。
+  然后通过页号获取也描述符page对象。
+*/
 #define pud_page(pud)	pfn_to_page(pud_pfn(pud))
 
 #define pud_leaf	pud_large
