@@ -274,7 +274,7 @@ enum page_cache_mode {
 
 /* Extracts the PFN from a (pte|pmd|pud|pgd)val_t of a 4KB page */
 
-/*xiaojin-mm-page-table pmd_offset -3 （exp）原理解释：页表项的取地址如何进行——正好就是intel手册Vol 3A 4-27里面描述的页表项指向下一级目录的页表的物理地址的掩码。
+/*xiaojin-mm-page-table-macro pmd_offset -3 （exp）原理解释：页表项的取地址如何进行——正好就是intel手册Vol 3A 4-27里面描述的页表项指向下一级目录的页表的物理地址的掩码。
 pteval_t = unsigned long
 
 #define PAGE_MASK		(~(PAGE_SIZE-1)) 0X1111 1111 1111 1000 （12个0，其他都是1）
@@ -367,7 +367,7 @@ static inline p4dval_t native_p4d_val(p4d_t p4d)
 #endif
 
 #if CONFIG_PGTABLE_LEVELS > 3
-/*xiaojin-mm-page-table 也表项结构定义 pud_t*/
+/*xiaojin-mm-page-table-macro 也表项结构定义 pud_t*/
 typedef struct { pudval_t pud; } pud_t;
 
 static inline pud_t native_make_pud(pmdval_t val)
@@ -434,7 +434,7 @@ static inline p4dval_t p4d_flags(p4d_t p4d)
 {
 	return native_p4d_val(p4d) & p4d_flags_mask(p4d);
 }
-/*xiaojin-mm-page-table pmd_offset -2 pud_pfn_mask(pud)就是取页表项的掩码（从13-52都是1，其余都是0）
+/*xiaojin-mm-page-table-macro pmd_offset -2 pud_pfn_mask(pud)就是取页表项的掩码（从13-52都是1，其余都是0）
 */
 static inline pudval_t pud_pfn_mask(pud_t pud)
 {

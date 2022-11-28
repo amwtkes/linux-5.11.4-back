@@ -1443,6 +1443,7 @@ static inline unsigned long next_present_section_nr(unsigned long section_nr)
  * this restriction.
  */
 #ifdef CONFIG_NUMA
+/*xiaojin-mm-page-table-macro-macro pfn_to_nid 在numa体系下通过页号获得node id*/
 #define pfn_to_nid(pfn)							\
 ({									\
 	unsigned long __pfn_to_nid_pfn = (pfn);				\

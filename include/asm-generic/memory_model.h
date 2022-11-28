@@ -29,12 +29,13 @@
  * supports 3 memory models.
  */
 #if defined(CONFIG_FLATMEM)
-
+/*xiaojin-mm-page-table-macro __pfn_to_page 从页号获得页描述符的地址*/
 #define __pfn_to_page(pfn)	(mem_map + ((pfn) - ARCH_PFN_OFFSET))
 #define __page_to_pfn(page)	((unsigned long)((page) - mem_map) + \
 				 ARCH_PFN_OFFSET)
 #elif defined(CONFIG_DISCONTIGMEM)
 
+/*xiaojin-mm-page-table-macro __pfn_to_page 从页号获得页描述符的地址*/
 #define __pfn_to_page(pfn)			\
 ({	unsigned long __pfn = (pfn);		\
 	unsigned long __nid = arch_pfn_to_nid(__pfn);  \
