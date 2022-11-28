@@ -1311,6 +1311,9 @@ static inline int page_zone_id(struct page *page)
 #ifdef NODE_NOT_IN_PAGE_FLAGS
 extern int page_to_nid(const struct page *page);
 #else
+/*xiaojin-mm-page-table-macro page_to_nid 它用flags的高8位存储了它所属的zone和node。这是通过page flags找到page所属的node的方法。
+参考：https://app.yinxiang.com/shard/s65/nl/15273355/0ade4f5c-5360-4779-b109-1dcdf3885090/
+*/
 static inline int page_to_nid(const struct page *page)
 {
 	struct page *p = (struct page *)page;
