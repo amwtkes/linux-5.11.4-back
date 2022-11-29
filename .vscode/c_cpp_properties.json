@@ -20,7 +20,9 @@
                 // "__ASSEMBLY__", //编译汇编的时候可以打开
                 "CONFIG_X86_LOCAL_APIC",
                 "CONFIG_GENERIC_SMP_IDLE_THREAD",
-                "CONFIG_FLAT_NODE_MEM_MAP"
+                //"CONFIG_FLAT_NODE_MEM_MAP",
+                "CONFIG_NUMA",
+                "CONFIG_SPARSEMEM"//支持NUMA
                 // "CONFIG_PREEMPT_RCU"
             ],
             "macFrameworkPath": [
