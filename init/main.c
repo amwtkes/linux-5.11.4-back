@@ -886,6 +886,7 @@ asmlinkage __visible void __init __no_sanitize_address start_kernel(void)
 	smp_prepare_boot_cpu();	/* arch-specific boot-cpu hooks */
 	boot_cpu_hotplug_init();
 
+/*xiaojin-mm-build_all_zonelists -0*/
 	build_all_zonelists(NULL);
 	page_alloc_init();
 

@@ -63,6 +63,7 @@ xiaojin-mm-mem_map-setup --- 初始化一个node下所有page描述符数组mem_
 xiaojin-gdt-data --- gdt相关 分段相关
 xiaojin-gdt-func
 xiaojin-mm-page-kernel ---- 内核页的分配
+xiaojin-mm-build_all_zonelists --- NUMA下zone的初始化
 
 ------------kthread 这块
 xiaojin-kthread -内核线程创建这块

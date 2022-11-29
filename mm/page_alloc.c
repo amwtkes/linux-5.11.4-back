@@ -5921,6 +5921,9 @@ static void setup_min_unmapped_ratio(void);
 static void setup_min_slab_ratio(void);
 #else	/* CONFIG_NUMA */
 
+/*xiaojin-mm-build_all_zonelists -2 
+大概得逻辑可以参考：https://app.yinxiang.com/shard/s65/nl/15273355/8496d154-2041-4541-b18b-662e5bd727db/
+*/
 static void build_zonelists(pg_data_t *pgdat)
 {
 	int node, local_node;
@@ -6065,6 +6068,7 @@ void __ref build_all_zonelists(pg_data_t *pgdat)
 	if (system_state == SYSTEM_BOOTING) {
 		build_all_zonelists_init();
 	} else {
+		/*xiaojin-mm-build_all_zonelists -1*/
 		__build_all_zonelists(pgdat);
 		/* cpuset refresh routine should be here */
 	}
