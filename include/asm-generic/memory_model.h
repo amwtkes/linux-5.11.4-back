@@ -32,7 +32,7 @@
 /*xiaojin-mm-page-table-macro __pfn_to_page 从页号获得页描述符的地址*/
 #define __pfn_to_page(pfn)	(mem_map + ((pfn) - ARCH_PFN_OFFSET))
 
-/*xiaojin-mm-page-table-macro __page_to_pfn (exp)原理解释-页描述符与页框的关系。根据一个page descriptor获取这个pd的物理页框的页号。就是页框物理地址>>12，因为页框物理地址后12位本来就是0，所以用高位做索引.不管page与mem_map数组是虚拟地址还是物理地址，mem_map的索引就是物理页框的物理地址的高位值。所以
+/*xiaojin-mm-page-table-macro __page_to_pfn (exp)原理解释-页描述符与页框的关系,如何通过pfn来获得页框的物理地址？。根据一个page descriptor获取这个pd的物理页框的页号。就是页框物理地址>>12，因为页框物理地址后12位本来就是0，所以用高位做索引.不管page与mem_map数组是虚拟地址还是物理地址，mem_map的索引就是物理页框的物理地址的高位值。所以
 参考：https://app.yinxiang.com/shard/s65/nl/15273355/c6cc6382-ccb3-4aab-8f09-384296b39a55
 */
 #define __page_to_pfn(page)	((unsigned long)((page) - mem_map) + \
