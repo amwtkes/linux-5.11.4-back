@@ -7009,15 +7009,18 @@ static void __ref alloc_node_mem_map(struct pglist_data *pgdat)
 		 * aligned but the node_mem_map endpoints must be in order
 		 * for the buddy allocator to function correctly.
 		 */
-		end = pgdat_end_pfn(pgdat);
+		end = pgdat_end_pfn(pgdat); //包括内存空洞，一个node中可能有内存空洞，在一起的所有page。所以pg_list是按照page的数量来计数的。
 		end = ALIGN(end, MAX_ORDER_NR_PAGES);
 		size =  (end - start) * sizeof(struct page);
+		/*xiaojin-mm-mem_map-setup -11.0 ！map就是页描述符大数组，在这里初始化。*/
 		map = memblock_alloc_node(size, SMP_CACHE_BYTES,
 					  pgdat->node_id);
 		if (!map)
 			panic("Failed to allocate %ld bytes for node %d memory map\n",
 			      size, pgdat->node_id);
-	/*xiaojin-mm-mem_map-setup -12 */
+	/*xiaojin-mm-mem_map-setup -11.1 !!!真实的初始化地方哦
+	
+	*/
 		pgdat->node_mem_map = map + offset;
 	}
 	pr_debug("%s: node %d, pgdat %08lx, node_mem_map %08lx\n",
@@ -7028,7 +7031,7 @@ static void __ref alloc_node_mem_map(struct pglist_data *pgdat)
 	 * With no DISCONTIG, the global mem_map is just set as node 0's
 	 */
 	if (pgdat == NODE_DATA(0)) {
-		/*xiaojin-mm-mem_map-setup -11 NODE_DATA(0)->node_mem_map*/
+		/*xiaojin-mm-mem_map-setup -12 NODE_DATA(0)->node_mem_map 赋值了。*/
 		mem_map = NODE_DATA(0)->node_mem_map;
 		if (page_to_pfn(mem_map) != pgdat->node_start_pfn)
 			mem_map -= offset;
@@ -7068,7 +7071,9 @@ static void __init free_area_init_node(int nid)
 		end_pfn ? ((u64)end_pfn << PAGE_SHIFT) - 1 : 0);
 	calculate_node_totalpages(pgdat, start_pfn, end_pfn);
 
-/*xiaojin-mm-mem_map-setup -10 alloc_node_mem_map*/
+/*xiaojin-mm-mem_map-setup -10 ！alloc_node_mem_map 每个node的mem_map初始化函数
+参考：https://app.yinxiang.com/shard/s65/nl/15273355/0ade4f5c-5360-4779-b109-1dcdf3885090/
+*/
 	alloc_node_mem_map(pgdat);
 	pgdat_set_deferred_range(pgdat);
 

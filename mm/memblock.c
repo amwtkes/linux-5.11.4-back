@@ -1553,6 +1553,7 @@ void * __init memblock_alloc_try_nid_raw(
  * Return:
  * Virtual address of allocated memory block on success, NULL on failure.
  */
+/*xiaojin-mm-mem_map-setup -11.0.1 */
 void * __init memblock_alloc_try_nid(
 			phys_addr_t size, phys_addr_t align,
 			phys_addr_t min_addr, phys_addr_t max_addr,
