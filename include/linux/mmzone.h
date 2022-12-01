@@ -1190,6 +1190,7 @@ static inline struct zoneref *first_zones_zonelist(struct zonelist *zonelist,
 #define PA_SECTION_SHIFT	(SECTION_SIZE_BITS)
 #define PFN_SECTION_SHIFT	(SECTION_SIZE_BITS - PAGE_SHIFT)
 
+/*xiaojin-mm-sparsemem-ds NR_MEM_SECTIONS一共可以容纳多少个section*/
 #define NR_MEM_SECTIONS		(1UL << SECTIONS_SHIFT)
 
 #define PAGES_PER_SECTION       (1UL << PFN_SECTION_SHIFT)
@@ -1243,7 +1244,7 @@ void subsection_map_init(unsigned long pfn, unsigned long nr_pages);
 struct page;
 struct page_ext;
 
-/*xiaojin-mm-sparsemem mem_section
+/*xiaojin-mm-sparsemem-ds mem_section
 参考：https://app.yinxiang.com/shard/s65/nl/15273355/d3e3e526-401a-4441-ab05-1a4f7b338869/
 */
 struct mem_section {
