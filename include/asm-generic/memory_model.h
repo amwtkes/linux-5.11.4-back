@@ -75,9 +75,12 @@ https://app.yinxiang.com/shard/s65/nl/15273355/1b6b7240-ca5e-4552-b69c-b4369d7e1
 */
 /* xiaojin-mm-sparsemem-ds __page_to_pfn __page_to_pfn*/
 
+/*(exp)原理解释——struct page到底是啥？注意：这里是通过page描述符的地址，求这个描述符所针对的page frame number。不能通过__pa()来，这是两个概念哈。
+ struct page是页框描述符，但是page结构中并没有page frame的物理地址或者线性地址在哪里（原则只要知道一个就能知道另一个——仅仅限于内核页表——__va与__pa），那么我拿到page对象怎么知道物理地址？或者知道物理地址怎么知道page信息？就得靠下面这两个宏了。知道pfn也就知道了页物理地址，因为pfn<<PAGE_SHIFT就是物理地址了。
+*/
 #define __page_to_pfn(pg)					\
 ({	const struct page *__pg = (pg);				\
-	int __sec = page_to_section(__pg);			\
+	int __sec = page_to_section(__pg);			\ /*从page->flag里面拿*/
 	(unsigned long)(__pg - __section_mem_map_addr(__nr_to_section(__sec)));	\
 })
 

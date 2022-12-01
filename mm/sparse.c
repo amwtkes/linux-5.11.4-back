@@ -304,6 +304,8 @@ static void __init memblocks_present(void)
  * the identity pfn - section_mem_map will return the actual
  * physical page frame number.
  */
+/*xiaojin-mm-sparsemem (exp)原理解释——mem_section->section_mem_map不是真正的指向struct page的数组，是经过编码的！参考：https://app.yinxiang.com/shard/s65/nl/15273355/d3e3e526-401a-4441-ab05-1a4f7b338869/ 参考那张图，注意图中的数字不太对，但是结构是正确的。mem_map - pfn是真正的值，为了能够让__page_to_pfn可以通过减法直接得到，因为如果是真的偏移只能在平坦模型才能做到，pfn是递增的，但是有空洞，空洞不去做mm_map所以按照正常的虚拟地址映射是做不到__page_to_pfn的“(unsigned long)(__pg - __section_mem_map_addr(__nr_to_section(__sec)))”。看图就能懂。
+*/
 static unsigned long sparse_encode_mem_map(struct page *mem_map, unsigned long pnum)
 {
 	unsigned long coded_mem_map =

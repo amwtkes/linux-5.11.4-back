@@ -1335,7 +1335,7 @@ extern size_t mem_section_usage_size(void);
 static inline struct page *__section_mem_map_addr(struct mem_section *section)
 {
 	unsigned long map = section->section_mem_map;
-	map &= SECTION_MAP_MASK;
+	map &= SECTION_MAP_MASK; //注意看上面的注释，后四位是存了别的信息的。所以要在转成page虚拟地址的时候，去掉。
 	return (struct page *)map;
 }
 
