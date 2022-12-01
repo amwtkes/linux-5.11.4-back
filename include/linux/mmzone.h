@@ -751,7 +751,7 @@ struct deferred_split {
  * Memory statistics and page replacement data structures are maintained on a
  * per-zone basis.
  */
-/*xiaojin-mm-datastructure-1 numa node的描述符*/
+/*xiaojin-mm-datastructure-1 numa node的描述符 pglist_data*/
 typedef struct pglist_data {
 	/*
 	 * node_zones contains just the zones for THIS node. Not all of the
