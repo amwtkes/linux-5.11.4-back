@@ -46,7 +46,7 @@
 
 #define __page_to_pfn(pg)						\
 ({	const struct page *__pg = (pg);					\
-	struct pglist_data *__pgdat = NODE_DATA(page_to_nid(__pg));	\
+	struct pglist_data *__pgdat = NODE_DATA(page_to_nid(__pg));	\/*nid存放在page->flag里面了*/
 	(unsigned long)(__pg - __pgdat->node_mem_map) +			\
 	 __pgdat->node_start_pfn;					\
 })
