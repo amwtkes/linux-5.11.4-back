@@ -22,8 +22,10 @@
                 "CONFIG_GENERIC_SMP_IDLE_THREAD",
                 //"CONFIG_FLAT_NODE_MEM_MAP",
                 "CONFIG_NUMA",
-                "CONFIG_SPARSEMEM"//支持NUMA
+                "CONFIG_SPARSEMEM",//支持NUMA
                 // "CONFIG_PREEMPT_RCU"
+                "CONFIG_SPARSEMEM_VMEMMAP",
+                "CONFIG_SPARSEMEM_EXTREME"
             ],
             "macFrameworkPath": [
                 "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks"

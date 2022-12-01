@@ -1242,6 +1242,10 @@ void subsection_map_init(unsigned long pfn, unsigned long nr_pages);
 
 struct page;
 struct page_ext;
+
+/*xiaojin-mm-sparsemem mem_section
+参考：https://app.yinxiang.com/shard/s65/nl/15273355/d3e3e526-401a-4441-ab05-1a4f7b338869/
+*/
 struct mem_section {
 	/*
 	 * This is, logically, a pointer to an array of struct
