@@ -1190,7 +1190,7 @@ static inline struct zoneref *first_zones_zonelist(struct zonelist *zonelist,
 #define PA_SECTION_SHIFT	(SECTION_SIZE_BITS)
 #define PFN_SECTION_SHIFT	(SECTION_SIZE_BITS - PAGE_SHIFT)
 
-/*xiaojin-mm-sparsemem-ds NR_MEM_SECTIONS一共可以容纳多少个section*/
+/*xiaojin-mm-sparsemem-ds NR_MEM_SECTIONS一共可以容纳多少个section,46-27=19 相当于2^20 = 1M个项*/
 #define NR_MEM_SECTIONS		(1UL << SECTIONS_SHIFT)
 
 #define PAGES_PER_SECTION       (1UL << PFN_SECTION_SHIFT)
