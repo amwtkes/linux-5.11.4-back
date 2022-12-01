@@ -253,7 +253,8 @@ extern void cleanup_highmap(void);
 
 #define __HAVE_ARCH_PTE_SAME
 
-#define vmemmap ((struct page *)VMEMMAP_START)
+/*xiaojin-mm-sparsemem-ds vmemmap 线性地址：0xffffea0000000000UL*/
+#define vmemmap ((struct page *)VMEMMAP_START) //#define __VMEMMAP_BASE_L4	0xffffea0000000000UL
 
 extern void init_extra_mapping_uc(unsigned long phys, unsigned long size);
 extern void init_extra_mapping_wb(unsigned long phys, unsigned long size);

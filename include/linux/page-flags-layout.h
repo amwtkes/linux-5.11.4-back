@@ -28,6 +28,9 @@
 #include <asm/sparsemem.h>
 
 /* SECTION_SHIFT	#bits space required to store a section # */
+
+/*xiaojin-mm-sparsemem-ds 2^SECTIONS_SHIFT表示系统一共可以有多少个section。2^MAX_PHYSMEM_BITS-》物理寻址位数，2^SECTION_SIZE_BITS-》一个section可以表示的内存范围
+*/
 #define SECTIONS_SHIFT	(MAX_PHYSMEM_BITS - SECTION_SIZE_BITS)
 
 #endif /* CONFIG_SPARSEMEM */
