@@ -54,7 +54,6 @@
 #elif defined(CONFIG_SPARSEMEM_VMEMMAP)
 
 /* memmap is virtually contiguous.  */
-/* xiaojin-mm-sparsemem-ds __page_to_pfn __page_to_pfn*/
 
 #define __pfn_to_page(pfn)	(vmemmap + (pfn))
 #define __page_to_pfn(page)	(unsigned long)((page) - vmemmap)
@@ -74,6 +73,8 @@ https://app.yinxiang.com/shard/s65/nl/15273355/c6cc6382-ccb3-4aab-8f09-384296b39
 每个mem_section包含一个间接指向struct page数组的指针。为了更有效的实现PFN和struct page之间的转换，PFN中的几个高位bit被用作mem_section数组的索引。
 https://app.yinxiang.com/shard/s65/nl/15273355/1b6b7240-ca5e-4552-b69c-b4369d7e1357/
 */
+/* xiaojin-mm-sparsemem-ds __page_to_pfn __page_to_pfn*/
+
 #define __page_to_pfn(pg)					\
 ({	const struct page *__pg = (pg);				\
 	int __sec = page_to_section(__pg);			\

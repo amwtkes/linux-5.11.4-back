@@ -68,7 +68,8 @@ static inline void copy_user_page(void *to, void *from, unsigned long vaddr,
  * virt_to_page(kaddr) returns a valid pointer if and only if
  * virt_addr_valid(kaddr) returns true.
  */
-/*xiaojin-mm-page-ds pfn_to_page pfn_to_kaddr (exp)原理解释-pfn的算法是固定的：这个很重要，pfn- page frame number就是物理页框的页框号，这个是个固定算法值，跟内存模型无关，不同内存模型就是为了适应这个算法而改变不同的结构（参考：memory-modle.rst https://app.yinxiang.com/shard/s65/nl/15273355/14437aa5-383a-4de4-be36-74acb4f519e0）。算法就是：物理地址>>PAGE_SHIFT*/
+/*xiaojin-mm-page-ds pfn_to_page pfn_to_kaddr (exp)原理解释-pfn的算法是固定的：这个很重要，pfn- page frame number就是物理页框的页框号，这个是个固定算法值，跟内存模型无关，不同内存模型就是为了适应这个算法而改变不同的结构（参考：memory-modle.rst https://app.yinxiang.com/shard/s65/nl/15273355/14437aa5-383a-4de4-be36-74acb4f519e0）。算法就是：物理地址>>PAGE_SHIFT
+*/
 #define virt_to_page(kaddr)	pfn_to_page(__pa(kaddr) >> PAGE_SHIFT)
 #define pfn_to_kaddr(pfn)      __va((pfn) << PAGE_SHIFT)
 extern bool __virt_addr_valid(unsigned long kaddr);
