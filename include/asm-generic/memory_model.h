@@ -75,7 +75,7 @@ https://app.yinxiang.com/shard/s65/nl/15273355/d3e3e526-401a-4441-ab05-1a4f7b338
 */
 /* xiaojin-mm-sparsemem-ds __page_to_pfn __page_to_pfn*/
 
-/*(exp)原理解释——struct page到底是啥？注意：这里是通过page描述符的地址，求这个描述符所针对的page frame number。不能通过__pa()来，这是两个概念哈。https://app.yinxiang.com/shard/s65/nl/15273355/d3e3e526-401a-4441-ab05-1a4f7b338869/
+/*(exp)原理解释——__page_to_pfn,__pfn_to_page. struct page到底是啥？注意：这里是通过page描述符的地址，求这个描述符所针对的page frame number。不能通过__pa()来，这是两个概念哈。https://app.yinxiang.com/shard/s65/nl/15273355/d3e3e526-401a-4441-ab05-1a4f7b338869/
  struct page是页框描述符，但是page结构中并没有page frame的物理地址或者线性地址在哪里（原则只要知道一个就能知道另一个——仅仅限于内核页表——__va与__pa），那么我拿到page对象怎么知道物理地址？或者知道物理地址怎么知道page信息？就得靠下面这两个宏了。知道pfn也就知道了页物理地址，因为pfn<<PAGE_SHIFT就是物理地址了。说明图：https://app.yinxiang.com/shard/s65/nl/15273355/d3e3e526-401a-4441-ab05-1a4f7b338869//res/7188597d-bfe8-4be5-8d10-63b996697c7e.png?resizeSmall&width=832
 
  还有个地方要注意：图中的64位数字不是地址是下面宏的__sec，就是一个标志，用来做为也表项来使用！！！（图：https://app.yinxiang.com/shard/s65/nl/15273355/d3e3e526-401a-4441-ab05-1a4f7b338869//res/0581d5d6-01fc-4182-b20c-ae7c0e5a139d/v2-e16ca5f4a449e6eed4654dd997732fc1_r.jpg?resizeSmall&width=832 ）
