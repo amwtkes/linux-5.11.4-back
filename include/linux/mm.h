@@ -1078,7 +1078,7 @@ SECTIONS_WIDTH = SECTIONS_SHIFT =19
 MAX_PHYSMEM_BITS = 46
 SECTION_SIZE_BITS =27
 */
-#define SECTIONS_PGSHIFT	(SECTIONS_PGOFF * (SECTIONS_WIDTH != 0)) //45
+#define SECTIONS_PGSHIFT	(SECTIONS_PGOFF * (SECTIONS_WIDTH != 0)) //SECTIONS_PGSHIFT=45
 #define NODES_PGSHIFT		(NODES_PGOFF * (NODES_WIDTH != 0))
 #define ZONES_PGSHIFT		(ZONES_PGOFF * (ZONES_WIDTH != 0))
 #define LAST_CPUPID_PGSHIFT	(LAST_CPUPID_PGOFF * (LAST_CPUPID_WIDTH != 0))
@@ -1494,11 +1494,7 @@ static inline void set_page_section(struct page *page, unsigned long section)
 
 static inline unsigned long page_to_section(const struct page *page)
 {
-	/*xiaojin page_to_section 取page->flag的高19位值而已。
-	
-	page->flags >> SECTIONS_PGSHIFT 相当于取了高19位的值
-	SECTIONS_MASK = 低位19个1，高位全0
-	& SECTIONS_MASK 是为了在右移时，如果高位是1的话，就会补1，要mask掉。
+	/*xiaojin page_to_section 取page->flag的高19位值而已。page->flags >> SECTIONS_PGSHIFT 相当于取了高19位的值。SECTIONS_MASK = 低位19个1，高位全0。& SECTIONS_MASK 是为了在右移时，如果高位是1的话，就会补1，要mask掉。SECTIONS_PGSHIFT=45；SECTIONS_MASK=0X0000 0000 0007 ffff(19个1)。
 	*/
 	return (page->flags >> SECTIONS_PGSHIFT) & SECTIONS_MASK;
 }

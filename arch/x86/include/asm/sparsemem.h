@@ -23,7 +23,10 @@
 #  define MAX_PHYSMEM_BITS	32
 # endif
 #else /* CONFIG_X86_32 */
-/*xiaojin-mm-sparsemem-ds SECTION_SIZE_BITS MAX_PHYSMEM_BITS*/
+/*xiaojin-mm-sparsemem-ds SECTION_SIZE_BITS MAX_PHYSMEM_BITS
+SECTION_SIZE_BITS=27
+MAX_PHYSMEM_BITS=46
+*/
 # define SECTION_SIZE_BITS	27 /* matt - 128 is convenient right now  一个section可以表示的内存范围*/
 # define MAX_PHYSMEM_BITS	(pgtable_l5_enabled() ? 52 : 46) /* 4级页表物理寻址是46位 */
 #endif

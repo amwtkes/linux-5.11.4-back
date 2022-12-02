@@ -1188,7 +1188,7 @@ static inline struct zoneref *first_zones_zonelist(struct zonelist *zonelist,
  * PFN_SECTION_SHIFT		pfn to/from section number
  */
 #define PA_SECTION_SHIFT	(SECTION_SIZE_BITS)
-#define PFN_SECTION_SHIFT	(SECTION_SIZE_BITS - PAGE_SHIFT)
+#define PFN_SECTION_SHIFT	(SECTION_SIZE_BITS - PAGE_SHIFT)/*PFN_SECTION_SHIFT=15*/
 
 /*xiaojin-mm-sparsemem-ds NR_MEM_SECTIONS一共可以容纳多少个section,46-27=19 相当于2^20 = 1M个项*/
 #define NR_MEM_SECTIONS		(1UL << SECTIONS_SHIFT)
@@ -1278,7 +1278,7 @@ struct mem_section {
 };
 
 #ifdef CONFIG_SPARSEMEM_EXTREME
-#define SECTIONS_PER_ROOT       (PAGE_SIZE / sizeof (struct mem_section)) /*256个section一个也可以放*/
+#define SECTIONS_PER_ROOT       (PAGE_SIZE / sizeof (struct mem_section)) /* SECTIONS_PER_ROOT=256个section一个也可以放 */
 #else
 #define SECTIONS_PER_ROOT	1
 #endif
@@ -1306,6 +1306,13 @@ static inline struct mem_section *__nr_to_section(unsigned long nr)
 #endif
 	if (!mem_section[SECTION_NR_TO_ROOT(nr)])
 		return NULL;
+	/*
+	参考：https://app.yinxiang.com/shard/s65/nl/15273355/d3e3e526-401a-4441-ab05-1a4f7b338869//res/0581d5d6-01fc-4182-b20c-ae7c0e5a139d/v2-e16ca5f4a449e6eed4654dd997732fc1_r.jpg?resizeSmall&width=832
+
+	SECTION_NR_TO_ROOT(nr) 求root_number。每个*mem_section指向一个page大小的mem_section数组。而2^(ROOT_NUMBER+SECTION_PER_ROOT)就是一共有多少项的mem_section，所以nr/每个也有多少个section就可以得出sec=nr的第一级偏移。
+	
+	SECTION_ROOT_MASK=255相当于取mem_section的指针，最后section_per_root都是1，屏蔽了root_number位。
+	*/	
 	return &mem_section[SECTION_NR_TO_ROOT(nr)][nr & SECTION_ROOT_MASK];
 }
 extern unsigned long __section_nr(struct mem_section *ms);
