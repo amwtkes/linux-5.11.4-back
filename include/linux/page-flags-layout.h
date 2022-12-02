@@ -30,8 +30,10 @@
 /* SECTION_SHIFT	#bits space required to store a section # */
 
 /*xiaojin-mm-sparsemem-ds 2^SECTIONS_SHIFT表示系统一共可以有多少个section。2^MAX_PHYSMEM_BITS-》物理寻址位数，2^SECTION_SIZE_BITS-》一个section可以表示的内存范围
+MAX_PHYSMEM_BITS = 46
+SECTION_SIZE_BITS =27
 */
-#define SECTIONS_SHIFT	(MAX_PHYSMEM_BITS - SECTION_SIZE_BITS)
+#define SECTIONS_SHIFT	(MAX_PHYSMEM_BITS - SECTION_SIZE_BITS) //19
 
 #endif /* CONFIG_SPARSEMEM */
 
@@ -52,7 +54,7 @@
  * classic sparse no space for node:  | SECTION |     ZONE    | ... | FLAGS |
  */
 #if defined(CONFIG_SPARSEMEM) && !defined(CONFIG_SPARSEMEM_VMEMMAP)
-#define SECTIONS_WIDTH		SECTIONS_SHIFT
+#define SECTIONS_WIDTH		SECTIONS_SHIFT /*19*/
 #else
 #define SECTIONS_WIDTH		0
 #endif

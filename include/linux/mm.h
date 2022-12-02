@@ -1070,7 +1070,15 @@ vm_fault_t finish_mkwrite_fault(struct vm_fault *vmf);
  * sections we define the shift as 0; that plus a 0 mask ensures
  * the compiler will optimise away reference to them.
  */
-#define SECTIONS_PGSHIFT	(SECTIONS_PGOFF * (SECTIONS_WIDTH != 0))
+
+/*
+xiaojin-mm-sparsemem-ds SECTIONS_PGSHIFT = 64-19=45
+SECTIONS_WIDTH = SECTIONS_SHIFT =19
+#define SECTIONS_SHIFT	(MAX_PHYSMEM_BITS - SECTION_SIZE_BITS) = 19
+MAX_PHYSMEM_BITS = 46
+SECTION_SIZE_BITS =27
+*/
+#define SECTIONS_PGSHIFT	(SECTIONS_PGOFF * (SECTIONS_WIDTH != 0)) //45
 #define NODES_PGSHIFT		(NODES_PGOFF * (NODES_WIDTH != 0))
 #define ZONES_PGSHIFT		(ZONES_PGOFF * (ZONES_WIDTH != 0))
 #define LAST_CPUPID_PGSHIFT	(LAST_CPUPID_PGOFF * (LAST_CPUPID_WIDTH != 0))
@@ -1091,7 +1099,7 @@ vm_fault_t finish_mkwrite_fault(struct vm_fault *vmf);
 
 #define ZONES_MASK		((1UL << ZONES_WIDTH) - 1)
 #define NODES_MASK		((1UL << NODES_WIDTH) - 1)
-#define SECTIONS_MASK		((1UL << SECTIONS_WIDTH) - 1)
+#define SECTIONS_MASK		((1UL << SECTIONS_WIDTH) - 1) //0X0000 0000 0007 ffff(19个1)
 #define LAST_CPUPID_MASK	((1UL << LAST_CPUPID_SHIFT) - 1)
 #define KASAN_TAG_MASK		((1UL << KASAN_TAG_WIDTH) - 1)
 #define ZONEID_MASK		((1UL << ZONEID_SHIFT) - 1)
@@ -1486,6 +1494,12 @@ static inline void set_page_section(struct page *page, unsigned long section)
 
 static inline unsigned long page_to_section(const struct page *page)
 {
+	/*xiaojin page_to_section 取page->flag的高19位值而已。
+	
+	page->flags >> SECTIONS_PGSHIFT 相当于取了高19位的值
+	SECTIONS_MASK = 低位19个1，高位全0
+	& SECTIONS_MASK 是为了在右移时，如果高位是1的话，就会补1，要mask掉。
+	*/
 	return (page->flags >> SECTIONS_PGSHIFT) & SECTIONS_MASK;
 }
 #endif
