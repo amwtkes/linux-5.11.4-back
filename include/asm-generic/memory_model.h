@@ -71,16 +71,18 @@ https://app.yinxiang.com/shard/s65/nl/15273355/c6cc6382-ccb3-4aab-8f09-384296b39
 
 （！！！稀疏内存模型！）为了解决DISCONTIGMEM存在的这些弊端，没过几年，一种新的稀疏内存模型(sparse memory model)被召唤了出来。在SPARSEMEM中，被管理的物理内存由一个个section（用struct mem_section表示）构成，因此整个物理内存可视为一个mem_section数组。
 每个mem_section包含一个间接指向struct page数组的指针。为了更有效的实现PFN和struct page之间的转换，PFN中的几个高位bit被用作mem_section数组的索引。
-https://app.yinxiang.com/shard/s65/nl/15273355/1b6b7240-ca5e-4552-b69c-b4369d7e1357/
+https://app.yinxiang.com/shard/s65/nl/15273355/d3e3e526-401a-4441-ab05-1a4f7b338869/
 */
 /* xiaojin-mm-sparsemem-ds __page_to_pfn __page_to_pfn*/
 
-/*(exp)原理解释——struct page到底是啥？注意：这里是通过page描述符的地址，求这个描述符所针对的page frame number。不能通过__pa()来，这是两个概念哈。
- struct page是页框描述符，但是page结构中并没有page frame的物理地址或者线性地址在哪里（原则只要知道一个就能知道另一个——仅仅限于内核页表——__va与__pa），那么我拿到page对象怎么知道物理地址？或者知道物理地址怎么知道page信息？就得靠下面这两个宏了。知道pfn也就知道了页物理地址，因为pfn<<PAGE_SHIFT就是物理地址了。
+/*(exp)原理解释——struct page到底是啥？注意：这里是通过page描述符的地址，求这个描述符所针对的page frame number。不能通过__pa()来，这是两个概念哈。https://app.yinxiang.com/shard/s65/nl/15273355/d3e3e526-401a-4441-ab05-1a4f7b338869/
+ struct page是页框描述符，但是page结构中并没有page frame的物理地址或者线性地址在哪里（原则只要知道一个就能知道另一个——仅仅限于内核页表——__va与__pa），那么我拿到page对象怎么知道物理地址？或者知道物理地址怎么知道page信息？就得靠下面这两个宏了。知道pfn也就知道了页物理地址，因为pfn<<PAGE_SHIFT就是物理地址了。说明图：https://app.yinxiang.com/shard/s65/nl/15273355/d3e3e526-401a-4441-ab05-1a4f7b338869//res/7188597d-bfe8-4be5-8d10-63b996697c7e.png?resizeSmall&width=832
+
+ 还有个地方要注意：图中的64位数字不是地址是下面宏的__sec，就是一个标志，用来做为也表项来使用！！！（图：https://app.yinxiang.com/shard/s65/nl/15273355/d3e3e526-401a-4441-ab05-1a4f7b338869//res/0581d5d6-01fc-4182-b20c-ae7c0e5a139d/v2-e16ca5f4a449e6eed4654dd997732fc1_r.jpg?resizeSmall&width=832 ）
 */
 #define __page_to_pfn(pg)					\
 ({	const struct page *__pg = (pg);				\
-	int __sec = page_to_section(__pg);			\ /*从page->flag里面拿*/
+	int __sec = page_to_section(__pg);			\ /*从page->flag里面拿section*/
 	(unsigned long)(__pg - __section_mem_map_addr(__nr_to_section(__sec)));	\
 })
 

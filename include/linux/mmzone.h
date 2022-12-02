@@ -1278,7 +1278,7 @@ struct mem_section {
 };
 
 #ifdef CONFIG_SPARSEMEM_EXTREME
-#define SECTIONS_PER_ROOT       (PAGE_SIZE / sizeof (struct mem_section))
+#define SECTIONS_PER_ROOT       (PAGE_SIZE / sizeof (struct mem_section)) /*256个section一个也可以放*/
 #else
 #define SECTIONS_PER_ROOT	1
 #endif
