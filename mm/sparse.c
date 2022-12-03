@@ -250,6 +250,7 @@ void __init subsection_map_init(unsigned long pfn, unsigned long nr_pages)
 #endif
 
 /* Record a memory area against a node. */
+/* xiaojin-mm-sparsemem memory_present start——开始页的FPN，end——结束页的FPN*/
 static void __init memory_present(int nid, unsigned long start, unsigned long end)
 {
 	unsigned long pfn;
