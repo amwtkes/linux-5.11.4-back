@@ -125,6 +125,7 @@ static inline pgd_t *pgd_offset_pgd(pgd_t *pgd, unsigned long address)
  * of a process's
  */
 #ifndef pgd_offset_k
+/*xiaojin-mm-pagetable -0 pgd_offset_k 分配pgd */
 #define pgd_offset_k(address)		pgd_offset(&init_mm, (address))
 #endif
 
