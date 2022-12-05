@@ -228,6 +228,7 @@ int __meminit vmemmap_populate_basepages(unsigned long start, unsigned long end,
 	pte_t *pte;
 
 	for (; addr < end; addr += PAGE_SIZE) {
+		/*xiaojin-mm-pagetable -example sparsemem*/
 		pgd = vmemmap_pgd_populate(addr, node);
 		if (!pgd)
 			return -ENOMEM;
