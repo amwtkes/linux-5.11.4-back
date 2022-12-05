@@ -328,11 +328,13 @@ struct page *sparse_decode_mem_map(unsigned long coded_mem_map, unsigned long pn
 }
 #endif /* CONFIG_MEMORY_HOTPLUG */
 
+/*xiaojin-mm-sparsemem -3.1 sparse_init_one_section*/
 static void __meminit sparse_init_one_section(struct mem_section *ms,
 		unsigned long pnum, struct page *mem_map,
 		struct mem_section_usage *usage, unsigned long flags)
 {
 	ms->section_mem_map &= ~SECTION_MAP_MASK;
+	/*xiaojin-mm-sparsemem -3.2 如何初始化section_mem_map。函数的注释有详细说明*/
 	ms->section_mem_map |= sparse_encode_mem_map(mem_map, pnum)
 		| SECTION_HAS_MEM_MAP | flags;
 	ms->usage = usage;
@@ -446,6 +448,8 @@ static unsigned long __init section_map_size(void)
 	return PAGE_ALIGN(sizeof(struct page) * PAGES_PER_SECTION);
 }
 
+/*xiaojin-mm-sparsemem -2.1 不使用vmemmap的map初始化
+*/
 struct page __init *__populate_section_memmap(unsigned long pfn,
 		unsigned long nr_pages, int nid, struct vmem_altmap *altmap)
 {
@@ -524,6 +528,7 @@ void __weak __meminit vmemmap_populate_print_last(void)
  * Initialize sparse on a specific node. The node spans [pnum_begin, pnum_end)
  * And number of present sections in this node is map_count.
  */
+/*xiaojin-mm-sparsemem -1 sparse_init_nid 初始化一个node 对于numba来说。*/
 static void __init sparse_init_nid(int nid, unsigned long pnum_begin,
 				   unsigned long pnum_end,
 				   unsigned long map_count)
@@ -544,7 +549,7 @@ static void __init sparse_init_nid(int nid, unsigned long pnum_begin,
 
 		if (pnum >= pnum_end)
 			break;
-
+		/*xiaojin-mm-sparsemem -2.0 初始化memmap，物理页框描述符数组 */
 		map = __populate_section_memmap(pfn, PAGES_PER_SECTION,
 				nid, NULL);
 		if (!map) {
@@ -554,6 +559,7 @@ static void __init sparse_init_nid(int nid, unsigned long pnum_begin,
 			goto failed;
 		}
 		check_usemap_section_nr(nid, usage);
+		/*xiaojin-mm-sparsemem -3.0 开始初始化section数据结构。*/
 		sparse_init_one_section(__nr_to_section(pnum), pnum, map, usage,
 				SECTION_IS_EARLY);
 		usage = (void *) usage + mem_section_usage_size();
@@ -576,6 +582,7 @@ failed:
  * Allocate the accumulated non-linear sections, allocate a mem_map
  * for each and record the physical to section mapping.
  */
+/*xiaojin-mm-sparsemem -0 sparse_init初始化sparse内存模型*/
 void __init sparse_init(void)
 {
 	unsigned long pnum_end, pnum_begin, map_count = 1;
