@@ -284,7 +284,7 @@ PHYSICAL_PAGE_MASK = (((signed long)PAGE_MASK) & __PHYSICAL_MASK) 0X0001 1111 11
 
 正好就是intel手册Vol 3A 4-27里面描述的页表项指向下一级目录的页表的物理地址的掩码。
 */
-#define PTE_PFN_MASK		((pteval_t)PHYSICAL_PAGE_MASK) // 0X0001 1111 1111 1000 (从13位开始40个1)
+#define PTE_PFN_MASK		((pteval_t)PHYSICAL_PAGE_MASK) // PTE_PFN_MASK=0X0001 1111 1111 1000 (从13位开始40个1)
 
 /*
  *  Extracts the flags from a (pte|pmd|pud|pgd)val_t

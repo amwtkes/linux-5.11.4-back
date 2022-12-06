@@ -921,6 +921,7 @@ static inline int p4d_present(p4d_t p4d)
 
 static inline unsigned long p4d_page_vaddr(p4d_t p4d)
 {
+	// p4d_val(p4d) & p4d_pfn_mask(p4d) —— 取出对应的表项中包含的下一级目录的物理地址。
 	return (unsigned long)__va(p4d_val(p4d) & p4d_pfn_mask(p4d));
 }
 

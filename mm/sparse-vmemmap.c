@@ -180,6 +180,7 @@ pmd_t * __meminit vmemmap_pmd_populate(pud_t *pud, unsigned long addr, int node)
 	return pmd;
 }
 
+/*xiaojin-mm-sparsemem -2.2.1.1 vmemmap_pud_populate 定义*/
 pud_t * __meminit vmemmap_pud_populate(p4d_t *p4d, unsigned long addr, int node)
 {
 	pud_t *pud = pud_offset(p4d, addr);
@@ -234,12 +235,17 @@ int __meminit vmemmap_populate_basepages(unsigned long start, unsigned long end,
 		/*xiaojin-mm-pagetable -example sparsemem
 		addr是虚拟地址，是一个页面的起始地址。
 		*/
+
+		//拿pgd
 		pgd = vmemmap_pgd_populate(addr, node);
 		if (!pgd)
 			return -ENOMEM;
+		
+		//4层页表返回的值就是pgd
 		p4d = vmemmap_p4d_populate(pgd, addr, node);
 		if (!p4d)
 			return -ENOMEM;
+		/*xiaojin-mm-sparsemem -2.2.1.1 初始化upper page table entry*/
 		pud = vmemmap_pud_populate(p4d, addr, node);
 		if (!pud)
 			return -ENOMEM;
