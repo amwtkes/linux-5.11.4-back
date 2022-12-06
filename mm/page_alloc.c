@@ -3825,6 +3825,8 @@ static inline unsigned int current_alloc_flags(gfp_t gfp_mask,
  * get_page_from_freelist goes through the zonelist trying to allocate
  * a page.
  */
+
+/*xiaojin-mm-buddy -1 get_page_from_freelist*/
 static struct page *
 get_page_from_freelist(gfp_t gfp_mask, unsigned int order, int alloc_flags,
 						const struct alloc_context *ac)
@@ -4653,6 +4655,7 @@ check_retry_cpuset(int cpuset_mems_cookie, struct alloc_context *ac)
 	return false;
 }
 
+/*xiaojin-mm-buddy -2 __alloc_pages_slowpath*/
 static inline struct page *
 __alloc_pages_slowpath(gfp_t gfp_mask, unsigned int order,
 						struct alloc_context *ac)
@@ -4963,7 +4966,7 @@ static inline bool prepare_alloc_pages(gfp_t gfp_mask, unsigned int order,
  * This is the 'heart' of the zoned buddy allocator.
  */
 
-/*xiaojin-mm-func __alloc_pages_nodemask buddy system分配代码*/
+/*xiaojin-mm-buddy -0 __alloc_pages_nodemask buddy system分配代码*/
 struct page *
 __alloc_pages_nodemask(gfp_t gfp_mask, unsigned int order, int preferred_nid,
 							nodemask_t *nodemask)
