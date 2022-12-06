@@ -62,7 +62,9 @@ static inline unsigned long pud_index(unsigned long address)
 #endif
 
 #ifndef pgd_index
-/* Must be a compile-time constant, so implement it as a macro */
+/* Must be a compile-time constant, so implement it as a macro 
+xiaojin PGDIR_SHIFT=39 PTRS_PER_PGD=512。就是取pgd这个offset的pgd_t。
+*/
 #define pgd_index(a)  (((a) >> PGDIR_SHIFT) & (PTRS_PER_PGD - 1))
 #endif
 
@@ -125,7 +127,8 @@ static inline pgd_t *pgd_offset_pgd(pgd_t *pgd, unsigned long address)
  * of a process's
  */
 #ifndef pgd_offset_k
-/*xiaojin-mm-pagetable -0 pgd_offset_k 分配pgd */
+/*xiaojin-mm-pagetable -0 pgd_offset_k 就是根据线性地址取出pgd对应的offset项:(pgd + pgd_index(address))
+*/
 #define pgd_offset_k(address)		pgd_offset(&init_mm, (address))
 #endif
 

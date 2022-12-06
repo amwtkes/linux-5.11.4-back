@@ -204,6 +204,8 @@ p4d_t * __meminit vmemmap_p4d_populate(pgd_t *pgd, unsigned long addr, int node)
 	return p4d;
 }
 
+/*xiaojin-mm-pagetable -1 vmemmap_pgd_populate
+*/
 pgd_t * __meminit vmemmap_pgd_populate(unsigned long addr, int node)
 {
 	pgd_t *pgd = pgd_offset_k(addr);
@@ -228,7 +230,9 @@ int __meminit vmemmap_populate_basepages(unsigned long start, unsigned long end,
 	pte_t *pte;
 
 	for (; addr < end; addr += PAGE_SIZE) {
-		/*xiaojin-mm-pagetable -example sparsemem*/
+		/*xiaojin-mm-pagetable -example sparsemem
+		addr是虚拟地址，是一个页面的起始地址。
+		*/
 		pgd = vmemmap_pgd_populate(addr, node);
 		if (!pgd)
 			return -ENOMEM;
