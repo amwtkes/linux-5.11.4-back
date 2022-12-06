@@ -25,7 +25,8 @@
                 "CONFIG_SPARSEMEM",//支持NUMA
                 // "CONFIG_PREEMPT_RCU"
                 "CONFIG_SPARSEMEM_VMEMMAP",
-                "CONFIG_SPARSEMEM_EXTREME"
+                "CONFIG_SPARSEMEM_EXTREME",
+                "CONFIG_PGTABLE_LEVELS=4"
             ],
             "macFrameworkPath": [
                 "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks"
