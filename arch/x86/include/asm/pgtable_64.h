@@ -114,6 +114,7 @@ static inline pmd_t native_pmdp_get_and_clear(pmd_t *xp)
 #endif
 }
 
+/*xiaojin-mm-pagetable -3.2 native_set_pud*/
 static inline void native_set_pud(pud_t *pudp, pud_t pud)
 {
 	WRITE_ONCE(*pudp, pud);

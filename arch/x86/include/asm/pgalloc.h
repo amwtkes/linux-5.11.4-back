@@ -98,9 +98,13 @@ static inline void __pmd_free_tlb(struct mmu_gather *tlb, pmd_t *pmd,
 #ifdef CONFIG_X86_PAE
 extern void pud_populate(struct mm_struct *mm, pud_t *pudp, pmd_t *pmd);
 #else	/* !CONFIG_X86_PAE */
+/*xiaojin-mm-pagetable -3.1 pud_populate*/
 static inline void pud_populate(struct mm_struct *mm, pud_t *pud, pmd_t *pmd)
 {
-	paravirt_alloc_pmd(mm, __pa(pmd) >> PAGE_SHIFT);
+	paravirt_alloc_pmd(mm, __pa(pmd) >> PAGE_SHIFT); //这里什么也没做
+	//_PAGE_TABLE | __pa(pmd)) 相当于pmd页表的物理地址了。
+	//__pud(_PAGE_TABLE | __pa(pmd))相当于将pmd的物理地址封装了一个pud项的数据结构——pud_t
+	//pud在这里就是pud项的地址 set_pud就是将__pud的结果塞到pud这个地址里面，形成一个pud页表项。
 	set_pud(pud, __pud(_PAGE_TABLE | __pa(pmd)));
 }
 

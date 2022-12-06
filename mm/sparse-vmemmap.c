@@ -56,6 +56,7 @@ void * __meminit vmemmap_alloc_block(unsigned long size, int node)
 
 		page = alloc_pages_node(node, gfp_mask, order);
 		if (page)
+		//将物理页框的虚拟地址存入page结构的virtual字段中。
 			return page_address(page);
 
 		if (!warned) {
@@ -180,15 +181,19 @@ pmd_t * __meminit vmemmap_pmd_populate(pud_t *pud, unsigned long addr, int node)
 	return pmd;
 }
 
-/*xiaojin-mm-sparsemem -2.2.1.1 vmemmap_pud_populate 定义*/
+/*xiaojin-mm-sparsemem -2.2.1.1 vmemmap_pud_populate 定义.操作页表*/
+/*xiaojin-mm-pagetable -2 vmemmap_pud_populate*/
 pud_t * __meminit vmemmap_pud_populate(p4d_t *p4d, unsigned long addr, int node)
 {
 	pud_t *pud = pud_offset(p4d, addr);
-	if (pud_none(*pud)) {
+	if (pud_none(*pud)) { //如果addr的在pgd上的偏移（4层页表p4d==pgd）没有设置，就要重新分配一个页做pmd的目录。
+
+		//pmd目录页的虚拟地址。因为是在直接映射区所以就是物理地址+page_off的偏移。
 		void *p = vmemmap_alloc_block_zero(PAGE_SIZE, node);
 		if (!p)
 			return NULL;
-		pud_populate(&init_mm, pud, p);
+		/*xiaojin-mm-pagetable -3.0 调用pud_populate*/
+		pud_populate(&init_mm, pud, p);//pud是pud页表项的线性地址，p是pmd页的线性地址。
 	}
 	return pud;
 }
@@ -220,7 +225,7 @@ pgd_t * __meminit vmemmap_pgd_populate(unsigned long addr, int node)
 	return pgd;
 }
 
-/*xiaojin-mm-sparsemem -2.2.1 如何映射页表来创建mem_map的struct page* 数组*/
+/*xiaojin-mm-sparsemem -2.2.1 如何映射页表来创建mem_map的struct page* 数组。操作页表。*/
 int __meminit vmemmap_populate_basepages(unsigned long start, unsigned long end,
 					 int node, struct vmem_altmap *altmap)
 {
