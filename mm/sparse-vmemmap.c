@@ -154,7 +154,7 @@ pte_t * __meminit vmemmap_pte_populate(pmd_t *pmd, unsigned long addr, int node,
 		if (!p)
 			return NULL;
 		entry = pfn_pte(__pa(p) >> PAGE_SHIFT, PAGE_KERNEL);
-		//分配完物理页以后，将这个页号放入也表项中
+		/*xiaojin-mm-pagetable -4.3 分配完物理页以后，将这个页号放入也表项中*/
 		set_pte_at(&init_mm, addr, pte, entry);
 	}
 	return pte;
