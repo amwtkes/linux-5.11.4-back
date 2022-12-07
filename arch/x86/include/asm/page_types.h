@@ -11,11 +11,11 @@
 #define PAGE_SIZE		(_AC(1,UL) << PAGE_SHIFT)
 #define PAGE_MASK		(~(PAGE_SIZE-1))
 
-#define PMD_PAGE_SIZE		(_AC(1, UL) << PMD_SHIFT)
-#define PMD_PAGE_MASK		(~(PMD_PAGE_SIZE-1))
+#define PMD_PAGE_SIZE		(_AC(1, UL) << PMD_SHIFT) //PMD_SHIFT=21 PMD_PAGE_SIZE=1后面21个0
+#define PMD_PAGE_MASK		(~(PMD_PAGE_SIZE-1)) //PMD_PAGE_MASK=21个0，高位都是1
 
 #define PUD_PAGE_SIZE		(_AC(1, UL) << PUD_SHIFT)
-#define PUD_PAGE_MASK		(~(PUD_PAGE_SIZE-1))
+#define PUD_PAGE_MASK		(~(PUD_PAGE_SIZE-1)) //PUD_PAGE_MASK=21个0，其余都是1
 
 #define __VIRTUAL_MASK		((1UL << __VIRTUAL_MASK_SHIFT) - 1)
 
@@ -23,7 +23,7 @@
    virtual addresses are 32-bits but physical addresses are larger
    (ie, 32-bit PAE). */
 #define PHYSICAL_PAGE_MASK	(((signed long)PAGE_MASK) & __PHYSICAL_MASK)
-#define PHYSICAL_PMD_PAGE_MASK	(((signed long)PMD_PAGE_MASK) & __PHYSICAL_MASK)
+#define PHYSICAL_PMD_PAGE_MASK	(((signed long)PMD_PAGE_MASK) & __PHYSICAL_MASK) /*xiaojin-mm-pagetable (exp)原理解释——屏蔽字段的mask怎么解读？__PHYSICAL_MASK_SHIFT=52 __PHYSICAL_MASK=52个1高位都是0 PHYSICAL_PMD_PAGE_MASK=0X 000f ffff ffe0 0000 中间31个1，目的是截取前52位（52位有效地址，intel规定）中除开PTE=9与page中的offset=12位，一共21位以外的31位。这说明，这是一个大页2MB=2^21的大页*/
 #define PHYSICAL_PUD_PAGE_MASK	(((signed long)PUD_PAGE_MASK) & __PHYSICAL_MASK)
 
 #define HPAGE_SHIFT		PMD_SHIFT

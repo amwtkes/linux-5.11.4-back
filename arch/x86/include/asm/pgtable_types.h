@@ -47,7 +47,7 @@
 #define _PAGE_PCD	(_AT(pteval_t, 1) << _PAGE_BIT_PCD)
 #define _PAGE_ACCESSED	(_AT(pteval_t, 1) << _PAGE_BIT_ACCESSED)
 #define _PAGE_DIRTY	(_AT(pteval_t, 1) << _PAGE_BIT_DIRTY)
-#define _PAGE_PSE	(_AT(pteval_t, 1) << _PAGE_BIT_PSE)
+#define _PAGE_PSE	(_AT(pteval_t, 1) << _PAGE_BIT_PSE) //_PAGE_BIT_PSE=7 _PAGE_PSE=1后面7个0
 #define _PAGE_GLOBAL	(_AT(pteval_t, 1) << _PAGE_BIT_GLOBAL)
 #define _PAGE_SOFTW1	(_AT(pteval_t, 1) << _PAGE_BIT_SOFTW1)
 #define _PAGE_SOFTW2	(_AT(pteval_t, 1) << _PAGE_BIT_SOFTW2)
@@ -454,12 +454,13 @@ static inline pudval_t pud_flags(pud_t pud)
 	return native_pud_val(pud) & pud_flags_mask(pud);
 }
 
+/*xiaojin-mm-pagetable -4 pmd_pfn_mask 如何根据pmd_t结构决定怎么取下一级地址*/
 static inline pmdval_t pmd_pfn_mask(pmd_t pmd)
 {
-	if (native_pmd_val(pmd) & _PAGE_PSE)
-		return PHYSICAL_PMD_PAGE_MASK;
-	else
-		return PTE_PFN_MASK;
+	if (native_pmd_val(pmd) & _PAGE_PSE) //_PAGE_PSE表示无下一级页表了，是个大页。
+		return PHYSICAL_PMD_PAGE_MASK;//中间31个1
+	else 
+		return PTE_PFN_MASK;//返回pmd下一级页表的物理页框号，中间40位。
 }
 
 static inline pmdval_t pmd_flags_mask(pmd_t pmd)
