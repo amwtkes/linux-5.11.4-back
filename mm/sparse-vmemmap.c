@@ -233,7 +233,7 @@ pgd_t * __meminit vmemmap_pgd_populate(unsigned long addr, int node)
 }
 
 /*xiaojin-mm-sparsemem -2.2.1 如何映射页表来创建mem_map的struct page* 数组。操作页表。
-xiaojin-mm-pagetable (exp)原理解释——（如何建立页表映射？）为什么建立页表只要知道线性地址范围即可？具体的函数目的是：为start - end这个线性地址区域建立页表映射。为啥因为在内核，线性地址与物理地址可以简单的通过__pa __va进行转换，是直接映射的，也可以说是连续简单映射的，所以只要一个就知道另一个。所以在这里建立内核页映射只要知道线性地址范围就行了。那为什么要映射呢？因为开启页寻址功能的intel CPU必须通过页表+mmu来寻址，不管用户态还是内核态。
+xiaojin-mm-pagetable (exp)原理解释——（如何建立页表映射？）为什么建立页表只要知道线性地址范围即可？具体的函数目的是：为start - end这个线性地址区域建立页表映射。为啥因为在内核，线性地址与物理地址可以简单的通过__pa __va进行转换，是直接映射的，也可以说是连续简单映射的，所以只要一个就知道另一个。所以在这里建立内核页映射只要知道线性地址范围就行了。那为什么要映射呢？因为开启页寻址功能的intel CPU必须通过页表+mmu来寻址，不管用户态还是内核态。映射建立其实就是做好struct page结构去描述被映射的物理内存地址。
 */
 int __meminit vmemmap_populate_basepages(unsigned long start, unsigned long end,
 					 int node, struct vmem_altmap *altmap)
@@ -287,7 +287,7 @@ struct page * __meminit __populate_section_memmap(unsigned long pfn,
 
 	对于物理内存到虚拟内存映射的问题只要形成page结构就行了，物理内存只是个范围，不需要做什么操作，page本身通过vmemmap定位到，然后就可以通过page_to_pfn得到相应的物理内存范围，因此，内存映射只需要生成page对象，填好相应的信息就行，这也是为啥struct page结构叫做物理页框描述符的原因了。
 
-	还有，这是是系统初始化的函数，会将每个node下的section映射到内核的线性地址中
+	还有，这是是系统初始化的函数，会将每个node下的section映射到内核的线性地址中.分配映射其实就是形成struct page结构去描述这段物理内存而已。
 	*/
 
 /*xiaojin-mm-pagetable -example0 分配内存，只要确定了虚拟地址范围，就可以分配了，大块内存一般是以页为单位分配内存，小块的brk()分配。这里start是分配线性地址的起始页位置，end是结束页地址。vmemmap_populate函数进行页表映射。*/
