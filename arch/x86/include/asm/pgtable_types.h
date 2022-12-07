@@ -457,7 +457,7 @@ static inline pudval_t pud_flags(pud_t pud)
 /*xiaojin-mm-pagetable -4 pmd_pfn_mask 如何根据pmd_t结构决定怎么取下一级地址*/
 static inline pmdval_t pmd_pfn_mask(pmd_t pmd)
 {
-	if (native_pmd_val(pmd) & _PAGE_PSE) //_PAGE_PSE表示无下一级页表了，是个大页。
+	if (native_pmd_val(pmd) & _PAGE_PSE) //_PAGE_PSE表示无下一级页表了，是个大页。跟pmd做与运算取的就是这个大页的物理地址。
 		return PHYSICAL_PMD_PAGE_MASK;//中间31个1
 	else 
 		return PTE_PFN_MASK;//返回pmd下一级页表的物理页框号，中间40位。
