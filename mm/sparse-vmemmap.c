@@ -279,7 +279,13 @@ struct page * __meminit __populate_section_memmap(unsigned long pfn,
 	/*xiaojin-mm-sparsemem (exp)原理解释——如何使用vmemmap？vmemmap不是计算出来的，是定义的，它可以是任何线性地址，只要满足一个公式PFN = page页描述符的线性地址 - vmemmap就可以了。其中PFN由物理页框物理地址确定，page是内核线性地址映射的，所以这两个变量是没有关系的，所以vmemmap在哪就是原则上可以是随意的。只是有一点要注意，vmemmap是虚拟的数组，不能当做数组来使用，不能取值，只能做pfn_to_page与page_to_pfn这种计算。这是跟FLAT模型不同的。
 
 	从下面这行代码也可以看到，start就是section的mem_map起始地址，是由vmemmap+pfn得到的(而不是先映射再计算vmemmap！！！)，印证了上面的公式。start是section_memmap的起始页（肯定是页对齐的）的线性地址=pfn（页框号）+ vmemmap。
+
+	对于物理内存到虚拟内存映射的问题只要形成page结构就行了，物理内存只是个范围，不需要做什么操作，page本身通过vmemmap定位到，然后就可以通过page_to_pfn得到相应的物理内存范围，因此，内存映射只需要生成page对象，填好相应的信息就行，这也是为啥struct page结构叫做物理页框描述符的原因了。
+
+	还有，这是是系统初始化的函数，会将每个node下的section映射到内核的线性地址中
 	*/
+
+/*xiaojin-mm-pagetable -example0 分配内存，只要确定了虚拟地址范围，就可以分配了，大块内存一般是以页为单位分配内存，小块的brk()分配。这里start是分配线性地址的起始页位置，end是结束页地址。vmemmap_populate函数进行页表映射。*/
 	unsigned long start = (unsigned long) pfn_to_page(pfn);
 	unsigned long end = start + nr_pages * sizeof(struct page);
 
