@@ -226,7 +226,7 @@ pgd_t * __meminit vmemmap_pgd_populate(unsigned long addr, int node)
 }
 
 /*xiaojin-mm-sparsemem -2.2.1 如何映射页表来创建mem_map的struct page* 数组。操作页表。
-xiaojin (exp)原理解释——（如何建立页表映射？）为什么建立页表只要知道线性地址范围即可？具体的函数目的是：为start - end这个线性地址区域建立页表映射。为啥因为在内核，线性地址与物理地址可以简单的通过__pa __va进行转换，是直接映射的，也可以说是连续简单映射的，所以只要一个就知道另一个。所以在这里建立内核页映射只要知道线性地址范围就行了。那为什么要映射呢？因为开启页寻址功能的intel CPU必须通过页表+mmu来寻址，不管用户态还是内核态。
+xiaojin-mm-pagetable (exp)原理解释——（如何建立页表映射？）为什么建立页表只要知道线性地址范围即可？具体的函数目的是：为start - end这个线性地址区域建立页表映射。为啥因为在内核，线性地址与物理地址可以简单的通过__pa __va进行转换，是直接映射的，也可以说是连续简单映射的，所以只要一个就知道另一个。所以在这里建立内核页映射只要知道线性地址范围就行了。那为什么要映射呢？因为开启页寻址功能的intel CPU必须通过页表+mmu来寻址，不管用户态还是内核态。
 */
 int __meminit vmemmap_populate_basepages(unsigned long start, unsigned long end,
 					 int node, struct vmem_altmap *altmap)
