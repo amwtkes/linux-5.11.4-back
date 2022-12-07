@@ -600,12 +600,16 @@ static inline pgprotval_t check_pgprot(pgprot_t pgprot)
 	return massaged_val;
 }
 
+/*xiaojin-mm-pagetable -4.1.2 实际生成pte的地方。 pfn_pte 
+page_nr——分配的物理内存地址的页号
+pgprot——__PAGE_KERNEL		 (__PP|__RW|   0|___A|__NX|___D|   0|___G)pte的前8个bit
+*/
 static inline pte_t pfn_pte(unsigned long page_nr, pgprot_t pgprot)
 {
-	phys_addr_t pfn = (phys_addr_t)page_nr << PAGE_SHIFT;
+	phys_addr_t pfn = (phys_addr_t)page_nr << PAGE_SHIFT; //物理页号的真实物理地址.低地址12个0.
 	pfn ^= protnone_mask(pgprot_val(pgprot));
-	pfn &= PTE_PFN_MASK;
-	return __pte(pfn | check_pgprot(pgprot));
+	pfn &= PTE_PFN_MASK;//确保高12位都是0
+	return __pte(pfn | check_pgprot(pgprot));//设置低8位的信息，将物理地址转成pte。
 }
 
 static inline pmd_t pfn_pmd(unsigned long page_nr, pgprot_t pgprot)

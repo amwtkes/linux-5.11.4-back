@@ -148,12 +148,17 @@ pte_t * __meminit vmemmap_pte_populate(pmd_t *pmd, unsigned long addr, int node,
 	pte_t *pte = pte_offset_kernel(pmd, addr);
 	if (pte_none(*pte)) {
 		pte_t entry;
-		void *p;
+		void *p; // 这里的p是page frame的线性地址
 		//如果pte没有值，则分配一个页做物理内存，然后映射到这个pte上面。
 		p = vmemmap_alloc_block_buf(PAGE_SIZE, node, altmap);
 		if (!p)
 			return NULL;
-		entry = pfn_pte(__pa(p) >> PAGE_SHIFT, PAGE_KERNEL);
+		/*
+		#define __PAGE_KERNEL		 (__PP|__RW|   0|___A|__NX|___D|   0|___G)
+		表示是个kernel的映射。因为第三个bit是0.
+		*/
+	/*xiaojin-mm-pagetable -4.1.1 pfn_pte调用处*/	
+		entry = pfn_pte(__pa(p) >> PAGE_SHIFT/*得到pfn*/, PAGE_KERNEL); 
 		/*xiaojin-mm-pagetable -4.3 分配完物理页以后，将这个页号放入也表项中*/
 		set_pte_at(&init_mm, addr, pte, entry);
 	}
