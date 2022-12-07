@@ -823,7 +823,7 @@ static inline int pmd_none(pmd_t pmd)
 	unsigned long val = native_pmd_val(pmd);
 	return (val & ~_PAGE_KNL_ERRATUM_MASK) == 0;
 }
-
+/*xiaojin-mm-pagetable -4.2.1 pmd_page_vaddr根据pmd的也表项取下一级的线性地址，不管是大页还是下一级页目录的。*/
 static inline unsigned long pmd_page_vaddr(pmd_t pmd)
 {
 	return (unsigned long)__va(pmd_val(pmd) & pmd_pfn_mask(pmd));

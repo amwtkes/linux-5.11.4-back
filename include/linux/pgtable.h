@@ -69,6 +69,7 @@ xiaojin PGDIR_SHIFT=39 PTRS_PER_PGD=512。就是取pgd这个offset的pgd_t。
 #endif
 
 #ifndef pte_offset_kernel
+/*xiaojin-mm-pagetable -4.2 pte_offset_kernel 有下一级目录的情况下。因为pmd_page_vaddr方法还包含了大页的处理，这里显然不是。*/
 static inline pte_t *pte_offset_kernel(pmd_t *pmd, unsigned long address)
 {
 	return (pte_t *)pmd_page_vaddr(*pmd) + pte_index(address);

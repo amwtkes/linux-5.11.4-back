@@ -140,19 +140,21 @@ void __meminit vmemmap_verify(pte_t *pte, int node,
 		pr_warn("[%lx-%lx] potential offnode page_structs\n",
 			start, end - 1);
 }
-
+/*xiaojin-mm-pagetable -4.1 vmemmap_pte_populate */
 pte_t * __meminit vmemmap_pte_populate(pmd_t *pmd, unsigned long addr, int node,
 				       struct vmem_altmap *altmap)
 {
+	/*xiaojin-mm-pagetable -4.2.0 调用点*/
 	pte_t *pte = pte_offset_kernel(pmd, addr);
 	if (pte_none(*pte)) {
 		pte_t entry;
 		void *p;
-
+		//如果pte没有值，则分配一个页做物理内存，然后映射到这个pte上面。
 		p = vmemmap_alloc_block_buf(PAGE_SIZE, node, altmap);
 		if (!p)
 			return NULL;
 		entry = pfn_pte(__pa(p) >> PAGE_SHIFT, PAGE_KERNEL);
+		//分配完物理页以后，将这个页号放入也表项中
 		set_pte_at(&init_mm, addr, pte, entry);
 	}
 	return pte;
@@ -259,6 +261,7 @@ int __meminit vmemmap_populate_basepages(unsigned long start, unsigned long end,
 		pmd = vmemmap_pmd_populate(pud, addr, node);
 		if (!pmd)
 			return -ENOMEM;
+		/*xiaojin-mm-pagetable -4.0 调用点*/
 		pte = vmemmap_pte_populate(pmd, addr, node, altmap);
 		if (!pte)
 			return -ENOMEM;
