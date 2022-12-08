@@ -68,6 +68,8 @@ xiaojin-mm-build_all_zonelists --- NUMA下zone的初始化
 xiaojin-mm-sparsemem  --- 稀疏内存-numa的page struct维护
 xiaojin-mm-pagetable --- 分配页表相关的操作
 xiaojin-mm-buddy --- buddy system相关
+xiaojin-mm-gfp --- how to get free page
+
 
 ------------kthread 这块
 xiaojin-kthread -内核线程创建这块
