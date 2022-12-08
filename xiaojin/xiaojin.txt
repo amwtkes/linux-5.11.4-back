@@ -1,5 +1,6 @@
 xiaojin-unknown --- 未解之谜
 原理解释（前缀-exp） --- 带有原理解释的字样，表示在阐述重要的过程。前缀-exp。
+重要代码（前缀-impo) -- 重要的代码片段。
 
 xiaojin.*time_interrupt -- 时间中断相关的代码
 xiaojin.*hrtimer_interrupt ---高精度时间中断代码

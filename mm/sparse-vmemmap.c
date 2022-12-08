@@ -140,7 +140,7 @@ void __meminit vmemmap_verify(pte_t *pte, int node,
 		pr_warn("[%lx-%lx] potential offnode page_structs\n",
 			start, end - 1);
 }
-/*xiaojin-mm-pagetable -4.1 形成pte的函数。vmemmap_pte_populate */
+/*xiaojin-mm-pagetable -4.1 形成pte的函数。vmemmap_pte_populate (impo)重要代码——初始化sparse-section内存模型将物理内存映射到了内核线性地址了。*/
 pte_t * __meminit vmemmap_pte_populate(pmd_t *pmd, unsigned long addr, int node,
 				       struct vmem_altmap *altmap)
 {
