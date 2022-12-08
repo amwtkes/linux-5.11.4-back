@@ -251,6 +251,7 @@ void __init subsection_map_init(unsigned long pfn, unsigned long nr_pages)
 
 /* Record a memory area against a node. */
 /* xiaojin-mm-sparsemem memory_present start——开始页的FPN，end——结束页的FPN
+针对每个mem region。初始化每个mem_section数组，并加入mem_section二维数组里面。
 参考：https://app.yinxiang.com/shard/s65/nl/15273355/d3e3e526-401a-4441-ab05-1a4f7b338869/
 */
 static void __init memory_present(int nid, unsigned long start, unsigned long end)
@@ -299,6 +300,7 @@ static void __init memory_present(int nid, unsigned long start, unsigned long en
  * This is a convenience function that is useful to mark all of the systems
  * memory as present during initialization.
  */
+/*xiaojin-mm-sparsemem -0.1 初始化每个mem region，初始化mem_section二维数组。memblocks_present*/
 static void __init memblocks_present(void)
 {
 	unsigned long start, end;
@@ -590,12 +592,15 @@ failed:
  * Allocate the accumulated non-linear sections, allocate a mem_map
  * for each and record the physical to section mapping.
  */
-/*xiaojin-mm-sparsemem -0 sparse_init初始化sparse内存模型*/
+/*xiaojin-mm-sparsemem -0 sparse_init初始化sparse内存模型
+参考：https://app.yinxiang.com/shard/s65/nl/15273355/d3e3e526-401a-4441-ab05-1a4f7b338869/
+那张图。
+*/
 void __init sparse_init(void)
 {
 	unsigned long pnum_end, pnum_begin, map_count = 1;
 	int nid_begin;
-/*xiaojin-mm-sparsemem -0.1 memblocks_present 初始化*/
+/*xiaojin-mm-sparsemem -0.1 memblocks_present 初始化mem_section二维数组。*/
 	memblocks_present();
 
 	pnum_begin = first_present_section_nr();
