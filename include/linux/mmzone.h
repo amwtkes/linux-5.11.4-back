@@ -1193,8 +1193,8 @@ static inline struct zoneref *first_zones_zonelist(struct zonelist *zonelist,
 /*xiaojin-mm-sparsemem-ds NR_MEM_SECTIONS一共可以容纳多少个section,46-27=19 相当于2^20 = 1M个项*/
 #define NR_MEM_SECTIONS		(1UL << SECTIONS_SHIFT)
 
-#define PAGES_PER_SECTION       (1UL << PFN_SECTION_SHIFT)
-#define PAGE_SECTION_MASK	(~(PAGES_PER_SECTION-1))
+#define PAGES_PER_SECTION       (1UL << PFN_SECTION_SHIFT)//PAGES_PER_SECTION=1后面15个0.
+#define PAGE_SECTION_MASK	(~(PAGES_PER_SECTION-1))//PAGE_SECTION_MASK=低位15个1，其他都是0.
 
 #define SECTION_BLOCKFLAGS_BITS \
 	((1UL << (PFN_SECTION_SHIFT - pageblock_order)) * NR_PAGEBLOCK_BITS)
@@ -1298,6 +1298,7 @@ static inline unsigned long *section_to_usemap(struct mem_section *ms)
 	return ms->usage->pageblock_flags;
 }
 
+//nr是section号
 static inline struct mem_section *__nr_to_section(unsigned long nr)
 {
 #ifdef CONFIG_SPARSEMEM_EXTREME

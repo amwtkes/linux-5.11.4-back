@@ -250,13 +250,15 @@ void __init subsection_map_init(unsigned long pfn, unsigned long nr_pages)
 #endif
 
 /* Record a memory area against a node. */
-/* xiaojin-mm-sparsemem memory_present start——开始页的FPN，end——结束页的FPN*/
+/* xiaojin-mm-sparsemem memory_present start——开始页的FPN，end——结束页的FPN
+参考：https://app.yinxiang.com/shard/s65/nl/15273355/d3e3e526-401a-4441-ab05-1a4f7b338869/
+*/
 static void __init memory_present(int nid, unsigned long start, unsigned long end)
 {
 	unsigned long pfn;
 
 #ifdef CONFIG_SPARSEMEM_EXTREME
-	if (unlikely(!mem_section)) {
+	if (unlikely(!mem_section)) { //如果全局的mem_section**二维数组没有初始化，就在这里初始化。
 		unsigned long size, align;
 
 		size = sizeof(struct mem_section*) * NR_SECTION_ROOTS;
@@ -268,16 +270,22 @@ static void __init memory_present(int nid, unsigned long start, unsigned long en
 	}
 #endif
 
-	start &= PAGE_SECTION_MASK;
+	start &= PAGE_SECTION_MASK;//可以对照图来看，就是屏蔽了PFN_SECTION_SHIFT低15位。留下了ROOT_NUMBER与SECTION_PER_ROOT。
 	mminit_validate_memmodel_limits(&start, &end);
 	for (pfn = start; pfn < end; pfn += PAGES_PER_SECTION) {
-		unsigned long section = pfn_to_section_nr(pfn);
+		unsigned long section = pfn_to_section_nr(pfn);//直接又把低15位给去掉了。section的值其实就是ROOT_NUMBER与SECTION_PER_ROOT
 		struct mem_section *ms;
 
+		//做了mem_section[root] = section; 分配了一个mem_section对象，插入mem_section**二维数组的正确位置。
 		sparse_index_init(section, nid);
+
+		//section_nr可以放在page->flag中。下面函数可以不调用了。
 		set_section_nid(section, nid);
 
+		//通过section_nr获取mem_section结构，测试上面的函数是否正确初始化。
 		ms = __nr_to_section(section);
+
+		//在初始化阶段将nid存在section_mem_map低位，然后标志section启用。
 		if (!ms->section_mem_map) {
 			ms->section_mem_map = sparse_encode_early_nid(nid) |
 							SECTION_IS_ONLINE;
@@ -587,7 +595,7 @@ void __init sparse_init(void)
 {
 	unsigned long pnum_end, pnum_begin, map_count = 1;
 	int nid_begin;
-
+/*xiaojin-mm-sparsemem -0.1 memblocks_present 初始化*/
 	memblocks_present();
 
 	pnum_begin = first_present_section_nr();
