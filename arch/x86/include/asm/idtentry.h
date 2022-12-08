@@ -49,7 +49,7 @@ you两个这个宏一个是生成汇编asm_handler的，汇编宏idtentry
  * arbitrary code in the body. irqentry_exit() contains common code
  * which has to run before returning to the low level assembly code.
  */
-/*xiaojin-interrupt_macro -1 定义处理中断异常函数的宏*/
+/*xiaojin-interrupt_macro -1 (exp)原理解释——为什么IDT的宏这么复杂？asm_func与func联系是什么？这里定义处理中断异常c函数的宏，最终会被汇编代码调起。.macro idtentry_body函数里面调起。为什么这么复杂的原因是，因为中断可以发生在用户态，也就是中断发生时，可以直接从用户态陷入内核，而且是进入特殊的内核，是中断上下文的内核。而运行完处理函数后，还需要返回到中断处继续执行，所以需要保存用户态的寄存器上下文——pt_regs，这也是为啥所有的中断处理函数，系统调用的原型其实都是只有一个pt_regs参数的原因。而为啥要汇编？因为，只有汇编函数可以处理寄存器啦！所以任何系统调用终端处理函数其实都是从汇编函数开始，业务逻辑都是写在C语言，而下面这个宏就是包装业务逻辑的宏。*/
 #define DEFINE_IDTENTRY(func)						\
 static __always_inline void __##func(struct pt_regs *regs);		\
 									\
@@ -64,6 +64,9 @@ __visible noinstr void func(struct pt_regs *regs)			\
 }									\
 									\
 static __always_inline void __##func(struct pt_regs *regs)
+/*DEFINE_IDTENTRY到这里才结束，最后定义了__func的函数声明*/
+
+
 
 /* Special case for 32bit IRET 'trap' */
 #define DECLARE_IDTENTRY_SW	DECLARE_IDTENTRY
@@ -562,7 +565,7 @@ SYM_CODE_END(spurious_entries_start)
 #define X86_TRAP_OTHER		0xFFFF
 
 /* Simple exception entry points. No hardware error code */
-/*xiaojin-interrupt_macro +2.1 DECLARE_IDTENTRY例子*/
+/*xiaojin-interrupt_macro -+2example DECLARE_IDTENTRY例子*/
 DECLARE_IDTENTRY(X86_TRAP_DE,		exc_divide_error);
 DECLARE_IDTENTRY(X86_TRAP_OF,		exc_overflow);
 DECLARE_IDTENTRY(X86_TRAP_BR,		exc_bounds);
