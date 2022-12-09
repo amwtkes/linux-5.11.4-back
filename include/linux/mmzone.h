@@ -1215,6 +1215,7 @@ static inline unsigned long section_nr_to_pfn(unsigned long sec)
 #define SECTION_ALIGN_UP(pfn)	(((pfn) + PAGES_PER_SECTION - 1) & PAGE_SECTION_MASK)
 #define SECTION_ALIGN_DOWN(pfn)	((pfn) & PAGE_SECTION_MASK)
 
+/*SUBSECTION_SHIFT=21*/
 #define SUBSECTION_SHIFT 21
 #define SUBSECTION_SIZE (1UL << SUBSECTION_SHIFT)
 
