@@ -1226,7 +1226,7 @@ static inline unsigned long section_nr_to_pfn(unsigned long sec)
 #if SUBSECTION_SHIFT > SECTION_SIZE_BITS
 #error Subsection size exceeds section size
 #else
-#define SUBSECTIONS_PER_SECTION (1UL << (SECTION_SIZE_BITS - SUBSECTION_SHIFT))
+#define SUBSECTIONS_PER_SECTION (1UL << (SECTION_SIZE_BITS - SUBSECTION_SHIFT))//SUBSECTIONS_PER_SECTION=27-21=6（1后面6个0）
 #endif
 
 #define SUBSECTION_ALIGN_UP(pfn) ALIGN((pfn), PAGES_PER_SUBSECTION)
