@@ -595,6 +595,7 @@ failed:
 /*xiaojin-mm-sparsemem -0 sparse_init初始化sparse内存模型
 参考：https://app.yinxiang.com/shard/s65/nl/15273355/d3e3e526-401a-4441-ab05-1a4f7b338869/
 那张图。
+xiaojin-mm-sparsemem -(impo)重要代码——全部的流程可以参考：https://app.yinxiang.com/shard/s65/nl/15273355/ea3add58-2111-4c8d-ba0a-ab6135a85187/
 */
 void __init sparse_init(void)
 {
