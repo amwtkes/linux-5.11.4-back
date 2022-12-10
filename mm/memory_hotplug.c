@@ -1120,6 +1120,7 @@ int __ref __add_memory(int nid, u64 start, u64 size, mhp_t mhp_flags)
 	return ret;
 }
 
+/*xiaojin-mm-hotplug add_memory*/
 int add_memory(int nid, u64 start, u64 size, mhp_t mhp_flags)
 {
 	int rc;
