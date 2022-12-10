@@ -306,6 +306,8 @@ static int check_hotplug_memory_addressable(unsigned long pfn,
  * call this function after deciding the zone to which to
  * add the new pages.
  */
+
+/*xiaojin-mm-hotplug __add_pages*/
 int __ref __add_pages(int nid, unsigned long pfn, unsigned long nr_pages,
 		struct mhp_params *params)
 {
