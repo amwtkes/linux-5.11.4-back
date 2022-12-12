@@ -926,6 +926,8 @@ static struct page * __meminit section_activate(int nid, unsigned long pfn,
  * * -EEXIST	- Section has been present.
  * * -ENOMEM	- Out of memory.
  */
+
+/*xiaojin-mm-hotplug -3 定义sparse_add_section*/
 int __meminit sparse_add_section(int nid, unsigned long start_pfn,
 		unsigned long nr_pages, struct vmem_altmap *altmap)
 {

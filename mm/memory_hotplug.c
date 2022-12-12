@@ -340,9 +340,13 @@ int __ref __add_pages(int nid, unsigned long pfn, unsigned long nr_pages,
 		return err;
 
 	for (; pfn < end_pfn; pfn += cur_nr_pages) {
-		/* Select all remaining pages up to the next section boundary */
+		/* Select all remaining pages up to the next section boundary 
+		如果页数量超过一个section的容量就按照section的容量来，否则就是全部的pages。
+		*/
 		cur_nr_pages = min(end_pfn - pfn,
 				   SECTION_ALIGN_UP(pfn + 1) - pfn);
+
+		/*xiaojin-mm-hotplug -3  调用sparse_add_section*/
 		err = sparse_add_section(nid, pfn, cur_nr_pages, altmap);
 		if (err)
 			break;
