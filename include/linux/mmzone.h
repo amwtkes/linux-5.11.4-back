@@ -1369,7 +1369,7 @@ static inline int valid_section(struct mem_section *section)
 {
 	return (section && (section->section_mem_map & SECTION_HAS_MEM_MAP));
 }
-
+/*xiaojin-mm-hotplug-func early_section判断是否可以重用，在hotplug的时候。*/
 static inline int early_section(struct mem_section *section)
 {
 	return (section && (section->section_mem_map & SECTION_IS_EARLY));
