@@ -289,7 +289,7 @@ static void __init memory_present(int nid, unsigned long start, unsigned long en
 		//通过section_nr获取mem_section结构，测试上面的函数是否正确初始化。
 		ms = __nr_to_section(section);
 
-		//xiaojin-mm-sparsemem -(impo)——SECTION_MARKED_PRESENT与SECTION_HAS_MEM_MAP的设置。在初始化阶段将nid存在section_mem_map低位，然后标志section启用。设置section_mark_present标志位。
+		//xiaojin-mm-sparsemem -(impo)——SECTION_MARKED_PRESENT与SECTION_HAS_MEM_MAP的设置。在初始化阶段将nid存在section_mem_map低位，然后标志section启用。设置section_mark_present标志位。这些标记对hotplug有重要的支持作用哦！
 		if (!ms->section_mem_map) {
 			ms->section_mem_map = sparse_encode_early_nid(nid) |
 							SECTION_IS_ONLINE;
