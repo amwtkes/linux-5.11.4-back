@@ -562,7 +562,7 @@ static void __init sparse_init_nid(int nid, unsigned long pnum_begin,
 
 		if (pnum >= pnum_end)
 			break;
-		/*xiaojin-mm-sparsemem -2.0 初始化memmap，物理页框描述符数组 */
+		/*xiaojin-mm-sparsemem -(impo)2.0 初始化每个mem_section的memmap数组，物理页框描述符数组.*/
 		map = __populate_section_memmap(pfn, PAGES_PER_SECTION,
 				nid, NULL);
 		if (!map) {
@@ -572,7 +572,7 @@ static void __init sparse_init_nid(int nid, unsigned long pnum_begin,
 			goto failed;
 		}
 		check_usemap_section_nr(nid, usage);
-		/*xiaojin-mm-sparsemem -3.0 开始初始化section数据结构。*/
+		/*xiaojin-mm-sparsemem -3.0 开始初始化section数据结构。SECTION_IS_EARLY表示已经初始化过了mem_map数组了，后面如果hotplug可以重用。*/
 		sparse_init_one_section(__nr_to_section(pnum), pnum, map, usage,
 				SECTION_IS_EARLY);
 		usage = (void *) usage + mem_section_usage_size();
