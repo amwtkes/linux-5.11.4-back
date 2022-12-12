@@ -30,7 +30,8 @@
                 "CONFIG_MEMORY_HOTPLUG",
                 "CONFIG_MEMORY_HOTPLUG_SPARSE",
                 "CONFIG_MEMORY_HOTPLUG",
-                "CONFIG_ACPI_HOTPLUG_MEMORY"
+                "CONFIG_ACPI_HOTPLUG_MEMORY",
+                "CONFIG_MEMORY_HOTREMOVE"
             ],
             "macFrameworkPath": [
                 "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks"

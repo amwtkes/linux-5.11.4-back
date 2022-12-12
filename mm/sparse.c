@@ -79,6 +79,7 @@ static noinline struct mem_section __ref *sparse_index_alloc(int nid)
 	return section;
 }
 
+/*xiaojin-mm-sparsemem-func sparse_index_init。根据section_nr分配mem_section如果没有的话。*/
 static int __meminit sparse_index_init(unsigned long section_nr, int nid)
 {
 	unsigned long root = SECTION_NR_TO_ROOT(section_nr);
@@ -187,6 +188,8 @@ void __meminit mminit_validate_memmodel_limits(unsigned long *start_pfn,
  * those loops early.
  */
 unsigned long __highest_present_section_nr;
+
+/*xiaojin-mm-sparsemem -(impo)重要代码——设置mm_section为有效的section，包括SECTION_MARKED_PRESENT的设置。支持hotplug的一部分。*/
 static void section_mark_present(struct mem_section *ms)
 {
 	unsigned long section_nr = __section_nr(ms);
@@ -286,7 +289,7 @@ static void __init memory_present(int nid, unsigned long start, unsigned long en
 		//通过section_nr获取mem_section结构，测试上面的函数是否正确初始化。
 		ms = __nr_to_section(section);
 
-		//在初始化阶段将nid存在section_mem_map低位，然后标志section启用。
+		//xiaojin-mm-sparsemem -(impo)——SECTION_MARKED_PRESENT与SECTION_HAS_MEM_MAP的设置。在初始化阶段将nid存在section_mem_map低位，然后标志section启用。设置section_mark_present标志位。
 		if (!ms->section_mem_map) {
 			ms->section_mem_map = sparse_encode_early_nid(nid) |
 							SECTION_IS_ONLINE;
@@ -338,7 +341,7 @@ struct page *sparse_decode_mem_map(unsigned long coded_mem_map, unsigned long pn
 }
 #endif /* CONFIG_MEMORY_HOTPLUG */
 
-/*xiaojin-mm-sparsemem -3.1 sparse_init_one_section*/
+/*xiaojin-mm-sparsemem -3.1 (impo)——初始化一个mem_section，重要的是section_mem_map字段的初始化——SECTION_HAS_MEM_MAP。sparse_init_one_section*/
 static void __meminit sparse_init_one_section(struct mem_section *ms,
 		unsigned long pnum, struct page *mem_map,
 		struct mem_section_usage *usage, unsigned long flags)
@@ -952,6 +955,8 @@ int __meminit sparse_add_section(int nid, unsigned long start_pfn,
 
 	ms = __nr_to_section(section_nr);
 	set_section_nid(section_nr, nid);
+
+	//设置section_mark_present标志位。很重要！
 	section_mark_present(ms);
 
 	/* Align memmap to section boundary in the subsection case */

@@ -1353,6 +1353,7 @@ static inline struct page *__section_mem_map_addr(struct mem_section *section)
 	return (struct page *)map;
 }
 
+/*xiaojin-mm-sparsemem -(impo)——判断一个section是否是在线的。这是mem_section数据结构的重要作用。SECTION_MARKED_PRESENT判断*/
 static inline int present_section(struct mem_section *section)
 {
 	return (section && (section->section_mem_map & SECTION_MARKED_PRESENT));
@@ -1363,6 +1364,7 @@ static inline int present_section_nr(unsigned long nr)
 	return present_section(__nr_to_section(nr));
 }
 
+/*xiaojin-mm-sparsemem -(impo)——判断是否是一个valid的mem_section.SECTION_HAS_MEM_MAP的判断。*/
 static inline int valid_section(struct mem_section *section)
 {
 	return (section && (section->section_mem_map & SECTION_HAS_MEM_MAP));
