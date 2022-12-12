@@ -597,6 +597,7 @@ failed:
  */
 /*xiaojin-mm-sparsemem -0 sparse_init初始化sparse内存模型
 参考：https://app.yinxiang.com/shard/s65/nl/15273355/d3e3e526-401a-4441-ab05-1a4f7b338869/
+https://app.yinxiang.com/shard/s65/nl/15273355/a9968f90-7d6e-4849-badf-fe89cbe02239/
 那张图。
 xiaojin-mm-sparsemem -(impo)重要代码——全部的流程可以参考：https://app.yinxiang.com/shard/s65/nl/15273355/ea3add58-2111-4c8d-ba0a-ab6135a85187/
 */
@@ -899,6 +900,7 @@ static struct page * __meminit section_activate(int nid, unsigned long pfn,
 	 * do not need to populate the memmap and can simply reuse what
 	 * is already there.
 	 */
+	//如果可以重用就不用再分配pages数组了。可能在这里分配过了__populate_section_memmap。
 	if (nr_pages < PAGES_PER_SECTION && early_section(ms))
 		return pfn_to_page(pfn);
 
