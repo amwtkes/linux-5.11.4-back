@@ -27,7 +27,8 @@
 SECTION_SIZE_BITS=27
 MAX_PHYSMEM_BITS=46
 */
-# define SECTION_SIZE_BITS	27 /* SECTION_SIZE_BITS=27 一个section可以表示的内存范围=PFN_SECTION_SHIFT(15)+PAGE_SHIFT(12)。matt - 128 is convenient right now  */
+/* SECTION_SIZE_BITS=27 一个section可以表示的内存范围=PFN_SECTION_SHIFT(15)+PAGE_SHIFT(12)。matt - 128 is convenient right now  */
+# define SECTION_SIZE_BITS	27 
 # define MAX_PHYSMEM_BITS	(pgtable_l5_enabled() ? 52 : 46) /* MAX_PHYSMEM_BITS=46 4级页表物理寻址是46位 */
 #endif
 

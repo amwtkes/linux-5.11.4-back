@@ -1205,7 +1205,9 @@ static inline struct zoneref *first_zones_zonelist(struct zonelist *zonelist,
 #error Allocator MAX_ORDER exceeds SECTION_SIZE
 #endif
 
-/*xiaojin-mm-sparsemem-func pfn_to_section_nr (exp)原理解释——PFN的宽度？pfn_to_section_nr是什么意思？section_nr就是pfn的后n个bit，表示的是一个PFN宽度46-12=34能容纳多少个section。*/
+/*xiaojin-mm-sparsemem-func pfn_to_section_nr (exp)原理解释——PFN的宽度？pfn_to_section_nr是什么意思？section_nr就是pfn的后n个bit(PFN - PFN_SECTION_SHIFT)，表示的是一个(PFN宽度46-12=34)能容纳多少个section,34-15=2^19个。
+参考：https://app.yinxiang.com/shard/s65/nl/15273355/a37d198d-588e-4a24-b0b1-322289e72c07/
+*/
 static inline unsigned long pfn_to_section_nr(unsigned long pfn)
 {
 	return pfn >> PFN_SECTION_SHIFT;
