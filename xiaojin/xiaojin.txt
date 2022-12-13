@@ -71,6 +71,7 @@ xiaojin-mm-pagetable --- 分配页表相关的操作
 xiaojin-mm-buddy --- buddy system相关
 xiaojin-mm-gfp --- how to get free page
 xiaojin-mm-hotplug --- 内存热插拔 (memory_hotplug.c, memory-hotplug.rst)
+xiaojin-mm-sparsemem-subsection --- subsection相关的宏
 
 ------------kthread 这块
 xiaojin-kthread -内核线程创建这块

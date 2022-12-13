@@ -1220,7 +1220,16 @@ static inline unsigned long section_nr_to_pfn(unsigned long sec)
 #define SECTION_ALIGN_UP(pfn)	(((pfn) + PAGES_PER_SECTION - 1) & PAGE_SECTION_MASK)
 #define SECTION_ALIGN_DOWN(pfn)	((pfn) & PAGE_SECTION_MASK)
 
-/*SUBSECTION_SHIFT=21*/
+/*xiaojin-mm-sparsemem-subsection macroes (impo)——subsection宏的注释。可以看到subsection的宏不是分arch的，所以所有arch通用。
+SUBSECTION_SHIFT=21——subsection的宽度，用于计算subsection的大小。（类比到PAGE_SHIFT=12 一个page就是2^12=4KB，PAGE_SIZE = 1<<PAGE_SHIFT）
+SUBSECTION_SIZE=2MB = (1UL << SUBSECTION_SHIFT)
+
+PFN_SUBSECTION_SHIFT——(参考图：https://app.yinxiang.com/shard/s65/nl/15273355/a37d198d-588e-4a24-b0b1-322289e72c07//res/6fb9be8d-c0a2-4ba0-b142-b0777524fa68/74216cff2ba750d71d41b59f039c2118.png?resizeSmall&width=832) 有效的线性地址位数X86是46位对应4级页表，所以46-12（page_shift）=34就是PFN的宽度（看图）。PFN_SUBSECTION_SHIFT=21-12=9——表示在PFN中SUBSECTION的宽度。
+
+PAGES_PER_SUBSECTION=2^9=512——一个subsection包含512个页=2MB。
+*/
+
+
 #define SUBSECTION_SHIFT 21
 #define SUBSECTION_SIZE (1UL << SUBSECTION_SHIFT)
 
