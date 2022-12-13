@@ -212,6 +212,8 @@ static inline unsigned long first_present_section_nr(void)
 }
 
 #ifdef CONFIG_SPARSEMEM_VMEMMAP
+
+/*xiaojin-mm-sparsemem-subsection subsection_mask_set*/
 static void subsection_mask_set(unsigned long *map, unsigned long pfn,
 		unsigned long nr_pages)
 {
