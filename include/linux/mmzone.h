@@ -1241,8 +1241,9 @@ SUBSECTION_SIZE=2MB = (1UL << SUBSECTION_SHIFT)
 
 PFN_SUBSECTION_SHIFT —— PFN_SUBSECTION_SHIFT=SUBSECTION_SHIFT - PAGE_SHIFT = 21-12=9——表示一个subsection包含多少个pages。(参考图：https://app.yinxiang.com/shard/s65/nl/15273355/a37d198d-588e-4a24-b0b1-322289e72c07//res/6fb9be8d-c0a2-4ba0-b142-b0777524fa68/74216cff2ba750d71d41b59f039c2118.png?resizeSmall&width=832) 有效的线性地址位数X86是46位对应4级页表，所以46-12（page_shift）=34就是PFN的宽度（看图）。
 PAGES_PER_SUBSECTION=2^PFN_SUBSECTION_SHIFT = 2^9=512——一个subsection包含512个页 = 2MB。
-*/
 
+SUBSECTIONS_PER_SECTION —— SECTION_SIZE_BITS - SUBSECTION_SHIFT —— 就是section的地址容量 - subsection的地址容量 = 27 -21 = PFN_SECTION_SHIFT - PFN_SUBSECTION_SHIFT = 15 - 9 = 6 —— 最后等于 1<<6 = 64.也就是一个section包含了64个subsection。 
+*/
 
 #define SUBSECTION_SHIFT 21
 #define SUBSECTION_SIZE (1UL << SUBSECTION_SHIFT)
@@ -1262,7 +1263,7 @@ PAGES_PER_SUBSECTION=2^PFN_SUBSECTION_SHIFT = 2^9=512——一个subsection包�
 
 struct mem_section_usage {
 #ifdef CONFIG_SPARSEMEM_VMEMMAP
-	DECLARE_BITMAP(subsection_map, SUBSECTIONS_PER_SECTION);
+	DECLARE_BITMAP(subsection_map, SUBSECTIONS_PER_SECTION); //unsigned long name[1] 一共64个slot 一个long就可以。
 #endif
 	/* See declaration of similar field in struct zone */
 	unsigned long pageblock_flags[0];
