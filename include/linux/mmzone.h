@@ -1186,13 +1186,18 @@ static inline struct zoneref *first_zones_zonelist(struct zonelist *zonelist,
 MAX_PHYSMEM_BITS —— 物理内存的最大有效宽度，X86-64下为46.
 
 SECTION_SIZE_BITS —— 名字应该是section_shift才对，是section可以表示2^27=128MB的地址空间（每个地址一个Byte）。SECTION_SIZE_BITS=27 —— 一个section可以表示的内存范围=PFN_SECTION_SHIFT(15)+PAGE_SHIFT(12)。
-PFN_SECTION_SHIFT —— 表示一个section可以有多少个pages = (SECTION_SIZE_BITS - PAGE_SHIFT)表示PFN范围内（27-12=15)
-PA_SECTION_SHIFT=SECTION_SIZE_BITS=27（是的，去掉PA也行）
+
+PFN_SECTION_SHIFT —— 表示一个section可以有多少个pages 或者 [pfn&~(1<<PFN_SECTION_SHIFT-1)]表示pfn在某个section下的index = (SECTION_SIZE_BITS - PAGE_SHIFT)表示PFN范围内（27-12=15)
+
+PA_SECTION_SHIFT=SECTION_SIZE_BITS=27（是的，去掉PA也行）. pfn >>PFN_SECTION_SHIFT表示pfn所在section的编号。
+
 PAGES_PER_SECTION=1<< PFN_SECTION_SHIFT （我说是吧）
-PAGE_SECTION_MASK=~(PAGES_PER_SECTION-1)
+
+PAGE_SECTION_MASK=~(PAGES_PER_SECTION-1) 低15位都是1.
 
 SECTIONS_SHIFT —— (MAX_PHYSMEM_BITS - SECTION_SIZE_BITS) = 总的线性地址有效宽度 - 每个section的大小bits = 总共可以有多少个sections。SECTIONS_SHIFT=46-27=19=524,288个。
-NR_MEM_SECTIONS = 2 ^ SECTIONS_SHIFT
+
+NR_MEM_SECTIONS= 2 ^ SECTIONS_SHIFT 表示当前cpu构架最大的section编号，或者一共可以容纳多少个section。
 
 */
 
@@ -1220,7 +1225,7 @@ NR_MEM_SECTIONS = 2 ^ SECTIONS_SHIFT
 #error Allocator MAX_ORDER exceeds SECTION_SIZE
 #endif
 
-/*xiaojin-mm-sparsemem-func pfn_to_section_nr (exp)原理解释——PFN的宽度？pfn_to_section_nr是什么意思？section_nr就是pfn的后n个bit(PFN - PFN_SECTION_SHIFT)，表示的是一个(PFN宽度46-12=34)能容纳多少个section,34-15=2^19个。
+/*xiaojin-mm-sparsemem-func pfn_to_section_nr (exp)原理解释——PFN的宽度？pfn_to_section_nr是什么意思？section_nr就是pfn的前n个bit(n = PFN - PFN_SECTION_SHIFT)，表示的是一个(PFN宽度46-12=34)能容纳多少个section,34-15=2^19个。
 参考：https://app.yinxiang.com/shard/s65/nl/15273355/a37d198d-588e-4a24-b0b1-322289e72c07/
 */
 static inline unsigned long pfn_to_section_nr(unsigned long pfn)
@@ -1428,12 +1433,17 @@ static inline struct mem_section *__pfn_to_section(unsigned long pfn)
 
 extern unsigned long __highest_present_section_nr;
 
+/*xiaojin-mm-sparsemem-subsection (impo)求某个page frame number属于哪个subsection，返回这个subsection在section bitmap中的index。subsection_map_index*/
 static inline int subsection_map_index(unsigned long pfn)
 {
+	//(pfn & ~(PAGE_SECTION_MASK)) —— pfn中屏蔽掉section的部分，也就是pfn对应的section号 = section_nr。是整page对齐的地址。
+	//上面的结果除以 PAGES_PER_SUBSECTION 表示，得到subsection的标号 = usage数组里面的对应bit索引号。
 	return (pfn & ~(PAGE_SECTION_MASK)) / PAGES_PER_SUBSECTION;
 }
 
 #ifdef CONFIG_SPARSEMEM_VMEMMAP
+
+/*xiaojin-mm-sparsemem-subsection pfn_section_valid 根据一个mem_section看是否一个pfn是否valid*/
 static inline int pfn_section_valid(struct mem_section *ms, unsigned long pfn)
 {
 	int idx = subsection_map_index(pfn);
@@ -1448,10 +1458,12 @@ static inline int pfn_section_valid(struct mem_section *ms, unsigned long pfn)
 #endif
 
 #ifndef CONFIG_HAVE_ARCH_PFN_VALID
+/*xiaojin-mm-sparsemem-subsection (impo)根据一个pfn来看看它是否是有效的页。pfn_valid*/
 static inline int pfn_valid(unsigned long pfn)
 {
 	struct mem_section *ms;
 
+	//pfn超过了最大section的编号了，无效地址。
 	if (pfn_to_section_nr(pfn) >= NR_MEM_SECTIONS)
 		return 0;
 	ms = __nr_to_section(pfn_to_section_nr(pfn));
