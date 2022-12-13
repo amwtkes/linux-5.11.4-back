@@ -213,7 +213,7 @@ static inline unsigned long first_present_section_nr(void)
 
 #ifdef CONFIG_SPARSEMEM_VMEMMAP
 
-/*xiaojin-mm-sparsemem-subsection subsection_mask_set*/
+/*xiaojin-mm-sparsemem-subsection 设置subsection bit map。subsection_mask_set*/
 static void subsection_mask_set(unsigned long *map, unsigned long pfn,
 		unsigned long nr_pages)
 {
@@ -727,6 +727,7 @@ static bool is_subsection_map_empty(struct mem_section *ms)
 			    SUBSECTIONS_PER_SECTION);
 }
 
+/*xiaojin-mm-sparsemem-subsection 设置subsection bit map。fill_subsection_map*/
 static int fill_subsection_map(unsigned long pfn, unsigned long nr_pages)
 {
 	struct mem_section *ms = __pfn_to_section(pfn);
