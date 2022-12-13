@@ -1393,12 +1393,12 @@ static inline int present_section_nr(unsigned long nr)
 	return present_section(__nr_to_section(nr));
 }
 
-/*xiaojin-mm-sparsemem -(impo)——判断是否是一个valid的mem_section.SECTION_HAS_MEM_MAP的判断。*/
+/*xiaojin-mm-sparsemem -(impo)——判断是否是一个valid的mem_section.SECTION_HAS_MEM_MAP的判断，值为1表示有mem_map否则视为无效的section。*/
 static inline int valid_section(struct mem_section *section)
 {
 	return (section && (section->section_mem_map & SECTION_HAS_MEM_MAP));
 }
-/*xiaojin-mm-hotplug-func early_section判断是否可以重用，在hotplug的时候。*/
+/*xiaojin-mm-hotplug-func early_section判断是否可以重用，在hotplug的时候。SECTION_IS_EARLY位是1则说明是。*/
 static inline int early_section(struct mem_section *section)
 {
 	return (section && (section->section_mem_map & SECTION_IS_EARLY));
@@ -1458,7 +1458,7 @@ static inline int pfn_section_valid(struct mem_section *ms, unsigned long pfn)
 #endif
 
 #ifndef CONFIG_HAVE_ARCH_PFN_VALID
-/*xiaojin-mm-sparsemem-subsection (impo)根据一个pfn来看看它是否是有效的页。pfn_valid*/
+/*xiaojin-mm-sparsemem-subsection (impo)根据一个pfn来看看它是否是有效的页。pfn_valid——early阶段的section或者section_usage是1才是valid的*/
 static inline int pfn_valid(unsigned long pfn)
 {
 	struct mem_section *ms;
@@ -1473,10 +1473,12 @@ static inline int pfn_valid(unsigned long pfn)
 	 * Traditionally early sections always returned pfn_valid() for
 	 * the entire section-sized span.
 	 */
+	//如果是early_section或者pfn对应的subsection在bitmap中是1，表示是valid的。
 	return early_section(ms) || pfn_section_valid(ms, pfn);
 }
 #endif
 
+/*xiaojin-mm-sparsemem-section 根据pfn号判断是否是个present section。根据SECTION_MARKED_PRESENT来判断，只在sparse_init()->memory_present()与sparse_add_section()里面有更新。pfn_in_present_section*/
 static inline int pfn_in_present_section(unsigned long pfn)
 {
 	if (pfn_to_section_nr(pfn) >= NR_MEM_SECTIONS)
