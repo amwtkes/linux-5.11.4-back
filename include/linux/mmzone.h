@@ -1181,6 +1181,20 @@ static inline struct zoneref *first_zones_zonelist(struct zonelist *zonelist,
 
 #ifdef CONFIG_SPARSEMEM
 
+/*xiaojin-mm-sparsemem-section-macoes (impo)—— sparse section相关的宏定义
+
+MAX_PHYSMEM_BITS —— 物理内存的最大有效宽度，X86-64下为46.
+
+SECTION_SIZE_BITS —— 名字应该是section_shift才对，是section的大小2^27=128MB。SECTION_SIZE_BITS=27 一个section可以表示的内存范围=PFN_SECTION_SHIFT(15)+PAGE_SHIFT(12)。
+
+SECTIONS_SHIFT —— (MAX_PHYSMEM_BITS - SECTION_SIZE_BITS)=总的线性地址有效宽度 - 每个section的大小bits = 总共可以有多少个sections。SECTIONS_SHIFT=19=524288个。
+
+PA_SECTION_SHIFT==SECTION_SIZE_BITS
+
+PFN_SECTION_SHIFT —— (SECTION_SIZE_BITS - PAGE_SHIFT)表示PFN范围内（46-12=34）section的屏蔽码.
+
+*/
+
 /*
  * SECTION_SHIFT    		#bits space required to store a section #
  *
@@ -1220,7 +1234,7 @@ static inline unsigned long section_nr_to_pfn(unsigned long sec)
 #define SECTION_ALIGN_UP(pfn)	(((pfn) + PAGES_PER_SECTION - 1) & PAGE_SECTION_MASK)
 #define SECTION_ALIGN_DOWN(pfn)	((pfn) & PAGE_SECTION_MASK)
 
-/*xiaojin-mm-sparsemem-subsection macroes (impo)——subsection宏的注释。可以看到subsection的宏不是分arch的，所以所有arch通用。
+/*xiaojin-mm-sparsemem-subsection-macroes (impo)——subsection宏的注释。可以看到subsection的宏不是分arch的，所以所有arch通用。
 SUBSECTION_SHIFT=21——subsection的宽度，用于计算subsection的大小。（类比到PAGE_SHIFT=12 一个page就是2^12=4KB，PAGE_SIZE = 1<<PAGE_SHIFT）
 SUBSECTION_SIZE=2MB = (1UL << SUBSECTION_SHIFT)
 
