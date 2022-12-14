@@ -812,7 +812,7 @@ void __init initmem_init(void)
 
 void __init paging_init(void)
 {
-	/*xiaojin-mm-mem_map-setup -6.1 sparse_init 初始化mem_section**二维数组*/
+	/*xiaojin-mm-mem_map-setup -6.1 sparse_init 初始化mem_section**二维数组。必须先初始化mem_section再调用zone_sizes_init初始化mem_section->usage*/
 	sparse_init();
 
 	/*
