@@ -213,7 +213,7 @@ static inline unsigned long first_present_section_nr(void)
 
 #ifdef CONFIG_SPARSEMEM_VMEMMAP
 
-/*xiaojin-mm-sparsemem-subsection 根据pfn设置subsection bit map（mem_section->usage）。subsection_mask_set*/
+/*xiaojin-mm-sparsemem-subsection 根据pfn设置subsection bit map（mem_section->usage），参数是从pfn到pfn+nr_pages-1，是一个范围设置成bit 1。subsection_mask_set*/
 static void subsection_mask_set(unsigned long *map, unsigned long pfn,
 		unsigned long nr_pages)
 {
