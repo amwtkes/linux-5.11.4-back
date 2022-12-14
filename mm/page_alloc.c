@@ -7521,6 +7521,8 @@ bool __weak arch_has_descending_max_zone_pfns(void)
  * starts where the previous one ended. For example, ZONE_DMA32 starts
  * at arch_max_dma_pfn.
  */
+
+/*xiaojin-mm-sparsemem-subsection free_area_init*/
 void __init free_area_init(unsigned long *max_zone_pfn)
 {
 	unsigned long start_pfn, end_pfn;

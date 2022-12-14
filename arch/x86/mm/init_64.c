@@ -812,6 +812,7 @@ void __init initmem_init(void)
 
 void __init paging_init(void)
 {
+	/*xiaojin-mm-mem_map-setup -6.1 sparse_init 初始化mem_section**二维数组*/
 	sparse_init();
 
 	/*
@@ -822,7 +823,7 @@ void __init paging_init(void)
 	 */
 	node_clear_state(0, N_MEMORY);
 	node_clear_state(0, N_NORMAL_MEMORY);
-/*xiaojin-mm-mem_map-setup -7 zone_sizes_init*/
+/*xiaojin-mm-mem_map-setup -7 zone_sizes_init 包括初始化mem_section的usage bitmap*/
 	zone_sizes_init();
 }
 
