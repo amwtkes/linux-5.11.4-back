@@ -1050,7 +1050,6 @@ void __init setup_arch(char **cmdline_p)
 	memblock_set_current_limit(ISA_END_ADDRESS);
 
 	/*xiaojin-mm-e820 -3 使用前面0-2通过int 15获取的内存结构（带有空洞的）。填充用e820 table设置memblock。使用e820_table填充memblock的相关数据结构。然后初始化sparse与buddy。*/
-	/*xiaojin-mm-e820 -3 使用前面0-2通过int 15获取的内存结构（带有空洞的）。填充用e820 table设置memblock。使用e820_table填充memblock的相关数据结构。然后初始化sparse与buddy。*/
 	e820__memblock_setup();
 
 	/*
