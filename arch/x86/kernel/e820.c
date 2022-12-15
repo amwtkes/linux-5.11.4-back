@@ -56,6 +56,11 @@
  * re-propagated. So itsmain role is a temporary bootstrap storage of firmware
  * specific memory layout data during early bootup.
  */
+
+/*xiaojin-mm-mem_map-setup -99 (impo) e820.BIOS提供给OS的获取mem_map区域的底层调用。INT 15H，EAX=e820来访问。
+https://www.wikiwand.com/en/E820
+*/
+
 static struct e820_table e820_table_init		__initdata;
 static struct e820_table e820_table_kexec_init		__initdata;
 static struct e820_table e820_table_firmware_init	__initdata;
