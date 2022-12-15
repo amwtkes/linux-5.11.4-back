@@ -64,6 +64,7 @@ struct x86_init_ops x86_init __initdata = {
 	.resources = {
 		.probe_roms		= probe_roms,
 		.reserve_resources	= reserve_standard_io_resources,
+		/*xiaojin-mm-e820 -2.1 memory_setup（）实际调用点*/
 		.memory_setup		= e820__memory_setup_default,
 	},
 

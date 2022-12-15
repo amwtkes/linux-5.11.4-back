@@ -1254,6 +1254,8 @@ char *__init e820__memory_setup_default(void)
 	 * Otherwise fake a memory map; one section from 0k->640k,
 	 * the next section from 1mb->appropriate_mem_k
 	 */
+
+/*xiaojin-mm-e820 -2.2 将boot_params中的table信息取出来，填充到内核的数据结构的过程。e820__memory_setup_default*/
 	if (append_e820_table(boot_params.e820_table, boot_params.e820_entries) < 0) {
 		u64 mem_size;
 
@@ -1289,6 +1291,7 @@ void __init e820__memory_setup(void)
 	/* This is a firmware interface ABI - make sure we don't break it: */
 	BUILD_BUG_ON(sizeof(struct boot_e820_entry) != 20);
 
+	/*xiaojin-mm-e820 -2.0 e820__memory_setup*/
 	who = x86_init.resources.memory_setup();
 
 	memcpy(e820_table_kexec, e820_table, sizeof(*e820_table_kexec));

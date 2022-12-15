@@ -155,6 +155,20 @@ void main(void)
 	set_bios_mode();
 
 	/* Detect memory layout */
+
+	/*xiaojin-mm-e820 -0 在boot的时候调用detect_memory()函数，发送bios的int 15中断获取内存的mem map信息。
+	参考：https://app.yinxiang.com/shard/s65/nl/15273355/b3ad5870-33d4-475a-a6c4-4a97dd5a4752/
+
+main()(arch/x86/boot/header.S)
+  -->detect_memory()
+     -->x86_64_start_kernel
+       -->x86_64_start_reservations
+        -->start_kernel
+          -->setup_arch()
+            -->e820__memory_setup()
+             |-->x86_init.resources.memory_setup=e820__memory_setup_default
+            -->e820__memblock_setup()	
+	*/
 	detect_memory();
 
 	/* Set keyboard repeat rate (why?) and query the lock flags */

@@ -42,6 +42,11 @@ static void detect_memory_e820(void)
 	 * attribute bits deployed in a meaningful way in the future.
 	 */
 
+	/*xiaojin-mm-e820 -1 填充boot_params.e820_table结构。调用128次，由于BIOS中规定最多只有128个 memory map，所以在kernel 启动时 最多轮询读取128次。
+	参考：https://app.yinxiang.com/shard/s65/nl/15273355/b3ad5870-33d4-475a-a6c4-4a97dd5a4752/
+
+	设置：struct e820_table *e820_table这个结构，在e820.c里面定义。
+	*/
 	do {
 		intcall(0x15, &ireg, &oreg);
 		ireg.ebx = oreg.ebx; /* for next iteration... */
@@ -61,7 +66,16 @@ static void detect_memory_e820(void)
 			count = 0;
 			break;
 		}
-
+	/*
+		每次调用intcall从0x15中读取一个memory map。
+		接下来将本次读取 到的ebx 保存到下一次中ireg.ebx = oreg.ebx，方便下次读取。
+		对carry flag状态进行检查，如不被置位则说明出现错误不再进行读取。
+		对eax进行验证是否等于SMAP。
+		将读取到的memory 信息保存到*desc++ = buf;最终是保存到boot_params.e820_table中。
+		count++计数+1。
+		如果irg.ebx为零 或者count大于128，则说明读取完毕。
+		boot_params.e820_entries记录有多少个memory 信息。
+	*/
 		*desc++ = buf;
 		count++;
 	} while (ireg.ebx && count < ARRAY_SIZE(boot_params.e820_table));
@@ -115,6 +129,7 @@ static void detect_memory_88(void)
 
 void detect_memory(void)
 {
+	/*xiaojin-mm-e820 -0.1 调用点*/
 	detect_memory_e820();
 
 	detect_memory_e801();
