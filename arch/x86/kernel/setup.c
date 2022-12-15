@@ -1047,6 +1047,8 @@ void __init setup_arch(char **cmdline_p)
 	cleanup_highmap();
 
 	memblock_set_current_limit(ISA_END_ADDRESS);
+
+	/*xiaojin-mm-e820 -0 start_kernel设置memblock */
 	e820__memblock_setup();
 
 	/*

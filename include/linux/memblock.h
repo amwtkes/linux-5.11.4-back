@@ -40,15 +40,15 @@ enum memblock_flags {
 };
 
 /**
- * struct memblock_region - represents a memory region
+ * xiaojin-mm-e820-ds struct memblock_region - represents a memory region。struct memblock_region代表了一块物理内存memblock 区域
  * @base: base address of the region
  * @size: size of the region
  * @flags: memory region attributes
  * @nid: NUMA node id
  */
 struct memblock_region {
-	phys_addr_t base;
-	phys_addr_t size;
+	phys_addr_t base; //region区域首地址
+	phys_addr_t size; //大小
 	enum memblock_flags flags;
 #ifdef CONFIG_NEED_MULTIPLE_NODES
 	int nid;
@@ -56,7 +56,7 @@ struct memblock_region {
 };
 
 /**
- * struct memblock_type - collection of memory regions of certain type
+ * xiaojin-mm-e820-ds struct memblock_type - collection of memory regions of certain type
  * @cnt: number of regions
  * @max: size of the allocated array
  * @total_size: size of all regions
@@ -64,14 +64,14 @@ struct memblock_region {
  * @name: the memory type symbolic name
  */
 struct memblock_type {
-	unsigned long cnt;
-	unsigned long max;
-	phys_addr_t total_size;
+	unsigned long cnt; //该memblock_type内包含多少个regions
+	unsigned long max; //memblock_type内最多包含多少个regions,默认为128个：INIT_MEMBLOCK_REGIONS
+	phys_addr_t total_size; //该memblock_type内所有regions 加起来的size大小
 	struct memblock_region *regions;
-	char *name;
+	char *name; //memblock_type 名称
 };
 
-/**
+/** xiaojin-mm-e820-ds memblock struct
  * struct memblock - memblock allocator metadata
  * @bottom_up: is bottom up direction?
  * @current_limit: physical address of the current allocation limit
@@ -79,10 +79,10 @@ struct memblock_type {
  * @reserved: reserved memory regions
  */
 struct memblock {
-	bool bottom_up;  /* is bottom up direction? */
+	bool bottom_up;  /* is bottom up direction? */ //申请内存是分配器分配内存的方式，true表示从低地址(内核镜像结束位置)到高地址分配，false表示从高地址往低地址分配。
 	phys_addr_t current_limit;
-	struct memblock_type memory;
-	struct memblock_type reserved;
+	struct memblock_type memory; //可以被memblock管理分配的内存（一般系统启动时，会因为内核镜像加载等一些原因，需要提前占用预留一些内存空间，这些空间不在memory之中）
+	struct memblock_type reserved; //预留已经分配的空间，主要包括两部分 一部分为memblock之前占用的内存空间，另外一部分为通过memblock_alloc从memory中申请的内存空间
 };
 
 extern struct memblock memblock;
