@@ -48,6 +48,7 @@ static void detect_memory_e820(void)
 	设置：struct e820_table *e820_table这个结构，在e820.c里面定义。
 	*/
 	do {
+		//发送中断调用bios程序获取memey map信息
 		intcall(0x15, &ireg, &oreg);
 		ireg.ebx = oreg.ebx; /* for next iteration... */
 

@@ -863,7 +863,7 @@ void __init setup_arch(char **cmdline_p)
 	x86_init.oem.arch_setup();
 
 	iomem_resource.end = (1ULL << boot_cpu_data.x86_phys_bits) - 1;
-	/*xiaojin-mm-e820 -2.0 setup_arch->e820__memory_setup()*/
+	/*xiaojin-mm-e820 -2.0 下面是kernel读取bios e820的返回值得过程。setup_arch->e820__memory_setup()*/
 	e820__memory_setup();
 	parse_setup_data();
 
