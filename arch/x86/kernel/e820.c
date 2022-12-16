@@ -57,7 +57,7 @@
  * specific memory layout data during early bootup.
  */
 
-/*xiaojin-mm-e820 (impo) e820.BIOS提供给OS的获取mem_map区域的底层调用。INT 15H，EAX=e820来访问。
+/*xiaojin-mm-e820 e820.BIOS提供给OS的获取mem_map区域的底层调用。INT 15H，EAX=e820来访问。
 https://app.yinxiang.com/shard/s65/nl/15273355/ac9a7db2-4a55-4e14-b8d7-d0b912ac197d/
 https://app.yinxiang.com/shard/s65/nl/15273355/b3ad5870-33d4-475a-a6c4-4a97dd5a4752/
 */

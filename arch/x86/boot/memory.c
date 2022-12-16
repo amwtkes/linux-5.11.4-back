@@ -42,8 +42,9 @@ static void detect_memory_e820(void)
 	 * attribute bits deployed in a meaningful way in the future.
 	 */
 
-	/*xiaojin-mm-e820 -1 填充boot_params.e820_table结构。调用128次，由于BIOS中规定最多只有128个 memory map，所以在kernel 启动时 最多轮询读取128次。
+	/*xiaojin-mm-e820 -1 (impo) 调用bios int 15，填充boot_params.e820_table结构。调用128次，由于BIOS中规定最多只有128个 memory map，所以在kernel 启动时 最多轮询读取128次。
 	参考：https://app.yinxiang.com/shard/s65/nl/15273355/b3ad5870-33d4-475a-a6c4-4a97dd5a4752/
+	https://app.yinxiang.com/shard/s65/nl/15273355/dc60a45f-7834-4c5c-98bb-803484311d3f/
 
 	设置：struct e820_table *e820_table这个结构，在e820.c里面定义。
 	*/
@@ -133,6 +134,8 @@ void detect_memory(void)
 	/*xiaojin-mm-e820 -0.1 调用点*/
 	detect_memory_e820();
 
+//后面这两种内存探测。可能是支持以前的老机器的兼容代码。
+//参考：https://app.yinxiang.com/shard/s65/nl/15273355/966c16d3-9945-45cb-afc6-7e8a41076e4d/
 	detect_memory_e801();
 
 	detect_memory_88();
