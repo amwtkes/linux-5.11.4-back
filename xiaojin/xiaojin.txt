@@ -72,7 +72,7 @@ xiaojin-mm-buddy --- buddy system相关
 xiaojin-mm-gfp --- how to get free page
 xiaojin-mm-hotplug --- 内存热插拔 (memory_hotplug.c, memory-hotplug.rst)
 xiaojin-mm-sparsemem-subsection --- subsection相关的宏
-xiaojin-mm-sparsemem-section-macoes
+xiaojin-mm-sparsemem-section-macroes
 xiaojin-mm-memblock --- memblock这种boot阶段的内存管理，实模式下的物理内存管理机制，数据来源于int 15 e820的bios中断处理函数。初始化sparse的前置模块。
 xiaojin-mm-e820 --- int15 e820的代码，初始化memblock
 
