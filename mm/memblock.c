@@ -563,6 +563,10 @@ static void __init_memblock memblock_insert_region(struct memblock_type *type,
  * Return:
  * 0 on success, -errno on failure.
  */
+
+/*xiaojin-mm-memblock-func memblock_add_range 在memblock机制中增加region
+参考：https://app.yinxiang.com/shard/s65/nl/15273355/dc60a45f-7834-4c5c-98bb-803484311d3f/
+*/
 static int __init_memblock memblock_add_range(struct memblock_type *type,
 				phys_addr_t base, phys_addr_t size,
 				int nid, enum memblock_flags flags)
@@ -704,6 +708,9 @@ int __init_memblock memblock_add(phys_addr_t base, phys_addr_t size)
  * Return:
  * 0 on success, -errno on failure.
  */
+
+/*xiaojin-mm-memblock memblock_isolate_range。参考：https://app.yinxiang.com/shard/s65/nl/15273355/dc60a45f-7834-4c5c-98bb-803484311d3f/
+*/
 static int __init_memblock memblock_isolate_range(struct memblock_type *type,
 					phys_addr_t base, phys_addr_t size,
 					int *start_rgn, int *end_rgn)
