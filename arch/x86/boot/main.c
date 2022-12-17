@@ -156,7 +156,7 @@ void main(void)
 
 	/* Detect memory layout */
 
-	/*xiaojin-mm-e820 -0 在boot的时候调用detect_memory()函数，发送bios的int 15中断获取内存的mem map信息。
+	/*xiaojin-mm-e820 -0 在boot的时候调用detect_memory()函数，发送bios的int 15中断获取内存的mem map信息。总体的流程：先从bios中拿到regions，然后赋值给boot_params，然后初始化memblock机制，最后过度到sparse机制。
 	参考：https://app.yinxiang.com/shard/s65/nl/15273355/b3ad5870-33d4-475a-a6c4-4a97dd5a4752/
 
 main()(arch/x86/boot/header.S)
