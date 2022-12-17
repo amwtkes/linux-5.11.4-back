@@ -98,7 +98,7 @@ static inline void __pmd_free_tlb(struct mmu_gather *tlb, pmd_t *pmd,
 #ifdef CONFIG_X86_PAE
 extern void pud_populate(struct mm_struct *mm, pud_t *pudp, pmd_t *pmd);
 #else	/* !CONFIG_X86_PAE */
-/*xiaojin-mm-pagetable -3.1 pud_populate*/
+/*xiaojin-mm-sparsemem-pagetable -3.1 pud_populate*/
 static inline void pud_populate(struct mm_struct *mm, pud_t *pud, pmd_t *pmd)
 {
 	paravirt_alloc_pmd(mm, __pa(pmd) >> PAGE_SHIFT); //这里什么也没做

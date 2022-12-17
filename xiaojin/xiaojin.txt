@@ -67,7 +67,7 @@ xiaojin-gdt-func
 xiaojin-mm-page-kernel ---- 内核页的分配
 xiaojin-mm-build_all_zonelists --- NUMA下zone的初始化
 xiaojin-mm-sparsemem  --- 稀疏内存-numa的page struct维护
-xiaojin-mm-pagetable --- 分配页表相关的操作
+xiaojin-mm-sparsemem-pagetable --- 分配页表相关的操作
 xiaojin-mm-buddy --- buddy system相关
 xiaojin-mm-gfp --- how to get free page
 xiaojin-mm-hotplug --- 内存热插拔 (memory_hotplug.c, memory-hotplug.rst)

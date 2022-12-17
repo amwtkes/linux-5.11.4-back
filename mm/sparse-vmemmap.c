@@ -140,11 +140,11 @@ void __meminit vmemmap_verify(pte_t *pte, int node,
 		pr_warn("[%lx-%lx] potential offnode page_structs\n",
 			start, end - 1);
 }
-/*xiaojin-mm-pagetable -4.1 形成pte的函数。vmemmap_pte_populate (impo)重要代码——初始化sparse-section内存模型将物理内存映射到了内核线性地址了。*/
+/*xiaojin-mm-sparsemem-pagetable -4.1 形成pte的函数。vmemmap_pte_populate (impo)重要代码——初始化sparse-section内存模型将物理内存映射到了内核线性地址了。*/
 pte_t * __meminit vmemmap_pte_populate(pmd_t *pmd, unsigned long addr, int node,
 				       struct vmem_altmap *altmap)
 {
-	/*xiaojin-mm-pagetable -4.2.0 调用点*/
+	/*xiaojin-mm-sparsemem-pagetable -4.2.0 调用点*/
 	pte_t *pte = pte_offset_kernel(pmd, addr);
 	if (pte_none(*pte)) {
 		pte_t entry;
@@ -157,9 +157,9 @@ pte_t * __meminit vmemmap_pte_populate(pmd_t *pmd, unsigned long addr, int node,
 		#define __PAGE_KERNEL		 (__PP|__RW|   0|___A|__NX|___D|   0|___G)
 		表示是个kernel的映射。因为第三个bit是0.
 		*/
-	/*xiaojin-mm-pagetable -4.1.1 pfn_pte调用处*/	
+	/*xiaojin-mm-sparsemem-pagetable -4.1.1 pfn_pte调用处*/	
 		entry = pfn_pte(__pa(p) >> PAGE_SHIFT/*得到pfn*/, PAGE_KERNEL); 
-		/*xiaojin-mm-pagetable -4.3 分配完物理页以后，将这个页号放入也表项中*/
+		/*xiaojin-mm-sparsemem-pagetable -4.3 分配完物理页以后，将这个页号放入也表项中*/
 		set_pte_at(&init_mm, addr, pte, entry);
 	}
 	return pte;
@@ -189,7 +189,7 @@ pmd_t * __meminit vmemmap_pmd_populate(pud_t *pud, unsigned long addr, int node)
 }
 
 /*xiaojin-mm-sparsemem -2.2.1.1 vmemmap_pud_populate 定义.操作页表*/
-/*xiaojin-mm-pagetable -2 vmemmap_pud_populate*/
+/*xiaojin-mm-sparsemem-pagetable -2 vmemmap_pud_populate*/
 pud_t * __meminit vmemmap_pud_populate(p4d_t *p4d, unsigned long addr, int node)
 {
 	pud_t *pud = pud_offset(p4d, addr);
@@ -199,7 +199,7 @@ pud_t * __meminit vmemmap_pud_populate(p4d_t *p4d, unsigned long addr, int node)
 		void *p = vmemmap_alloc_block_zero(PAGE_SIZE, node);
 		if (!p)
 			return NULL;
-		/*xiaojin-mm-pagetable -3.0 调用pud_populate*/
+		/*xiaojin-mm-sparsemem-pagetable -3.0 调用pud_populate*/
 		pud_populate(&init_mm, pud, p);//pud是pud页表项的线性地址，p是pmd页的线性地址。
 	}
 	return pud;
@@ -217,7 +217,7 @@ p4d_t * __meminit vmemmap_p4d_populate(pgd_t *pgd, unsigned long addr, int node)
 	return p4d;
 }
 
-/*xiaojin-mm-pagetable -1 vmemmap_pgd_populate
+/*xiaojin-mm-sparsemem-pagetable -1 vmemmap_pgd_populate
 */
 pgd_t * __meminit vmemmap_pgd_populate(unsigned long addr, int node)
 {
@@ -233,7 +233,7 @@ pgd_t * __meminit vmemmap_pgd_populate(unsigned long addr, int node)
 }
 
 /*xiaojin-mm-sparsemem -2.2.1 如何映射页表来创建mem_map的struct page* 数组。操作页表。
-xiaojin-mm-pagetable (exp)原理解释——（如何建立页表映射？）为什么建立页表只要知道线性地址范围即可？具体的函数目的是：为start - end这个线性地址区域建立页表映射。为啥因为在内核，线性地址与物理地址可以简单的通过__pa __va进行转换，是直接映射的，也可以说是连续简单映射的，所以只要一个就知道另一个。所以在这里建立内核页映射只要知道线性地址范围就行了。那为什么要映射呢？因为开启页寻址功能的intel CPU必须通过页表+mmu来寻址，不管用户态还是内核态。映射建立其实就是做好struct page结构去描述被映射的物理内存地址。
+xiaojin-mm-sparsemem-pagetable (exp)原理解释——（如何建立页表映射？）为什么建立页表只要知道线性地址范围即可？具体的函数目的是：为start - end这个线性地址区域建立页表映射。为啥因为在内核，线性地址与物理地址可以简单的通过__pa __va进行转换，是直接映射的，也可以说是连续简单映射的，所以只要一个就知道另一个。所以在这里建立内核页映射只要知道线性地址范围就行了。那为什么要映射呢？因为开启页寻址功能的intel CPU必须通过页表+mmu来寻址，不管用户态还是内核态。映射建立其实就是做好struct page结构去描述被映射的物理内存地址。
 */
 int __meminit vmemmap_populate_basepages(unsigned long start, unsigned long end,
 					 int node, struct vmem_altmap *altmap)
@@ -246,7 +246,7 @@ int __meminit vmemmap_populate_basepages(unsigned long start, unsigned long end,
 	pte_t *pte;
 
 	for (; addr < end; addr += PAGE_SIZE) {
-		/*xiaojin-mm-pagetable -example sparsemem
+		/*xiaojin-mm-sparsemem-pagetable -example sparsemem
 		addr是虚拟地址，是一个页面的起始地址。
 		*/
 
@@ -266,7 +266,7 @@ int __meminit vmemmap_populate_basepages(unsigned long start, unsigned long end,
 		pmd = vmemmap_pmd_populate(pud, addr, node);
 		if (!pmd)
 			return -ENOMEM;
-		/*xiaojin-mm-pagetable -4.0 调用点*/
+		/*xiaojin-mm-sparsemem-pagetable -4.0 调用点*/
 		pte = vmemmap_pte_populate(pmd, addr, node, altmap);
 		if (!pte)
 			return -ENOMEM;
@@ -290,7 +290,7 @@ struct page * __meminit __populate_section_memmap(unsigned long pfn,
 	还有，这是是系统初始化的函数，会将每个node下的section映射到内核的线性地址中.分配映射其实就是形成struct page结构去描述这段物理内存而已。
 	*/
 
-/*xiaojin-mm-pagetable -example0 分配内存，只要确定了虚拟地址范围，就可以分配了，大块内存一般是以页为单位分配内存，小块的brk()分配。这里start是分配线性地址的起始页位置，end是结束页地址。vmemmap_populate函数进行页表映射。*/
+/*xiaojin-mm-sparsemem-pagetable -example0 分配内存，只要确定了虚拟地址范围，就可以分配了，大块内存一般是以页为单位分配内存，小块的brk()分配。这里start是分配线性地址的起始页位置，end是结束页地址。vmemmap_populate函数进行页表映射。*/
 	unsigned long start = (unsigned long) pfn_to_page(pfn);
 	unsigned long end = start + nr_pages * sizeof(struct page);
 

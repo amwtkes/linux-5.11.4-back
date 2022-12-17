@@ -600,7 +600,7 @@ static inline pgprotval_t check_pgprot(pgprot_t pgprot)
 	return massaged_val;
 }
 
-/*xiaojin-mm-pagetable -4.1.2 实际生成pte的地方。 pfn_pte 
+/*xiaojin-mm-sparsemem-pagetable -4.1.2 实际生成pte的地方。 pfn_pte 
 page_nr——分配的物理内存地址的页号
 pgprot——__PAGE_KERNEL		 (__PP|__RW|   0|___A|__NX|___D|   0|___G)pte的前8个bit
 */
@@ -827,7 +827,7 @@ static inline int pmd_none(pmd_t pmd)
 	unsigned long val = native_pmd_val(pmd);
 	return (val & ~_PAGE_KNL_ERRATUM_MASK) == 0;
 }
-/*xiaojin-mm-pagetable -4.2.1 pmd_page_vaddr根据pmd的也表项取下一级的线性地址，不管是大页还是下一级页目录的。*/
+/*xiaojin-mm-sparsemem-pagetable -4.2.1 pmd_page_vaddr根据pmd的也表项取下一级的线性地址，不管是大页还是下一级页目录的。*/
 static inline unsigned long pmd_page_vaddr(pmd_t pmd)
 {
 	return (unsigned long)__va(pmd_val(pmd) & pmd_pfn_mask(pmd));
