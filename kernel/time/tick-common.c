@@ -84,7 +84,7 @@ int tick_is_oneshot_available(void)
  */
 static void tick_periodic(int cpu)
 {
-	/*xiaojin tick_do_timer_cpu表示当前系统中由哪个CPU上的Tick设备负责更新系统jiffies*/
+	/*xiaojin tick_do_timer_cpu表示当前系统中由哪个CPU上的Tick设备负责更新系统jiffies.一个MP的系统中只有一个CPU负责更新jiffies时间。*/
 	if (tick_do_timer_cpu == cpu) {
 		raw_spin_lock(&jiffies_lock);
 		write_seqcount_begin(&jiffies_seq);
