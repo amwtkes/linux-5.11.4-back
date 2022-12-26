@@ -4589,7 +4589,7 @@ unsigned long long task_sched_runtime(struct task_struct *p)
 	return ns;
 }
 
-/* xiaojin-time_interrupt-3   scheduler_tick(void)
+/* xiaojin-time_interrupt-3   scheduler_tick 函数的解释参考：https://app.yinxiang.com/shard/s65/nl/15273355/7eb4d4ac-e20d-4b21-8a4a-4191207e111d
    xiaojin -- timer interrupt scheduler tick  scheduler_tick
 	一个tick就是1ms
 	1ms调一次这个方法 看看哪些进程要need_resched？

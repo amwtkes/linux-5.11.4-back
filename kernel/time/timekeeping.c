@@ -2253,6 +2253,10 @@ EXPORT_SYMBOL(ktime_get_coarse_ts64);
 /*
  * Must hold jiffies_lock
  */
+/*xiaojin-jiffies 更新jiffies的地方。就算是可以休眠的机器也有一个CPU是可以工作来更新jiffies的。参考：https://app.yinxiang.com/shard/s65/nl/15273355/c7370e42-a2a0-4018-a6e8-66e5fe00cc5d/ 
+NO_HZ的文档。
+https://www.kernel.org/doc/Documentation/timers/NO_HZ.txt
+*/
 void do_timer(unsigned long ticks)
 {
 	jiffies_64 += ticks;

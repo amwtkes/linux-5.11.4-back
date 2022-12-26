@@ -3,6 +3,7 @@ xiaojin-unknown --- 未解之谜
 重要代码（前缀-impo) -- 重要的代码片段。
 
 xiaojin.*time_interrupt -- 时间中断相关的代码
+xiaojin-jiffies --- jiffies的更新
 xiaojin.*hrtimer_interrupt ---高精度时间中断代码
 xiaojin-lib  --- linux自己的库。跟libc对等的库，可以用于moudle的开发。因为module不能使用第三方库，由linux的模块自己做链接。
 xiaojin-lock --- linux的原子指令
