@@ -433,7 +433,7 @@ EXPORT_SYMBOL_GPL(tick_broadcast_control);
 void tick_set_periodic_handler(struct clock_event_device *dev, int broadcast)
 {
 	if (!broadcast)
-	/*xiaojin time_interrupt -0.6*/
+	/*xiaojin-time_interrupt -0.6*/
 		dev->event_handler = tick_handle_periodic;
 	else
 		dev->event_handler = tick_handle_periodic_broadcast;

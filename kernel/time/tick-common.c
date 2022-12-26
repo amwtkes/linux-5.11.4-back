@@ -47,6 +47,8 @@ ktime_t tick_next_period;
  *    at it will take over and keep the time keeping alive.  The handover
  *    procedure also covers cpu hotplug.
  */
+
+/*xiaojin-time_interrupt - (impo) 定义tick_do_timer_cpu的地方！*/
 int tick_do_timer_cpu __read_mostly = TICK_DO_TIMER_BOOT;
 #ifdef CONFIG_NO_HZ_FULL
 /*
@@ -79,7 +81,7 @@ int tick_is_oneshot_available(void)
 	return tick_broadcast_oneshot_available();
 }
 
-/* xiaojin- time_interrupt-1 tick_periodic(int cpu)
+/* xiaojin-time_interrupt-1 tick_periodic(int cpu)
  * Periodic tick
  */
 static void tick_periodic(int cpu)
@@ -114,7 +116,7 @@ void tick_handle_periodic(struct clock_event_device *dev)
 	int cpu = smp_processor_id();
 	ktime_t next = dev->next_event;
 
-/*xiaojin time_interrupt -0.7*/
+/*xiaojin-time_interrupt -0.7*/
 	tick_periodic(cpu);
 
 #if defined(CONFIG_HIGH_RES_TIMERS) || defined(CONFIG_NO_HZ_COMMON)
@@ -157,7 +159,7 @@ void tick_handle_periodic(struct clock_event_device *dev)
  */
 void tick_setup_periodic(struct clock_event_device *dev, int broadcast)
 {
-	/*xiaojin time_interrupt -0.5*/
+	/*xiaojin-time_interrupt -0.5*/
 	tick_set_periodic_handler(dev, broadcast);
 
 	/* Broadcast setup ? */
@@ -224,6 +226,8 @@ static void tick_setup_device(struct tick_device *td,
 		 * If no cpu took the do_timer update, assign it to
 		 * this cpu:
 		 */
+
+		/*xiaojin-time_interrupt -(impo) 设置 tick_do_timer_cpu变量。tick_do_timer_cpu变量就是那个更新jiffies的CPU号，只有一个CPU可以更新jiffies变量，为了防止惊群。*/
 		if (tick_do_timer_cpu == TICK_DO_TIMER_BOOT) {
 			tick_do_timer_cpu = cpu;
 
@@ -274,7 +278,7 @@ static void tick_setup_device(struct tick_device *td,
 	 */
 	if (tick_device_uses_broadcast(newdev, cpu))
 		return;
-/*xiaojin time_interrupt -0.4*/
+/*xiaojin-time_interrupt -0.4*/
 	if (td->mode == TICKDEV_MODE_PERIODIC)
 		tick_setup_periodic(newdev, 0);
 	else
@@ -376,7 +380,7 @@ void tick_check_new_device(struct clock_event_device *newdev)
 		curdev = NULL;
 	}
 	clockevents_exchange_device(curdev, newdev);
-	/*xiaojin time_interrupt -0.3*/
+	/*xiaojin-time_interrupt -0.3*/
 	tick_setup_device(td, newdev, cpu, cpumask_of(cpu));
 	if (newdev->features & CLOCK_EVT_FEAT_ONESHOT)
 		tick_oneshot_notify();
