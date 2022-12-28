@@ -95,6 +95,13 @@ xiaojin-sched-func ---调度相关的函数
 
 =====term
 xiaojin-term 一些术语
+
 gup === get user page
+
+pi  ==== priority inheritance (PI)  futex context. https://lwn.net/Articles/360699/ (A futex overview and update)。（https://www.wikiwand.com/en/Priority_inheritance）PI的意思是，有
+三个进程 H M L（High Middle low），当L先占有资源，然后阻塞了H与M，这时L运行的时候就可以继承H的优先级，不被M抢占执行，等L执行完释放资源后，H接着执行，M再执行。不用PI就是L有可能被M抢占，H最后才被执行，显然不是很合理。
+
+
+
 =========syscalls
 xiaojin-futex  
