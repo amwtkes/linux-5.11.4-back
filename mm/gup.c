@@ -2684,6 +2684,9 @@ EXPORT_SYMBOL_GPL(get_user_pages_fast_only);
  * If nr_pages is 0 or negative, returns 0. If no pages were pinned, returns
  * -errno.
  */
+
+/* xiaojin-futex  get_user_pages_fast定义处 
+*/
 int get_user_pages_fast(unsigned long start, int nr_pages,
 			unsigned int gup_flags, struct page **pages)
 {

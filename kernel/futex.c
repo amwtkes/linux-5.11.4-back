@@ -522,7 +522,7 @@ again:
 	/* Ignore any VERIFY_READ mapping (futex common case) */
 	if (unlikely(should_fail_futex(true)))
 		return -EFAULT;
-
+	/*xiaojin-futex get_user_pages_fast 从用户态虚拟地址到物理页号。很重要，物理页号才能做key */
 	err = get_user_pages_fast(address, 1, FOLL_WRITE, &page);
 	/*
 	 * If write access is not required (eg. FUTEX_WAIT), try
