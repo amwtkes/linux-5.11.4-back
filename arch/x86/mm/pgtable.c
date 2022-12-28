@@ -427,6 +427,7 @@ pgd_t *pgd_alloc(struct mm_struct *mm)
 	pmd_t *u_pmds[MAX_PREALLOCATED_USER_PMDS];
 	pmd_t *pmds[MAX_PREALLOCATED_PMDS];
 
+	/*xiaojin-mm-pgd -5 pgd_alloc分配pgd页 */
 	pgd = _pgd_alloc();
 
 	if (pgd == NULL)

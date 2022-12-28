@@ -619,6 +619,8 @@ fail_nomem:
 	goto out;
 }
 
+/*xiaojin-mm-pgd -4 fork->mm_alloc_pgd
+*/
 static inline int mm_alloc_pgd(struct mm_struct *mm)
 {
 	mm->pgd = pgd_alloc(mm);
@@ -1041,7 +1043,7 @@ static struct mm_struct *mm_init(struct mm_struct *mm, struct task_struct *p,
 		mm->flags = default_dump_filter;
 		mm->def_flags = 0;
 	}
-
+/*xiaojin-mm-pgd -3 mm_alloc_pgd*/
 	if (mm_alloc_pgd(mm))
 		goto fail_nopgd;
 
@@ -1355,7 +1357,7 @@ static struct mm_struct *dup_mm(struct task_struct *tsk,
 		goto fail_nomem;
 
 	memcpy(mm, oldmm, sizeof(*mm));
-
+/*xiaojin-mm-pgd -2 mm_init调用 */
 	if (!mm_init(mm, tsk, mm->user_ns))
 		goto fail_nomem;
 
@@ -1416,6 +1418,7 @@ static int copy_mm(unsigned long clone_flags, struct task_struct *tsk)
 	}
 
 	retval = -ENOMEM;
+	/*xiaojin-mm-pgd -1 调用dup_mm*/
 	mm = dup_mm(tsk, current->mm);
 	if (!mm)
 		goto fail_nomem;
@@ -2098,6 +2101,8 @@ static __latent_entropy struct task_struct *copy_process(
 	retval = copy_signal(clone_flags, p);
 	if (retval)
 		goto bad_fork_cleanup_sighand;
+
+	/*xiaojin-mm-pgd -0 copy_mm*/
 	retval = copy_mm(clone_flags, p);
 	if (retval)
 		goto bad_fork_cleanup_signal;
