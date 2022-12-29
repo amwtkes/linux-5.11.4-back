@@ -76,7 +76,7 @@ xiaojin-mm-sparsemem-subsection --- subsection相关的宏
 xiaojin-mm-sparsemem-section-macroes
 xiaojin-mm-memblock --- memblock这种boot阶段的内存管理，实模式下的物理内存管理机制，数据来源于int 15 e820的bios中断处理函数。初始化sparse的前置模块。
 xiaojin-mm-e820 --- int15 e820的代码，初始化memblock
-xiaojin-mm-pgd --- fork中对于全局页目录表是会拷贝的。
+xiaojin-mm-pgd --- 全局页目录表的创建过程，fork中对于全局页目录表是会拷贝的。
 
 ------------kthread 这块
 xiaojin-kthread -内核线程创建这块
