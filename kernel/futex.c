@@ -556,6 +556,8 @@ again:
 	 * base pages, there is no tail page and tail == page.
 	 */
 	tail = page;
+	/*xiaojin-compound_head 如果是compound page则返回head page。
+	什么是compound page？https://app.yinxiang.com/shard/s65/nl/15273355/8050f9d5-8453-4628-9a22-1872ec900e51 */
 	page = compound_head(page);
 	mapping = READ_ONCE(page->mapping);
 
