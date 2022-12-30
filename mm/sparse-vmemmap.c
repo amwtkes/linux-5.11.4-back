@@ -276,7 +276,7 @@ int __meminit vmemmap_populate_basepages(unsigned long start, unsigned long end,
 	return 0;
 }
 
-/*xiaojin-mm-sparsemem -2.2 使用vmemmap的配置，初始化section的mem_map。pfn是这个内存区域开始的物理内存页框号，nr_pages是这个内存区域一共有多少个页框，从而根据这个计算出这个section内的最后一个页的线性地址。
+/*xiaojin-mm-sparsemem -2.2 (impo)使用vmemmap的配置，初始化section的mem_map。pfn是这个内存区域开始的物理内存页框号，nr_pages是这个内存区域一共有多少个页框，从而根据这个计算出这个section内的最后一个页的线性地址。
 */
 struct page * __meminit __populate_section_memmap(unsigned long pfn,
 		unsigned long nr_pages, int nid, struct vmem_altmap *altmap)
