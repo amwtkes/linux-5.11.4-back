@@ -3,7 +3,11 @@
 #define _ASM_X86_PERCPU_H
 
 #ifdef CONFIG_X86_64
-/*xiaojin-percpu -3 可以看到用了gs寄存器*/
+/*xiaojin-percpu -3 (impo)重点代码：可以看到64位用了gs寄存器来取percpu变量地址。32位系统是fs从gdt段中拿percpu的数据。smp_processor_id拿的数据就是这个偏移是拿普通percpu变量的基础，这个变量是放在gdt中，由fs段选择子来确定。
+参考：
+https://app.yinxiang.com/shard/s65/nl/15273355/4b391a6c-3bc7-492e-afc9-33746d286947/
+https://app.yinxiang.com/shard/s65/nl/15273355/907c7afe-d214-4738-aecd-076cd78f3013
+https://app.yinxiang.com/shard/s65/nl/15273355/531e4a41-a07d-4003-826a-3434425e1be6/ */
 #define __percpu_seg		gs
 #else
 #define __percpu_seg		fs
