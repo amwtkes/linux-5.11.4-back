@@ -165,6 +165,7 @@ static inline void setup_percpu_segment(int cpu)
 #endif
 }
 
+/*xiaojin-percpu setup_per_cpu_areas __per_cpu_offset数组存放每个CPU的percpu变量的基地址。*/
 void __init setup_per_cpu_areas(void)
 {
 	unsigned int cpu;

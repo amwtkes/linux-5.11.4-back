@@ -143,7 +143,9 @@ do {									\
 } while (0)
 
 
-/*xiaojin-percpu -0 __percpu_arg 是获取percpu的地方。*/
+/*xiaojin-percpu -0 __percpu_arg 是获取percpu的地方。(exp)percpu原理解释：参考：https://app.yinxiang.com/shard/s65/nl/15273355/907c7afe-d214-4738-aecd-076cd78f3013
+https://app.yinxiang.com/shard/s65/nl/15273355/531e4a41-a07d-4003-826a-3434425e1be6/
+*/
 #define percpu_from_op(size, qual, op, _var)				\
 ({									\
 	__pcpu_type_##size pfo_val__;					\
