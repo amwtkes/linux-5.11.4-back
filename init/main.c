@@ -684,7 +684,7 @@ noinline void __ref rest_init(void)
 	 * we schedule it before we create kthreadd, will OOPS.
 	 */
 	/*xiaojin-percpu_kthread_cpu0_run.1 kernel_init pid 1的线程。*/
-	/*xiaojin-kthread -0 kernel_thread(kernel_init, NULL, CLONE_FS) 开始*/
+	/*xiaojin-kthread -0 kernel_thread(kernel_init, NULL, CLONE_FS) 开始。 rest_init()->kernel_thread(kernel_init, NULL, CLONE_FS)*/
 	pid = kernel_thread(kernel_init, NULL, CLONE_FS);
 	/*
 	 * Pin init on the boot CPU. Task migration is not properly working
@@ -1434,6 +1434,7 @@ void __weak free_initmem(void)
 	free_initmem_default(POISON_FREE_INITMEM);
 }
 
+/*xiaojin-kthread -0.1 初始化pid=1的进程。*/
 static int __ref kernel_init(void *unused)
 {
 	int ret;

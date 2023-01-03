@@ -788,7 +788,7 @@ static struct smp_hotplug_thread softirq_threads = {
 };
 /*xiaojin-si spawn_ksoftirqd kthread softirq的percup线程启动 run_ksoftirqd ksoftirqd
 */
-/*xiaojin-si -0 __softirq_pending与ksoftirqd都是percup的，每个逻辑CPU都可以处理软中断。*/
+/*xiaojin-si -0 __softirq_pending与ksoftirqd都是percup的，每个逻辑CPU都可以处理软中断。__init在linux内核初始化的时候自动执行。*/
 static __init int spawn_ksoftirqd(void)
 {
 	cpuhp_setup_state_nocalls(CPUHP_SOFTIRQ_DEAD, "softirq:dead", NULL,
