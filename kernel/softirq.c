@@ -505,8 +505,7 @@ inline void raise_softirq_irqoff(unsigned int nr)
 		wakeup_softirqd();
 }
 
-/*xiaojin-si-raise -0 raise_softirq
-软中断-softirq
+/*xiaojin-si-raise -0 raise_softirq (exp)——软中断-softirq。参考:https://app.yinxiang.com/shard/s65/nl/15273355/ce13295e-f952-4d15-9033-2583966d8e0f/
 	0、最重要的一点是，软中断是先被挂起，然后由固定的点或者ksoftirq内核线程去异步执行的。所以也是分两部分的。
 	1、内核延迟调用的一种机制
 	2、只能在内核发起
