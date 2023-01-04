@@ -103,7 +103,9 @@ pi  ==== priority inheritance (PI)  futex context. https://lwn.net/Articles/3606
 
 compound page === 一组页组成的大页，按指数来定大小。第一个page是head 其余都是tail。https://app.yinxiang.com/shard/s65/nl/15273355/8050f9d5-8453-4628-9a22-1872ec900e51
 
+hi --- HI_SOFTIRQ表示高优先级任务。 http://www.embeddedlinux.org.cn/linux_net/0596002556/understandlni-CHP-9-SECT-3.html
 
+asmlinkage === https://app.yinxiang.com/shard/s65/nl/15273355/2b1356dc-81f9-4b27-97d8-7934bb5d6937 .简单说就是标记函数不能从寄存器拿参数只能从栈上拿。同时还代表汇编文件可以调用这个C函数。
 
 =========syscalls
 xiaojin-futex  
