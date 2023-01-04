@@ -25,7 +25,7 @@
 #define CREATE_TRACE_POINTS
 #include <asm/trace/irq_vectors.h>
 
-/*xiaojin-si-raise -4 每CPU变量irq_stat定义*/
+/*xiaojin-si-raise -3.1 每CPU变量irq_stat定义*/
 DEFINE_PER_CPU_SHARED_ALIGNED(irq_cpustat_t, irq_stat);
 EXPORT_PER_CPU_SYMBOL(irq_stat);
 

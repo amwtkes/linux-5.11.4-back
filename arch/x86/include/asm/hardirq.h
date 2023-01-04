@@ -5,7 +5,7 @@
 #include <linux/threads.h>
 
 /*xiaojin-irq-datastructure irq_cpustat_t.__softirq_pending*/
-/*xiaojin-si-raise -5 irq_cpustat_t定义*/
+/*xiaojin-si-raise -3.3 irq_cpustat_t定义*/
 typedef struct {
 	u16	     __softirq_pending;
 #if IS_ENABLED(CONFIG_KVM_INTEL)
