@@ -10,7 +10,7 @@
 #include <linux/linkage.h>
 #include <linux/list.h>
 
-/* xiaojin-preemption_count 按位的含义
+/* xiaojin-preemption_count preempt_count (impo)按位的含义
 
  * We put the hardirq and softirq counter into the preemption
  * counter. The bitmask has the following meaning:
@@ -75,7 +75,7 @@
  */
 #define FORK_PREEMPT_COUNT	(2*PREEMPT_DISABLE_OFFSET + PREEMPT_ENABLED)
 
-/* preempt_count() and related functions, depends on PREEMPT_NEED_RESCHED */
+/*xiaojin preempt_count() (impo)  and related functions, depends on PREEMPT_NEED_RESCHED */
 #include <asm/preempt.h>
 
 #define nmi_count()	(preempt_count() & NMI_MASK) //xiaojin nmi null missable interrupt count
