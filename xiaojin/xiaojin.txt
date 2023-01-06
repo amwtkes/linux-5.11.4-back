@@ -108,5 +108,6 @@ hi --- HI_SOFTIRQ表示高优先级任务。 http://www.embeddedlinux.org.cn/lin
 
 asmlinkage === https://app.yinxiang.com/shard/s65/nl/15273355/2b1356dc-81f9-4b27-97d8-7934bb5d6937 .简单说就是标记函数不能从寄存器拿参数只能从栈上拿。同时还代表汇编文件可以调用这个C函数。
 
+ SYM_FUNC_START, SYM_FUNC_END, SYM_CODE_START SYM_DATA在汇编中是什么意思？ https://app.yinxiang.com/shard/s65/nl/15273355/8155ff9b-e8f8-41e0-ac49-e73f948e1fef
 =========syscalls
 xiaojin-futex  
