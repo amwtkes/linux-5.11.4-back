@@ -47,6 +47,8 @@
 
 /* These are for everybody (although not all archs will actually
    discard it in modules) */
+/*xiaojin-early_initcall -2 __init定义 初始化函数的段
+*/
 #define __init		__section(".init.text") __cold  __latent_entropy __noinitretpoline
 #define __initdata	__section(".init.data")
 #define __initconst	__section(".init.rodata")
@@ -192,6 +194,8 @@ extern bool initcall_debug;
 	    ".long	" #fn " - .			\n"	\
 	    ".previous					\n");
 #else
+
+/*xiaojin-early_initcall -3.1 __init函数指针都放入了.early.init节里面了*/
 #define ___define_initcall(fn, id, __sec) \
 	static initcall_t __initcall_##fn##id __used \
 		__attribute__((__section__(#__sec ".init"))) = fn;
@@ -204,6 +208,7 @@ extern bool initcall_debug;
  *
  * Only for built-in code, not modules.
  */
+/*xiaojin-early_initcall -3 early_initcall 函数指针的定义处*/
 #define early_initcall(fn)		__define_initcall(fn, early)
 
 /*

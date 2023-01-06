@@ -1255,7 +1255,7 @@ int __init_or_module do_one_initcall(initcall_t fn)
 	return ret;
 }
 
-
+/*xiaojin-early_initcall -1 extern的位置界限*/
 extern initcall_entry_t __initcall_start[];
 extern initcall_entry_t __initcall0_start[];
 extern initcall_entry_t __initcall1_start[];
@@ -1297,6 +1297,8 @@ static int __init ignore_unknown_bootoption(char *param, char *val,
 	return 0;
 }
 
+/*xiaojin-early_initcall -0 do_initcall_level。通过打__init标签的方式来做，很有点像java的annotation，说明都是相通的，或者都来自于linux。
+*/
 static void __init do_initcall_level(int level, char *command_line)
 {
 	initcall_entry_t *fn;

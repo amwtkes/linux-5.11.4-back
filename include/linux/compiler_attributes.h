@@ -254,6 +254,8 @@
  *   gcc: https://gcc.gnu.org/onlinedocs/gcc/Common-Variable-Attributes.html#index-section-variable-attribute
  * clang: https://clang.llvm.org/docs/AttributeReference.html#section-declspec-allocate
  */
+/*xiaojin-early_initcall -1.2 __section定义 gcc的directive __attribute__
+*/
 #define __section(section)              __attribute__((__section__(section)))
 
 /*
