@@ -924,7 +924,7 @@
 
 /*xiaojin-early_initcall -1.1 __initcall_start lds例子*/
 #define INIT_CALLS							\
-		__initcall_start = .;					\
+		__initcall_start = .;/*xiaojin-early_initcall -1.2 这两句的意思是将__initcall_start这个符号（变量）关联到.initcallearly.init段的开始位置。这大概也是KEEP宏的意义。*/					\
 		KEEP(*(.initcallearly.init))				\
 		INIT_CALLS_LEVEL(0)					\
 		INIT_CALLS_LEVEL(1)					\

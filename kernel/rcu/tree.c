@@ -3005,6 +3005,7 @@ early_initcall(rcu_spawn_core_kthreads);
 */
 /* xiaojin-early_initcall -总（exp）!linux的初始化原理解释——通过段与linker script来解决。打了__init的标的函数都是会分level执行的。见：https://app.yinxiang.com/shard/s65/nl/15273355/2977ecc3-c1ff-46f0-9015-ffb00d1200f2 。调用顺序：main.c->do_basic_setup->do_initcalls->initcall_levels数组就是.init节中的init函数->do_initcall_level调起每个init函数
 另外：https://app.yinxiang.com/shard/s65/nl/15273355/16b9acf0-414e-4a2b-9ed5-cfde5c9c2069
+https://app.yinxiang.com/shard/s65/nl/15273355/f4342fef-9742-4701-97ea-4e3533da3fa6
 参考：margin note的10-asm -> x86-64bit-asm-charpter与x86-64bit-ccc-chapter两篇gcc的简要介绍。
 rcu_spawn_core_kthreads 为创建内核线程。
 */

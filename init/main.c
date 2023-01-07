@@ -1255,7 +1255,9 @@ int __init_or_module do_one_initcall(initcall_t fn)
 	return ret;
 }
 
-/*xiaojin-early_initcall -1 extern的位置界限*/
+/*xiaojin-early_initcall -1 extern的位置界限
+initcall_entry_t *initcall_levels[] __initdata在.initdata段中。__initcall0_start 。。。这些变量符号不在linux的头文件中定义，是在lds这个linker script中定义的，是链接时候产生的。参考，https://app.yinxiang.com/shard/s65/nl/15273355/f4342fef-9742-4701-97ea-4e3533da3fa6 的最后部分。
+*/
 extern initcall_entry_t __initcall_start[];
 extern initcall_entry_t __initcall0_start[];
 extern initcall_entry_t __initcall1_start[];
