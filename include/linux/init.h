@@ -47,7 +47,7 @@
 
 /* These are for everybody (although not all archs will actually
    discard it in modules) */
-/*xiaojin-early_initcall -2 __init定义 初始化函数的段
+/*xiaojin-early_initcall -2 __init定义 初始化函数的段 .init.text
 */
 #define __init		__section(".init.text") __cold  __latent_entropy __noinitretpoline
 #define __initdata	__section(".init.data")
@@ -195,7 +195,11 @@ extern bool initcall_debug;
 	    ".previous					\n");
 #else
 
-/*xiaojin-early_initcall -3.1 __init函数指针都放入了.early.init节里面了*/
+/*xiaojin-early_initcall -3.1 __init函数指针定义：
+static initcall_t __initcall_(FN_NAME)early __used 
+	__attribute__((__section__(.initcallearly.init))) = fn;
+放入了.initcallearly.init这个段中了。
+*/
 #define ___define_initcall(fn, id, __sec) \
 	static initcall_t __initcall_##fn##id __used \
 		__attribute__((__section__(#__sec ".init"))) = fn;
@@ -208,7 +212,7 @@ extern bool initcall_debug;
  *
  * Only for built-in code, not modules.
  */
-/*xiaojin-early_initcall -3 early_initcall 函数指针的定义处*/
+/*xiaojin-early_initcall -3 early_initcall 函数指针的定义处。__init与early_initcall()两个宏是配合使用的，成双成对，缺一不可。一个将函数放入.init.text段，一个将函数指针放入.initcallearly.init段，指针是用来在初始化时一一调用的。*/
 #define early_initcall(fn)		__define_initcall(fn, early)
 
 /*
