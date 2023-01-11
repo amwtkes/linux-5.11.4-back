@@ -564,6 +564,9 @@ static inline bool cpumask_full(const struct cpumask *srcp)
  * cpumask_weight - Count of bits in *srcp
  * @srcp: the cpumask to count bits (< nr_cpu_ids) in.
  */
+
+/*xiaojin-bitmap -0 cpumask_weight 计算cpumask的权重，就是bitmap中有多少个1
+*/
 static inline unsigned int cpumask_weight(const struct cpumask *srcp)
 {
 	return bitmap_weight(cpumask_bits(srcp), nr_cpumask_bits);

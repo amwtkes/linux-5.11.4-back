@@ -393,9 +393,11 @@ static inline bool bitmap_full(const unsigned long *src, unsigned int nbits)
 	return find_first_zero_bit(src, nbits) == nbits;
 }
 
+/*xiaojin-bitmap -1 bitmap_weight   nbits表示检测的最大数是多少。如果要检查的位比较小。就直接算。检查的位表示最大的1的个数的最高位有多大，这就限制了需要检测多少个long。比如如果最大值是2，则一个long就可以了，如果128，则一个long只有64位最多表示64个数，所以，需要计算两个long的1的和。
+*/
 static __always_inline int bitmap_weight(const unsigned long *src, unsigned int nbits)
 {
-	if (small_const_nbits(nbits))
+	if (small_const_nbits(nbits)) //
 		return hweight_long(*src & BITMAP_LAST_WORD_MASK(nbits));
 	return __bitmap_weight(src, nbits);
 }
