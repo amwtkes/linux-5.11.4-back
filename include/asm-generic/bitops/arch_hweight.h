@@ -19,6 +19,7 @@ static inline unsigned int __arch_hweight8(unsigned int w)
 	return __sw_hweight8(w);
 }
 
+/*xiaojin-bitmap -5 __arch_hweight64*/
 static inline unsigned long __arch_hweight64(__u64 w)
 {
 	return __sw_hweight64(w);

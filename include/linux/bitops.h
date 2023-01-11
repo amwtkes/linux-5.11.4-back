@@ -73,6 +73,7 @@ static inline int get_bitmask_order(unsigned int count)
 	return order;	/* We could be slightly more clever with -1 here... */
 }
 
+/*xiaojin-bitmap -3! hweight_long */
 static __always_inline unsigned long hweight_long(unsigned long w)
 {
 	return sizeof(w) == 4 ? hweight32(w) : hweight64((__u64)w);

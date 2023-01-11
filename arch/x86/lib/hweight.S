@@ -36,6 +36,7 @@ SYM_FUNC_START(__sw_hweight32)
 SYM_FUNC_END(__sw_hweight32)
 EXPORT_SYMBOL(__sw_hweight32)
 
+/*xiaojin-bitmap -6 汇编代码实现了！SYM_FUNC_START(__sw_hweight64)*/
 SYM_FUNC_START(__sw_hweight64)
 #ifdef CONFIG_X86_64
 	pushq   %rdi
