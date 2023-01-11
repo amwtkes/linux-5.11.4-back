@@ -7,6 +7,8 @@
 
 #ifndef __ASSEMBLY__
 
+/*xiaojin-bitmap-api 定义bits是一个long的指针。 struct cpumask
+*/
 #define DECLARE_BITMAP(name,bits) \
 	unsigned long name[BITS_TO_LONGS(bits)]
 

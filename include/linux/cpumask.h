@@ -368,6 +368,9 @@ static inline void __cpumask_clear_cpu(int cpu, struct cpumask *dstp)
  *
  * Returns 1 if @cpu is set in @cpumask, else returns 0
  */
+
+/*xiaojin-bitmap-api cpumask_test_cpu 看一个cpu号是否在cpumask里面。
+*/
 static inline int cpumask_test_cpu(int cpu, const struct cpumask *cpumask)
 {
 	return test_bit(cpumask_check(cpu), cpumask_bits((cpumask)));
