@@ -44,6 +44,7 @@ unsigned int __sw_hweight8(unsigned int w)
 }
 EXPORT_SYMBOL(__sw_hweight8);
 
+/*xiaojin-bitmap -6 C实现__sw_hweight64 感觉好复杂的感觉。*/
 unsigned long __sw_hweight64(__u64 w)
 {
 #if BITS_PER_LONG == 32
