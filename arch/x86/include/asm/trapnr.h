@@ -3,7 +3,7 @@
 #define _ASM_X86_TRAPNR_H
 
 /* Interrupts/Exceptions */
-
+/*xiaojin-gates define -4 中断的定义 pagefault page_fault等等*/
 #define X86_TRAP_DE		 0	/* Divide-by-zero */
 #define X86_TRAP_DB		 1	/* Debug */
 #define X86_TRAP_NMI		 2	/* Non-maskable Interrupt */
