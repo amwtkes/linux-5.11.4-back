@@ -564,7 +564,8 @@ static void __init sparse_init_nid(int nid, unsigned long pnum_begin,
 
 		if (pnum >= pnum_end)
 			break;
-		/*xiaojin-mm-sparsemem -(impo)2.0 初始化每个mem_section的memmap数组，物理页框描述符数组.*/
+		/*xiaojin-mm-sparsemem -(impo)2.0 初始化每个mem_section的memmap数组，物理页框描述符数组.起始物理地址pfn，结束位置PAGES_PER_SECTION计算出来
+		*/
 		map = __populate_section_memmap(pfn, PAGES_PER_SECTION,
 				nid, NULL);
 		if (!map) {
