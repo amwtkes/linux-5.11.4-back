@@ -158,7 +158,7 @@ pte_t * __meminit vmemmap_pte_populate(pmd_t *pmd, unsigned long addr, int node,
 		表示是个kernel的映射。因为第三个bit是0.
 		*/
 	/*xiaojin-mm-sparsemem-pagetable -4.1.1 pfn_pte调用处*/	
-		entry = pfn_pte(__pa(p) >> PAGE_SHIFT/*得到pfn*/, PAGE_KERNEL); 
+		entry = pfn_pte(__pa(p) >> PAGE_SHIFT/*得到pfn*/, PAGE_KERNEL/*vmemmap肯定在内核态，页表项设置相应的位*/); 
 		/*xiaojin-mm-sparsemem-pagetable -4.3 分配完物理页以后，将这个页号放入也表项中*/
 		set_pte_at(&init_mm, addr, pte, entry);
 	}
@@ -306,5 +306,5 @@ xiaojin-mm-sparsemem-pagetable (exp) !!!struct page的作用：1、在内核中�
 	if (vmemmap_populate(start, end, nid, altmap))
 		return NULL;
 
-	return pfn_to_page(pfn);
+	return pfn_to_page(pfn); //返回struct page *的虚拟地址
 }
