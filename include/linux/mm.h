@@ -179,6 +179,8 @@ static inline void __mm_zero_struct_page(struct page *page)
 	}
 }
 #else
+/*xiaojin-mm-page-table-macro mm_zero_struct_page 初始化struct page的宏，在__init_single_page()函数中调用。
+*/
 #define mm_zero_struct_page(pp)  ((void)memset((pp), 0, sizeof(struct page)))
 #endif
 
