@@ -292,7 +292,7 @@ struct page * __meminit __populate_section_memmap(unsigned long pfn,
 
 	还有，这是是系统初始化的函数，会将每个node下的section映射到内核的线性地址中.分配映射其实就是形成struct page结构去描述这段物理内存而已。
 
-xiaojin-mm-sparsemem-pagetable (exp) struct page的作用：1、在内核中物理地址与虚拟地址转换的计算因子（vmemmap_base + pfn = *page）2、64个字节存储了这个页的一些属性信息，但是没有包括物理地址哈。
+xiaojin-mm-sparsemem-pagetable (exp) !!!struct page的作用：1、在内核中物理地址与虚拟地址转换的计算因子（vmemmap_base + pfn = *page）2、64个字节存储了这个页的一些属性信息，但是没有包括物理地址哈。__populate_section_memmap本质的作用是！！！===》 为所有物理内存创建页描述符！!!!
 	*/
 
 /*xiaojin-mm-sparsemem-pagetable -0(example) 分配内存，只要确定了虚拟地址范围，就可以分配了，大块内存一般是以页为单位分配内存，小块的brk()分配。这里是为struct pages*（也就是这个section的页描述符数组）创建页表映射。start是分配线性地址的起始页位置，end是结束页地址。vmemmap_populate函数进行页表映射。*/
