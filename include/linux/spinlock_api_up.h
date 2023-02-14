@@ -25,10 +25,10 @@
  * variables, and to add the proper checker annotations:
  */
 
-/*xiaojin-spinlock 3.2-up-lock ___LOCK(lock) 根据上面的注释可以看到，则up系统下不需要实际的lock过程，为了防止编译器报警（定义了lock但是没有操作）所以用___LOCK(lock)来消除编译器报警。这里只是preempt_disable() 禁止了进程切换就能达到。*/
 #define ___LOCK(lock) \
   do { __acquire(lock); (void)(lock); } while (0)
 
+/*xiaojin-spinlock 3.2-up-lock ___LOCK(lock) 根据上面的注释可以看到，则up系统下不需要实际的lock过程，为了防止编译器报警（定义了lock但是没有操作）所以用___LOCK(lock)来消除编译器报警。这里只是preempt_disable() 禁止了进程切换就能达到。*/
 #define __LOCK(lock) \
   do { preempt_disable(); ___LOCK(lock); } while (0)
 
