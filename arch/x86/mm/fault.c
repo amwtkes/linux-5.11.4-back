@@ -1465,7 +1465,7 @@ handle_page_fault(struct pt_regs *regs, unsigned long error_code,
 		local_irq_disable();
 	}
 }
-/*xiaojin-interrupt-page_fault -0 缺页异常开始处。*/
+/*xiaojin-interrupt-page_fault -1 缺页异常开始处。*/
 DEFINE_IDTENTRY_RAW_ERRORCODE(exc_page_fault)
 {
 	unsigned long address = read_cr2();

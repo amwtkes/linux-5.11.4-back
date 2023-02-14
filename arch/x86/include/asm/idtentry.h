@@ -588,6 +588,10 @@ DECLARE_IDTENTRY_ERRORCODE(X86_TRAP_AC,	exc_alignment_check);
 /* Raw exception entries which need extra work */
 DECLARE_IDTENTRY_RAW(X86_TRAP_UD,		exc_invalid_op);
 DECLARE_IDTENTRY_RAW(X86_TRAP_BP,		exc_int3);
+
+/*xiaojin-interrupt-page_fault -0 定义宏。X86_TRAP_PF == 14 缺页中断是14号中断。另外BIOS是个写在硬件中的操作系统，firmware。里面有很多中断的处理函数。
+
+*/
 DECLARE_IDTENTRY_RAW_ERRORCODE(X86_TRAP_PF,	exc_page_fault);
 
 #ifdef CONFIG_X86_MCE
