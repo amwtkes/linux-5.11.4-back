@@ -219,7 +219,7 @@ do {									\
 		VAL = READ_ONCE(*__PTR);			\/*赋值指令在x86-64下是原子的*/
 		if (cond_expr)					\
 			break;					\
-		cpu_relax();					\
+		cpu_relax();	 /*在x86下是个编译器禁止优化指令*/				\
 	}							\
 	(typeof(*ptr))VAL;					\
 })
@@ -234,6 +234,7 @@ do {									\
  * the control dependency of the wait to reduce the barrier on many platforms.
  */
 #ifndef smp_cond_load_acquire
+/*xiaojin-spinlock-mcs loop宏*/
 #define smp_cond_load_acquire(ptr, cond_expr) ({		\
 	__unqual_scalar_typeof(*ptr) _val;			\
 	_val = smp_cond_load_relaxed(ptr, cond_expr);		\

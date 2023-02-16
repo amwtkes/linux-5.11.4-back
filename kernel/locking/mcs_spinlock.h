@@ -62,6 +62,10 @@ do {									\
  * on this node->locked until the previous lock holder sets the node->locked
  * in mcs_spin_unlock().
  */
+
+/*xiaojin-spinlock-mcs 加锁。 lock就是头指针的next，指向链表中的最后一个node。node是新加入的节点（mcs是percpu，node就是cpu）.解决了ticket模型的scalability的问题。它是个链表，但是是percpu的，它有顺序性因为是个链表。
+参考：https://app.yinxiang.com/shard/s65/nl/15273355/59adfb68-f6fd-4d04-b4f4-8324a87ae051
+*/
 static inline
 void mcs_spin_lock(struct mcs_spinlock **lock, struct mcs_spinlock *node)
 {
@@ -78,7 +82,9 @@ void mcs_spin_lock(struct mcs_spinlock **lock, struct mcs_spinlock *node)
 	 * with a LOCK primitive.
 	 */
 	prev = xchg(lock, node);
-	if (likely(prev == NULL)) {
+
+	//这是最后一个元素，没人竞争，所以拿到锁。
+	if (likely(prev == NULL)) { //prev是原来的最后一个node，现在是倒数第二个。
 		/*
 		 * Lock acquired, don't need to set node->locked to 1. Threads
 		 * only spin on its own node->locked value for lock acquisition.
@@ -91,6 +97,8 @@ void mcs_spin_lock(struct mcs_spinlock **lock, struct mcs_spinlock *node)
 	}
 	WRITE_ONCE(prev->next, node);
 
+	/*xiaojin-spinlock-mcs 这里是个spin loop
+	*/
 	/* Wait until the lock holder passes the lock down. */
 	arch_mcs_spin_lock_contended(&node->locked);
 }
@@ -99,6 +107,9 @@ void mcs_spin_lock(struct mcs_spinlock **lock, struct mcs_spinlock *node)
  * Releases the lock. The caller should pass in the corresponding node that
  * was used to acquire the lock.
  */
+
+/*xiaojin-spinlock-mcs 解锁 mcs_spin_unlock
+*/
 static inline
 void mcs_spin_unlock(struct mcs_spinlock **lock, struct mcs_spinlock *node)
 {
@@ -115,6 +126,7 @@ void mcs_spin_unlock(struct mcs_spinlock **lock, struct mcs_spinlock *node)
 			cpu_relax();
 	}
 
+//下一个node的locked设置为1，击鼓传花给下一个。X86低下就是write_once。
 	/* Pass lock to next waiter. */
 	arch_mcs_spin_unlock_contended(&next->locked);
 }
