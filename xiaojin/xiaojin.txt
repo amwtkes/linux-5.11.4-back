@@ -119,6 +119,9 @@ xiaojin-term 一些术语
 [comms-返回用户态/back to user]：用户态的程序不能长期执行，因为时钟中断是将那些while(1)拉下来去内核，然后夺走执行权给别的进程，但是内核态是不能被任何机制中断返回到用户态的。不管是syscall还是中断处理程序，都要显式的调用back_to_user来返回，否则会出问题。所以spinlcok-mcs可以做成percpu的原因，rcu的quiescent state的判断都要用到这个常识。
 
 
+[EXPORT_SYMBOL] 这个东西是用来给模块用的，linux中模块是可以热插拔的，对于linux这个大单体怎么热插拔？就是通过集成一个编译器进来，然后通过将特定的符号进行导出然后链接在一起实现加载。这个宏用来将特定符号进行导出的，可以看做动态链接的过程。
+参考：https://app.yinxiang.com/shard/s65/nl/15273355/1c5b8bb9-e321-44fd-abef-768d58676379/   https://app.yinxiang.com/shard/s65/nl/15273355/4accfda7-b651-4e7e-ac51-b07e0447326e/
+
 ============macroes
 xiaojin-bitmap --- bitmap的操作代码
 
