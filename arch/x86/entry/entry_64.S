@@ -179,6 +179,8 @@ SYM_INNER_LABEL(entry_SYSCALL_64_after_hwframe, SYM_L_GLOBAL)
 	movq	RIP(%rsp), %r11
 
 	cmpq	%rcx, %r11	/* SYSRET requires RCX == RIP */
+
+	/*xiaojin-comms-返回用户态 系统调用 syscall*/
 	jne	swapgs_restore_regs_and_return_to_usermode
 
 	/*
@@ -1285,6 +1287,8 @@ SYM_CODE_START(asm_exc_nmi)
 	 * Return back to user mode.  We must *not* do the normal exit
 	 * work, because we don't want to enable interrupts.
 	 */
+
+	 /*xiaojin-comms-返回用户态 中断返回例子*/
 	jmp	swapgs_restore_regs_and_return_to_usermode
 
 .Lnmi_from_kernel:

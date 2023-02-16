@@ -1,6 +1,8 @@
 xiaojin-unknown --- 未解之谜
 原理解释（前缀-exp） --- 带有原理解释的字样，表示在阐述重要的过程。前缀-exp。
 重要代码（前缀-impo) -- 重要的代码片段。
+重要的常识(前缀-comms) --- 重要的常识
+
 
 xiaojin.*time_interrupt -- 时间中断相关的代码
 xiaojin-jiffies --- jiffies的更新
@@ -114,7 +116,7 @@ xiaojin-term 一些术语
 
 [/Users/xiaojin/workspace/big_repo/linux-5.11.4/include/linux/atomic-arch-fallback.h] 带有fallback的文件都是缺省arch相关的文件会引用的地方.
 
-
+[comms-返回用户态/back to user]：用户态的程序不能长期执行，因为时钟中断是将那些while(1)拉下来去内核，然后夺走执行权给别的进程，但是内核态是不能被任何机制中断返回到用户态的。不管是syscall还是中断处理程序，都要显式的调用back_to_user来返回，否则会出问题。所以spinlcok-mcs可以做成percpu的原因，rcu的quiescent state的判断都要用到这个常识。
 
 
 ============macroes
