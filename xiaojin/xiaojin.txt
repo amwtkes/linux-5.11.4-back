@@ -98,19 +98,21 @@ xiaojin-sched-func ---调度相关的函数
 =====term
 xiaojin-term 一些术语
 
-gup === get user page
+[gup] === get user page
 
-pi  ==== priority inheritance (PI)  futex context. https://lwn.net/Articles/360699/ (A futex overview and update)。（https://www.wikiwand.com/en/Priority_inheritance）PI的意思是，有
+[pi]  ==== priority inheritance (PI)  futex context. https://lwn.net/Articles/360699/ (A futex overview and update)。（https://www.wikiwand.com/en/Priority_inheritance）PI的意思是，有
 三个进程 H M L（High Middle low），当L先占有资源，然后阻塞了H与M，这时L运行的时候就可以继承H的优先级，不被M抢占执行，等L执行完释放资源后，H接着执行，M再执行。不用PI就是L有可能被M抢占，H最后才被执行，显然不是很合理。
 
-compound page === 一组页组成的大页，按指数来定大小。第一个page是head 其余都是tail。https://app.yinxiang.com/shard/s65/nl/15273355/8050f9d5-8453-4628-9a22-1872ec900e51
+[compound page] === 一组页组成的大页，按指数来定大小。第一个page是head 其余都是tail。https://app.yinxiang.com/shard/s65/nl/15273355/8050f9d5-8453-4628-9a22-1872ec900e51
 
-hi --- HI_SOFTIRQ表示高优先级任务。 http://www.embeddedlinux.org.cn/linux_net/0596002556/understandlni-CHP-9-SECT-3.html
+[hi] --- HI_SOFTIRQ表示高优先级任务。 http://www.embeddedlinux.org.cn/linux_net/0596002556/understandlni-CHP-9-SECT-3.html
 
-asmlinkage === https://app.yinxiang.com/shard/s65/nl/15273355/2b1356dc-81f9-4b27-97d8-7934bb5d6937 .简单说就是标记函数不能从寄存器拿参数只能从栈上拿。同时还代表汇编文件可以调用这个C函数。
+[asmlinkage] === https://app.yinxiang.com/shard/s65/nl/15273355/2b1356dc-81f9-4b27-97d8-7934bb5d6937 .简单说就是标记函数不能从寄存器拿参数只能从栈上拿。同时还代表汇编文件可以调用这个C函数。
 
- SYM_FUNC_START, SYM_FUNC_END, SYM_CODE_START SYM_DATA在汇编中是什么意思？ https://app.yinxiang.com/shard/s65/nl/15273355/8155ff9b-e8f8-41e0-ac49-e73f948e1fef
+ 
+[SYM_FUNC_START, SYM_FUNC_END, SYM_CODE_START SYM_DATA在汇编中是什么意思？] https://app.yinxiang.com/shard/s65/nl/15273355/8155ff9b-e8f8-41e0-ac49-e73f948e1fef
 
+[/Users/xiaojin/workspace/big_repo/linux-5.11.4/include/linux/atomic-arch-fallback.h] 带有fallback的文件都是缺省arch相关的文件会引用的地方.
 
 
 
