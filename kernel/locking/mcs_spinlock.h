@@ -63,7 +63,7 @@ do {									\
  * in mcs_spin_unlock().
  */
 
-/*xiaojin-spinlock-mcs 加锁。 lock就是头指针的next，指向链表中的最后一个node。node是新加入的节点（mcs是percpu，node就是cpu）.解决了ticket模型的scalability的问题。它是个链表，但是是percpu的，它有顺序性因为是个链表。
+/*xiaojin-spinlock-mcs 加锁。 lock就是头指针的next，指向链表中的最后一个node。node是新加入的节点.解决了ticket模型的scalability的问题。它是个链表，它有顺序性因为是个链表,前一个node负责放行后面的node。mcs没有规定是percpu的，也没有最终使用，因为占用的空间太大，超过4个字节。每个要使用的地方都会alloc一个，然后每个CPU一个node。不允许中断与睡眠才行。
 参考：https://app.yinxiang.com/shard/s65/nl/15273355/59adfb68-f6fd-4d04-b4f4-8324a87ae051
 */
 static inline
