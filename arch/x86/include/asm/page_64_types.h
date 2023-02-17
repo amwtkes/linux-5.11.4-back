@@ -47,6 +47,8 @@
 #define __PAGE_OFFSET           __PAGE_OFFSET_BASE_L4
 #endif /* CONFIG_DYNAMIC_MEMORY_LAYOUT */
 
+/*xiaojin __START_KERNEL_map 内核空间的起始虚拟地址位置 kernel start kernel address
+*/
 #define __START_KERNEL_map	_AC(0xffffffff80000000, UL)
 
 /* See Documentation/x86/x86_64/mm.rst for a description of the memory map. */
