@@ -33,7 +33,8 @@
                 "CONFIG_ACPI_HOTPLUG_MEMORY",
                 "CONFIG_MEMORY_HOTREMOVE",
                 "CONFIG_NODES_SHIFT=3",
-                "CONFIG_NEED_MULTIPLE_NODES"
+                "CONFIG_NEED_MULTIPLE_NODES",
+                "__LITTLE_ENDIAN"
             ],
             "macFrameworkPath": [
                 "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks"
