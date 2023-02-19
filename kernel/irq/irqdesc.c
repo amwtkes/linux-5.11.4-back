@@ -637,6 +637,7 @@ void irq_init_desc(unsigned int irq)
  * @irq:	The irq number to handle
  *
  */
+/*xiaojin-irq -1 generic_handle_irq*/
 int generic_handle_irq(unsigned int irq)
 {
 	struct irq_desc *desc = irq_to_desc(irq);

@@ -38,6 +38,7 @@ xiaojin-syscall -- 系统调用相关
 
 
 ========interrupt exception gates
+xiaojin-irq --- 中断相关流程
 xiaojin-gates --- 基本
 xiaojin-gates define ---- 一些宏定义
 xiaojin-si --- 软中断相关
