@@ -95,6 +95,9 @@ static __always_inline void __##func(struct pt_regs *regs)
  * Same as DECLARE_IDTENTRY, but has an extra error_code argument for the
  * C-handler.
  */
+
+/*xiaojin 这个带参数的中断处理函数定义，汇编入口为 idtentry vector asm_##func func has_error_code=0。
+*/
 #define DECLARE_IDTENTRY_ERRORCODE(vector, func)			\
 	asmlinkage void asm_##func(void);				\
 	asmlinkage void xen_asm_##func(void);				\
