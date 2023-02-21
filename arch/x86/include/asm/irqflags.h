@@ -48,7 +48,7 @@ extern inline void native_restore_fl(unsigned long flags)
 		     :"memory", "cc");
 }
 
-/*xiaojin-interrupt native_irq_disable 关闭中断
+/*xiaojin-interrupt -rq_disable 关闭中断 native_irq_disable设置rflags寄存器的IF位为0来将maskable的中断屏蔽掉。
 */
 static __always_inline void native_irq_disable(void)
 {
@@ -92,11 +92,12 @@ static __always_inline void arch_local_irq_restore(unsigned long flags)
 	native_restore_fl(flags);
 }
 
+/*xiaojin-interrupt -rq_disable arch_local_irq_disable (exp)这里只在手动保存rflags的时候会主动关闭终端。因为intel cpu会在陷入中断的时候自动将rflags寄存器压入栈中。
+*/
 static __always_inline void arch_local_irq_disable(void)
 {
 	native_irq_disable();
 }
-
 static __always_inline void arch_local_irq_enable(void)
 {
 	native_irq_enable();
