@@ -34,7 +34,7 @@
 这个宏被很多其他宏二次包装：DECLARE_IDTENTRY_RAW，DECLARE_IDTENTRY_SYSVEC等等。
 
 这个宏还有个汇编版本，xiaojin-interrupt_process +2可以搜到。也可以看看上面的英文注释，也写了还有个汇编版本。note里面！
-还有很多其他的宏都有汇编版本哦！！！
+还有很多其他的宏都有汇编版本哦！！！重复搜索一共有两个define定义。一个汇编一个C。
 */
 #define DECLARE_IDTENTRY(vector, func)					\
 	asmlinkage void asm_##func(void);				\
