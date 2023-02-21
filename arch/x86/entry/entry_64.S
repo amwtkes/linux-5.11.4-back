@@ -417,8 +417,7 @@ SYM_CODE_END(ret_from_fork)
 
 	movq	%rsp, %rdi			/* pt_regs pointer into 1st argument*/
 
-	.if \has_error_code == 1 /*如果有参数errorcode，就放入rsi寄存器中，第二个参数。比如这里第二个参数：static __always_inline void __##func(struct pt_regs *regs,		\
-				     unsigned long error_code)*/
+	.if \has_error_code == 1 /*如果有参数errorcode，就放入rsi寄存器中，第二个参数。比如这里第二个参数：static __always_inline void __##func(struct pt_regs *regs,unsigned long error_code) */
 		movq	ORIG_RAX(%rsp), %rsi	/* get error code into 2nd argument*/
 		movq	$-1, ORIG_RAX(%rsp)	/* no syscall to restart */
 	.endif
