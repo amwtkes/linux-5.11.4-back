@@ -78,7 +78,7 @@ static const __initconst struct idt_data early_idts[] = {
  * set up TSS.
  */
 /*xiaojin-gates tables -0 traps int80老系统调用*/
-/*xiaojin-interrupt_macro -3 插入idt表*/
+/*xiaojin-interrupt_process -3 插入idt表*/
 static const __initconst struct idt_data def_idts[] = {
 	INTG(X86_TRAP_DE,		asm_exc_divide_error),
 	INTG(X86_TRAP_NMI,		asm_exc_nmi),

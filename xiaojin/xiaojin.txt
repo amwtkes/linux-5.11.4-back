@@ -37,7 +37,8 @@ xiaojin-syscall -- 系统调用相关
 
 
 ========interrupt exception gates
-//xiaojin-interrupt --- 中断相关流程interrupt总体流程
+xiaojin-interrupt - --- 一些重要的宏定义
+xiaojin-interrupt_process ---- interrupt使用的idt包装宏，以及整个CPU的中断处理流程。
 xiaojin.*time_interrupt -- 时间中断相关的代码
 xiaojin-irq-e1000 --- 网卡驱动模块
 xiaojin-interrupt-data -- 中断相关的数据结构
@@ -46,7 +47,6 @@ xiaojin-gates --- 基本IDT相关的结构定义。
 xiaojin-gates define ---- 一些宏定义
 xiaojin-si --- 软中断相关
 xiaojin time_interrupt ---- 时间中断 tick
-xiaojin-interrupt_macro ---- interrupt使用的idt包装宏
 xiaojin-input ---- 键盘中断处理函数
 xiaojin-interrupt-page_fault ----- 缺页异常
 

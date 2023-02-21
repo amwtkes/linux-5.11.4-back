@@ -97,7 +97,7 @@ For 32-bit we have the following conventions - kernel is built with
 
 #define SIZEOF_PTREGS	21*8
 
-/*xiaojin-interrupt_macro 0.2.1 PUSH_AND_CLEAR_REGS内核保存用户态寄存器结构pt_regs的地方。(exp)原理解释：因为CPU支持从用户态直接通过时钟中断跳入内核中断门，所以需要保存用户态寄存器集合到pt_regs。中断从用户态到内核态save pt_regs，系统调用从用户态到内核态save pt_regs都在这里。save regs.
+/*xiaojin-interrupt_process 0.2.1 PUSH_AND_CLEAR_REGS内核保存用户态寄存器结构pt_regs的地方。(exp)原理解释：因为CPU支持从用户态直接通过时钟中断跳入内核中断门，所以需要保存用户态寄存器集合到pt_regs。中断从用户态到内核态save pt_regs，系统调用从用户态到内核态save pt_regs都在这里。save regs.
 */
 /*xiaojin-syscall-0.01 PUSH_AND_CLEAR_REGS原型。内核保存用户态寄存器的宏。*/
 .macro PUSH_AND_CLEAR_REGS rdx=%rdx rax=%rax save_ret=0

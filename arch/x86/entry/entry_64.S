@@ -409,7 +409,7 @@ SYM_CODE_END(ret_from_fork)
  * @cfunc:		C function to be called
  * @has_error_code:	Hardware pushed error code on stack
  */
- /*xiaojin-interrupt_macro 0.1 idtentry_body 中断body宏定义，先save_regs，然后call C的处理函数*/
+ /*xiaojin-interrupt_process 0.2 idtentry_body 中断body宏定义，先save_regs，然后call C的处理函数*/
 .macro idtentry_body cfunc has_error_code:req
 
 	call	error_entry /*保存所有的寄存器*/
@@ -437,7 +437,8 @@ SYM_CODE_END(ret_from_fork)
  * The macro emits code to set up the kernel context for straight forward
  * and simple IDT entries. No IST stack, no paranoid entry checks.
  */
- /*xiaojin-interrupt_macro -0 idtentry 实际的中断，异常处理函数的宏。定义了一个以asm_开始的汇编函数 idtentry是宏的名称。IDT中的入口就是这个宏生成的函数的虚拟地址。LINUX没有使用分段模型，所以段偏移量就是64位的函数指针地址。*/
+ /*xiaojin-interrupt_process -0 idtentry 实际的中断，异常处理函数的宏。定义了一个以asm_开始的汇编函数 idtentry是宏的名称。IDT中的入口就是这个宏生成的函数的虚拟地址。LINUX没有使用分段模型，所以段偏移量就是64位的函数指针地址。参数名含义可以看上面的注释！
+ */
 .macro idtentry vector asmsym cfunc has_error_code:req /*宏idtentry*/
 SYM_CODE_START(\asmsym)
 	UNWIND_HINT_IRET_REGS offset=\has_error_code*8
@@ -1098,7 +1099,7 @@ SYM_CODE_END(paranoid_exit)
 /*
  * Save all registers in pt_regs, and switch GS if needed.
  */
- /*xiaojin-interrupt_macro 0.2 error_entry 中断到来的时候保存寄存器的程序定义 error_entry*/
+ /*xiaojin-interrupt_process 0.1 error_entry 中断到来的时候保存寄存器的程序定义 error_entry*/
 SYM_CODE_START_LOCAL(error_entry)
 	UNWIND_HINT_FUNC
 	cld

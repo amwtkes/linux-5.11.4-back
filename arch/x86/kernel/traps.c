@@ -198,7 +198,7 @@ static __always_inline void __user *error_get_trap_addr(struct pt_regs *regs)
 	return (void __user *)uprobe_get_trap_addr(regs);
 }
 
-/*xiaojin-interrupt_macro -1example 定义一个异常或者中断的形式。*/
+/*xiaojin-interrupt_process -1example 定义一个异常或者中断的形式。*/
 DEFINE_IDTENTRY(exc_divide_error)
 {
 	do_error_trap(regs, 0, "divide error", X86_TRAP_DE, SIGFPE,
@@ -1152,7 +1152,7 @@ DEFINE_IDTENTRY_SW(iret_error)
 }
 #endif
 
-/*/*xiaojin-gates trap_init*/
+/*xiaojin-gates trap_init*/
 void __init trap_init(void)
 {
 	/* Init cpu_entry_area before IST entries are set up */
