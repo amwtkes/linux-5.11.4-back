@@ -42,7 +42,7 @@ xiaojin.*time_interrupt -- 时间中断相关的代码
 xiaojin-irq-e1000 --- 网卡驱动模块
 xiaojin-interrupt-data -- 中断相关的数据结构
 xiaojin-interrupt-apic --- apic相关的初始化，跟IPI相关。CPU之间的中断。
-xiaojin-gates --- 基本
+xiaojin-gates --- 基本IDT相关的结构定义。
 xiaojin-gates define ---- 一些宏定义
 xiaojin-si --- 软中断相关
 xiaojin time_interrupt ---- 时间中断 tick
