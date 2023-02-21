@@ -26,10 +26,14 @@
  * declares the entry points for usage in C code. There is an ASM variant
  * as well which is used to emit the entry stubs in entry_32/64.S.
  */
-/*xiaojin-interrupt_process ***-2 申明asm_函数的地方
-you两个这个宏一个是生成汇编asm_handler的，汇编宏idtentry
+/*xiaojin-interrupt_process ***-2 (impo)申明asm_函数的地方
+有两个这个宏一个是生成汇编asm_handler的，汇编宏idtentry
 一个是这里。这里是要等汇编的编译以后，再跟内核的c语言再编译一遍的
 这里只是声明了这个asm的汇编函数。
+
+这个宏被很多其他宏二次包装：DECLARE_IDTENTRY_RAW，DECLARE_IDTENTRY_SYSVEC等等。
+
+这个宏还有个汇编版本，xiaojin-interrupt_process +2可以搜到。也可以看看上面的英文注释，也写了还有个汇编版本。note里面！
 */
 #define DECLARE_IDTENTRY(vector, func)					\
 	asmlinkage void asm_##func(void);				\
@@ -50,6 +54,9 @@ you两个这个宏一个是生成汇编asm_handler的，汇编宏idtentry
  * which has to run before returning to the low level assembly code.
  */
 /*xiaojin-interrupt_process -1 (exp)原理解释——为什么IDT的宏这么复杂？asm_func与func联系是什么？这里定义处理中断异常c函数的宏，最终会被汇编代码调起。.macro idtentry_body函数里面调起。为什么这么复杂的原因是，因为中断可以发生在用户态，也就是中断发生时，可以直接从用户态陷入内核，而且是进入特殊的内核，是中断上下文的内核。而运行完处理函数后，还需要返回到中断处继续执行，所以需要保存用户态的寄存器上下文——pt_regs，这也是为啥所有的中断处理函数，系统调用的原型其实都是只有一个pt_regs参数的原因。而为啥要汇编？因为，只有汇编函数可以处理寄存器啦！所以任何系统调用终端处理函数其实都是从汇编函数开始，业务逻辑都是写在C语言，而下面这个宏就是包装业务逻辑的宏。*/
+
+/* 可以看看这个函数的注释部分，@func是被asm调起的，所以IDT的处理应该是从汇编开始。
+*/
 #define DEFINE_IDTENTRY(func)						\
 static __always_inline void __##func(struct pt_regs *regs);		\
 									\
@@ -64,7 +71,8 @@ __visible noinstr void func(struct pt_regs *regs)			\
 }									\
 									\
 static __always_inline void __##func(struct pt_regs *regs)
-/*DEFINE_IDTENTRY到这里才结束，最后定义了__func的函数声明*/
+/*DEFINE_IDTENTRY到这里才结束，最后定义了__func的函数声明，业务函数部分其实是包含在这个地方，包装在__func里面。
+*/
 
 
 
@@ -445,7 +453,8 @@ __visible noinstr void func(struct pt_regs *regs,			\
 /*
  * The ASM variants for DECLARE_IDTENTRY*() which emit the ASM entry stubs.
  */
-/*xiaojin-interrupt_process +2 定义asm_函数的地方，调用idtentry这个汇编宏生成汇编的中断处理函数。注册到IDT中。*/
+/*xiaojin-interrupt_process +2 定义asm_函数的地方，调用idtentry这个汇编宏生成汇编的中断处理函数。注册到IDT中。
+*/
 #define DECLARE_IDTENTRY(vector, func)					\
 	idtentry vector asm_##func func has_error_code=0
 
