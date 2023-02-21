@@ -36,6 +36,10 @@ extern __always_inline unsigned long native_save_fl(void)
 }
 
 extern inline void native_restore_fl(unsigned long flags);
+
+/*xiaojin-interrupt -raw_local_irq_restore -2 用flags的值刷到eflags寄存器中。使用popf指令。
+
+*/
 extern inline void native_restore_fl(unsigned long flags)
 {
 	asm volatile("push %0 ; popf"
@@ -81,6 +85,8 @@ static __always_inline unsigned long arch_local_save_flags(void)
 	return native_save_fl();
 }
 
+/*xiaojin-interrupt -raw_local_irq_restore -1 arch_local_irq_restore
+*/
 static __always_inline void arch_local_irq_restore(unsigned long flags)
 {
 	native_restore_fl(flags);
