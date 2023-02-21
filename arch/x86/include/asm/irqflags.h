@@ -92,7 +92,7 @@ static __always_inline void arch_local_irq_restore(unsigned long flags)
 	native_restore_fl(flags);
 }
 
-/*xiaojin-interrupt -rq_disable arch_local_irq_disable (exp)这里只在手动保存rflags的时候会主动关闭终端。因为intel cpu会在陷入中断的时候自动将rflags寄存器压入栈中。
+/*xiaojin-interrupt -rq_disable arch_local_irq_disable (exp)这里只在手动保存rflags的时候会主动关闭终端。因为intel cpu会在陷入中断的时候自动将rflags寄存器压入栈中。只在一个地方用了——arch_local_irq_save()保存rflags寄存器的时候要禁止中断。
 */
 static __always_inline void arch_local_irq_disable(void)
 {
