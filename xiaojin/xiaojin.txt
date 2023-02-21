@@ -4,16 +4,13 @@ xiaojin-unknown --- 未解之谜
 重要的常识(前缀-comms) --- 重要的常识
 
 
-xiaojin.*time_interrupt -- 时间中断相关的代码
-xiaojin-irq-e1000 --- 网卡驱动模块
-
+===================================
 xiaojin-jiffies --- jiffies的更新
 xiaojin.*hrtimer_interrupt ---高精度时间中断代码
 xiaojin-lib  --- linux自己的库。跟libc对等的库，可以用于moudle的开发。因为module不能使用第三方库，由linux的模块自己做链接。
 xiaojin-lock --- linux的原子指令
 xiaojin-tracepoint -- trace_sched_waking这些监测点的宏跟踪，perf list | grep sched: 列出所有的监测点perf
-xiaojin-interrupt-data -- 中断相关的数据结构
-xiaojin-interrupt-apic --- apic相关的初始化，跟IPI相关。CPU之间的中断。
+
 
 ========rcu
 ___swait_event --- rcu_gp_kthread的休眠宏
@@ -40,7 +37,11 @@ xiaojin-syscall -- 系统调用相关
 
 
 ========interrupt exception gates
-xiaojin-irq --- 中断相关流程
+xiaojin-interrupt --- 中断相关流程interrupt总体流程
+xiaojin.*time_interrupt -- 时间中断相关的代码
+xiaojin-irq-e1000 --- 网卡驱动模块
+xiaojin-interrupt-data -- 中断相关的数据结构
+xiaojin-interrupt-apic --- apic相关的初始化，跟IPI相关。CPU之间的中断。
 xiaojin-gates --- 基本
 xiaojin-gates define ---- 一些宏定义
 xiaojin-si --- 软中断相关

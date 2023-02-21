@@ -44,6 +44,8 @@ extern inline void native_restore_fl(unsigned long flags)
 		     :"memory", "cc");
 }
 
+/*xiaojin-interrupt native_irq_disable 关闭中断
+*/
 static __always_inline void native_irq_disable(void)
 {
 	asm volatile("cli": : :"memory");
@@ -115,7 +117,7 @@ static inline __cpuidle void halt(void)
 /*
  * For spinlocks, etc:
  */
-/*xiaojin-irq arch_local_irq_save arch_local_save_flags ---- Push EFLAGS Register onto the Stack
+/*xiaojin-interrupt arch_local_irq_save arch_local_save_flags ---- Push EFLAGS Register onto the Stack
 参考：https://app.yinxiang.com/shard/s65/nl/15273355/4492290c-dcd0-4c00-a6f7-506f9cfea2fd
 保存eflag的同时要关闭中断*/
 static __always_inline unsigned long arch_local_irq_save(void)
