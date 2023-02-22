@@ -409,7 +409,8 @@ SYM_CODE_END(ret_from_fork)
  * @cfunc:		C function to be called
  * @has_error_code:	Hardware pushed error code on stack
  */
- /*xiaojin-interrupt_process 0.2 idtentry_body 中断body宏定义，先save_regs，然后call C的处理函数*/
+ /*xiaojin-interrupt_process 0.2 (impo)调用C语言的关键代码，包含了参数准备。idtentry_body 中断body宏定义，先save_regs，然后call C的处理函数
+ */
 .macro idtentry_body cfunc has_error_code:req
 
 	call	error_entry /*保存所有的寄存器*/
@@ -422,7 +423,7 @@ SYM_CODE_END(ret_from_fork)
 		movq	$-1, ORIG_RAX(%rsp)	/* no syscall to restart */
 	.endif
 
-	call	\cfunc /*调起实际的处理流程，是个c函数*/
+	call	\cfunc /*调起实际的处理流程，是个c函数。call指令做了两件事，将下一条指令也就是返回地址压栈，跳转到func地址执行*/
 
 	jmp	error_return
 .endm
