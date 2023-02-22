@@ -16,6 +16,8 @@
 #include <asm/mcs_spinlock.h>
 
 /*xiaojin-spinlock-qspinlock -2 mcs_spinlock struct*/
+/*xiaojin-spinlock-mcs 定义struct mcs_spinlock
+*/
 struct mcs_spinlock {
 	struct mcs_spinlock *next;
 	int locked; /* 1 if lock acquired */
