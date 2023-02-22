@@ -30,6 +30,7 @@ xiaojin-spinlock.*smp --- smp构架
 xiaojin-spinlock.*up --- up architecture
 xiaojin-spinlock.*arm 
 xiaojin-spinlock-qspinlock -- qspinlock相关
+xiaojin-spinlock-mcs -- mcs击鼓传花。另外ticket在arm下。
 
 =========syscall
 xiaojin-syscall -- 系统调用相关
