@@ -33,7 +33,11 @@
 	G(_vector, _addr, DEFAULT_STACK, GATE_INTERRUPT, DPL0, __KERNEL_CS)
 
 /* System interrupt gate */
-/*xiaojin-gates define-1 系统中断门 DPL3*/
+/*xiaojin-gates define-1 系统中断门 DPL3。可以从用户态进来的门。
+
+DPL3的解释参考：https://wiki.osdev.org/Interrupt_Descriptor_Table
+DPL: A 2-bit value which defines the CPU Privilege Levels which are allowed to access this interrupt via the INT instruction. Hardware interrupts ignore this mechanism.
+*/
 #define SYSG(_vector, _addr)				\
 	G(_vector, _addr, DEFAULT_STACK, GATE_INTERRUPT, DPL3, __KERNEL_CS)
 
