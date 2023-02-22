@@ -1152,7 +1152,8 @@ DEFINE_IDTENTRY_SW(iret_error)
 }
 #endif
 
-/*xiaojin-gates trap_init*/
+/*xiaojin-gates -0 trap_init
+*/
 void __init trap_init(void)
 {
 	/* Init cpu_entry_area before IST entries are set up */

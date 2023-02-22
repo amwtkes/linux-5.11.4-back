@@ -161,8 +161,12 @@ static const __initconst struct idt_data apic_idts[] = {
 };
 
 /* Must be page-aligned because the real IDT is used in the cpu entry area */
+/* xiaojin-gates -0 IDT的定义处===>idt_table[IDT_ENTRIES]。会有一系列的idt_setup_from_table来初始化所有的IDT表项。可以搜索查看。
+*/
 static gate_desc idt_table[IDT_ENTRIES] __page_aligned_bss;
 
+/*xiaojin-gates -3 idt_table的封装准备写入idtr寄存器。
+*/
 static struct desc_ptr idt_descr __ro_after_init = {
 	.size		= IDT_TABLE_SIZE - 1,
 	.address	= (unsigned long) idt_table,
@@ -181,6 +185,8 @@ bool idt_is_f00f_address(unsigned long address)
 }
 #endif
 
+/*xiaojin-gates -2 具体如何插入到idt中的函数。
+*/
 static __init void
 idt_setup_from_table(gate_desc *idt, const struct idt_data *t, int size, bool sys)
 {
@@ -188,7 +194,7 @@ idt_setup_from_table(gate_desc *idt, const struct idt_data *t, int size, bool sy
 
 	for (; size > 0; t++, size--) {
 		idt_init_desc(&desc, t);
-		write_idt_entry(idt, t->vector, &desc);
+		write_idt_entry(idt, t->vector, &desc); //memcopy就行了。
 		if (sys)
 			set_bit(t->vector, system_vectors);
 	}
@@ -220,6 +226,9 @@ void __init idt_setup_early_traps(void)
 /**
  * idt_setup_traps - Initialize the idt table with default traps
  */
+
+/*xiaojin-gates -1 IDT中陷阱门的初始化函数.idt_table是个全局变量，IDT的数组。def_idts是用ING宏描述的中断向量表项的数组，会填充到def_idts中。
+*/
 void __init idt_setup_traps(void)
 {
 	idt_setup_from_table(idt_table, def_idts, ARRAY_SIZE(def_idts), true);

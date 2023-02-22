@@ -83,6 +83,8 @@ struct idt_data {
 	const void	*addr;
 };
 
+/*xiaojin-gates IDT表项定义 struct gate_struct就是gate_desc。64位下，一共16个字节。
+*/
 struct gate_struct {
 	u16		offset_low;
 	u16		segment;
