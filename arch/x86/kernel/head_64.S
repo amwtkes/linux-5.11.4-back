@@ -38,6 +38,9 @@ L4_START_KERNEL = l4_index(__START_KERNEL_map)
 
 L3_START_KERNEL = pud_index(__START_KERNEL_map)
 
+
+/* xiaojin-longmode -1 (impo) 这里就是解压后内核的代码段位置。定义在vmlinux.lds.S中
+*/
 	.text
 	__HEAD
 	.code64

@@ -16,6 +16,8 @@ OUTPUT_ARCH(i386)
 ENTRY(startup_32)
 #endif
 
+/*xiaojin-longmode -1.1 linux内核的段设置
+*/
 SECTIONS
 {
 	/* Be careful parts of head_64.S assume startup_32 is at

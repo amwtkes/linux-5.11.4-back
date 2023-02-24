@@ -521,6 +521,8 @@ trampoline_return:
 /*
  * Jump to the relocated address.
  */
+ /*xiaojin-longmode -0 32位实模式从这里跳转到longmode
+ */
 	leaq	rva(.Lrelocated)(%rbx), %rax
 	jmp	*%rax
 SYM_CODE_END(startup_64)

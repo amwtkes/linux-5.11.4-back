@@ -103,7 +103,8 @@ xiaojin-sched-func ---调度相关的函数
 
 =========ld linking相关 vmlinux.lds相关
 xiaojin-ld ==== ld相关
-xiaojin-boot-head64 === 怎么到long mode的代码注释。
+xiaojin-boot-head64 === 怎么到long mode的代码注释。这里主要是为启动long mode做的准备。包括解压缩内核，页表初始化等等工作。
+xiaojin-longmode ==== 真正linux内核启动相关的代码，大部分C语言
 
 =====term
 xiaojin-term 一些术语
