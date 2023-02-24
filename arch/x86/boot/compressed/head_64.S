@@ -178,7 +178,22 @@ SYM_FUNC_START(startup_32)
 	bts	%eax, %edx	/* Set encryption mask for page tables */
 1:
 
-	/* Initialize Page tables to 0 */
+	/* Initialize Page tables to 0 
+	参考：https://0xax.gitbooks.io/linux-insides/content/Booting/linux-bootstrap-4.html
+	The Linux kernel uses 4-level paging, and we generally build 6 page tables:
+
+		One PML4 or Page Map Level 4 table with one entry;
+		One PDP or Page Directory Pointer table with four entries;
+		Four Page Directory tables with a total of 2048 entries.
+
+		Let's look at how this is implemented. First, we clear the buffer for the page tables in memory. Every table is 4096 bytes, so we need clear a 24 kilobyte buffer
+
+		We put the address of pgtable with an offset of ebx (remember that ebx points to the location in memory where the kernel will be decompressed later) into the edi register, clear the eax register and set the ecx register to 6144.
+
+		The rep stosl instruction will write the value of eax to the memory location where edi points to, increment edi by 4, and decrement ecx by 1. This operation will be repeated while the value of the ecx register is greater than zero. That's why we put 6144 or BOOT_INIT_PGT_SIZE/4 in ecx.
+
+xiaojin-boot-head64 -1	4GB pagetable的创建。
+	*/
 	leal	rva(pgtable)(%ebx), %edi
 	xorl	%eax, %eax
 	movl	$(BOOT_INIT_PGT_SIZE/4), %ecx
@@ -264,11 +279,16 @@ SYM_FUNC_START(startup_32)
 	pushl	$__KERNEL_CS
 	pushl	%eax
 
-	/* Enter paged protected Mode, activating Long Mode */
+	/* Enter paged protected Mode, activating Long Mode 
+	xiaojin-boot-head64 -2 这里开启分页开关，设置cr0. 此时startup_64函数地址在栈上了。
+	*/
 	movl	$(X86_CR0_PG | X86_CR0_PE), %eax /* Enable Paging and Protected mode */
 	movl	%eax, %cr0
 
 	/* Jump from 32bit compatibility mode into 64bit mode. */
+	/*xiaojin-boot-head64 -3 栈底被压入了startup_64的地址，这里lret就跳到了那里去执行了
+	参考：https://app.yinxiang.com/shard/s65/nl/15273355/6c8be8a9-28ea-4eb5-8a6b-fe9fae0c3101/
+	*/
 	lret
 SYM_FUNC_END(startup_32)
 
@@ -306,7 +326,7 @@ SYM_FUNC_END(efi32_stub_entry)
 
 	.code64
 	.org 0x200
-SYM_CODE_START(startup_64)
+SYM_CODE_START(startup_64) /*xiaojin-boot-head64 -4 开始执行64位代码*/
 	/*
 	 * 64bit entry is 0x200 and it is ABI so immutable!
 	 * We come here either from startup_32 or directly from a
@@ -671,6 +691,17 @@ SYM_DATA_START_LOCAL(gdt64)
 	.quad   gdt - gdt64
 SYM_DATA_END(gdt64)
 	.balign	8
+
+/*xiaojin-boot-head64 gdt的定义处 经常看到的
+    addl    %ebp, gdt+2(%ebp)
+    lgdt    gdt(%ebp)
+代码怎么来的。
+
+quote:https://0xax.gitbooks.io/linux-insides/content/Booting/linux-bootstrap-4.html
+We can see that it is located in the .data section and contains five descriptors: the first is a 32-bit descriptor for the kernel code segment, a 64-bit kernel segment, a kernel data segment and two task descriptors.
+
+We already loaded the Global Descriptor Table in the previous part, and now we're doing almost the same here, but we set descriptors to use CS.L = 1 and CS.D = 0 for execution in 64 bit mode. As we can see, the definition of the gdt starts with a two byte value: gdt_end - gdt which represents the address of the last byte in the gdt table or the table limit. The next four bytes contain the base address of the gdt.
+*/
 SYM_DATA_START_LOCAL(gdt)
 	.word	gdt_end - gdt - 1
 	.long	0

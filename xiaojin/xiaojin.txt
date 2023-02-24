@@ -103,6 +103,7 @@ xiaojin-sched-func ---调度相关的函数
 
 =========ld linking相关 vmlinux.lds相关
 xiaojin-ld ==== ld相关
+xiaojin-boot-head64 === 怎么到long mode的代码注释。
 
 =====term
 xiaojin-term 一些术语
