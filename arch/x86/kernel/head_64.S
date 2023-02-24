@@ -90,6 +90,10 @@ SYM_CODE_START_NOALIGN(startup_64)
 	 * is active) to be added to the initial pgdir entry that will be
 	 * programmed into CR3.
 	 */
+
+	 /*xiaojin-longmode -M (impo) 寄存器相对地址概念-》这里就是将_text的地址放入了rdi寄存器中。在链接后会将_text符号替换成实际_text地址相对此时rdi寄存器值的偏移量。
+	 参考：https://app.yinxiang.com/shard/s65/nl/15273355/5f1c9b32-e832-42b4-b170-72eecda03838/
+	 */
 	leaq	_text(%rip), %rdi
 	pushq	%rsi
 	call	__startup_64
