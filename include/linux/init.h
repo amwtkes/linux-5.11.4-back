@@ -93,7 +93,12 @@
 #define __memexitdata    __section(".memexit.data")
 #define __memexitconst   __section(".memexit.rodata")
 
-/* For assembly routines */
+/* For assembly routines 
+xiaojin-ld 是linking script。ax表示可执行是个flag，.head.text代码放入的段名。
+参考：https://0xax.gitbooks.io/linux-insides/content/Booting/linux-bootstrap-4.html
+这段：
+If you are not familiar with the syntax of the GNU LD linker scripting language, you can find more information in its documentation. In short, the . symbol is a special linker variable, the location counter. The value assigned to it is an offset relative to the segment. In our case, we set the location counter to zero. This means that our code is linked to run from an offset of 0 in memory. This is also stated in the comments:
+*/
 #define __HEAD		.section	".head.text","ax"
 #define __INIT		.section	".init.text","ax"
 #define __FINIT		.previous

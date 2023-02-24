@@ -101,6 +101,8 @@ xiaojin-contextswitch --- 进程第一定律是核心。任何调度都是靠sch
 xiaojin-sched-data ---调度相关的数据结构
 xiaojin-sched-func ---调度相关的函数
 
+=========ld linking相关 vmlinux.lds相关
+xiaojin-ld ==== ld相关
 
 =====term
 xiaojin-term 一些术语
