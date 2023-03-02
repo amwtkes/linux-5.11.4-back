@@ -1,3 +1,6 @@
+==怎么阅读
+-- 关键字，可以直接搜索源码得到相关的信息。
+
 xiaojin-unknown --- 未解之谜
 原理解释（前缀-exp） --- 带有原理解释的字样，表示在阐述重要的过程。前缀-exp。
 重要代码（前缀-impo) -- 重要的代码片段。
@@ -86,8 +89,6 @@ xiaojin-mm-memblock --- memblock这种boot阶段的内存管理，实模式下�
 xiaojin-mm-e820 --- int15 e820的代码，初始化memblock
 xiaojin-mm-pgd --- 全局页目录表的创建过程，fork中对于全局页目录表是会拷贝的。
 
-xiaojin-mm-F === 相关函数的单独解释
-
 ------------kthread 这块
 xiaojin-kthread -内核线程创建这块
 xiaojin-percpu_kthread_cpu0_run ---内核如何启动多核的.是由一个core来启动其他核。
@@ -103,19 +104,13 @@ xiaojin-contextswitch --- 进程第一定律是核心。任何调度都是靠sch
 xiaojin-sched-data ---调度相关的数据结构
 xiaojin-sched-func ---调度相关的函数
 
-xiaojin-kernel_stack ==== 创建内核栈的地方
-xiaojin-contextswitch-F === 单独函数解释
-
-
 =========ld linking相关 vmlinux.lds相关
 xiaojin-ld ==== ld相关
 xiaojin-boot-head64 === 怎么到long mode的代码注释。这里主要是为启动long mode做的准备。包括解压缩内核，页表初始化等等工作。
-xiaojin-boot-head64-pagetable   ==== 早期4GB地址空间的页表创建
 xiaojin-longmode ==== 真正linux内核启动相关的代码，大部分C语言
 
 =====term
 xiaojin-term 一些术语
-xiaojin-inline-assembly   内联汇编
 
 [gup] === get user page
 
@@ -142,7 +137,7 @@ xiaojin-inline-assembly   内联汇编
 ============macroes
 xiaojin-bitmap --- bitmap的操作代码
 
-[内联汇编 inline assembler] 参考：https://app.yinxiang.com/shard/s65/nl/15273355/82634855-ee0b-44fa-a52f-0f89839be679/
+
 
 =========syscalls
 xiaojin-futex  
