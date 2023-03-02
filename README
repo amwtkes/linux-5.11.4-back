@@ -1,18 +1,148 @@
-Linux kernel
-============
+xiaojin-unknown --- 未解之谜
+原理解释（前缀-exp） --- 带有原理解释的字样，表示在阐述重要的过程。前缀-exp。
+重要代码（前缀-impo) -- 重要的代码片段。
+重要的常识(前缀-comms) --- 重要的常识
 
-There are several guides for kernel developers and users. These guides can
-be rendered in a number of formats, like HTML and PDF. Please read
-Documentation/admin-guide/README.rst first.
 
-In order to build the documentation, use ``make htmldocs`` or
-``make pdfdocs``.  The formatted documentation can also be read online at:
+===================================
+xiaojin-jiffies --- jiffies的更新
+xiaojin.*hrtimer_interrupt ---高精度时间中断代码
+xiaojin-lib  --- linux自己的库。跟libc对等的库，可以用于moudle的开发。因为module不能使用第三方库，由linux的模块自己做链接。
+xiaojin-lock --- linux的原子指令
+xiaojin-tracepoint -- trace_sched_waking这些监测点的宏跟踪，perf list | grep sched: 列出所有的监测点perf
 
-    https://www.kernel.org/doc/html/latest/
 
-There are various text files in the Documentation/ subdirectory,
-several of them using the Restructured Text markup notation.
+========rcu
+___swait_event --- rcu_gp_kthread的休眠宏
+rcu_qs -- 上报qs的各个情况
+rcu_gp_kthread -- 概念澄清一段已经介绍了宽限期的处理由内核线程rcu_gp_kthread全权负责，现在一起来分析下此线程的逻辑。
+xiaojin-rcu.*interrupt -- rcu在时间中断的代码
+xiaojin-rcu-synchronize_rcu --- 进入rcu gp的函数
+xiaojin-rcu rcu_segcblist --- rcu_data中的callback list
+xiaojin-rcu rcu_gp_kthread -- rcu核心线程的过程
+xiaojin-rcu-eqs --- rcu的eqs解释
+xiaojin-rcu-event ----rcu状态机
+xiaojin-rcu-example --- 例子
 
-Please read the Documentation/process/changes.rst file, as it contains the
-requirements for building and running the kernel, and information about
-the problems which may result by upgrading your kernel.
+=========spinlock
+xiaojin-spinlock ---
+xiaojin-spinlock.*smp --- smp构架
+xiaojin-spinlock.*up --- up architecture
+xiaojin-spinlock.*arm 
+xiaojin-spinlock-qspinlock -- qspinlock相关
+xiaojin-spinlock-mcs -- mcs击鼓传花。另外ticket在arm下。
+
+=========syscall
+xiaojin-syscall -- 系统调用相关
+
+
+
+========interrupt exception gates
+xiaojin-interrupt - --- 一些重要的宏定义
+xiaojin-interrupt_process ---- interrupt使用的idt包装宏，以及整个CPU的中断处理流程。
+xiaojin-gates --- 基本IDT相关的结构定义，已经整个中断处理流程的描述都在了。真正的流程在这里。IDTR的初始化代码。
+xiaojin.*time_interrupt -- 时间中断相关的代码
+xiaojin-irq-e1000 --- 网卡驱动模块
+xiaojin-interrupt-data -- 中断相关的数据结构
+xiaojin-interrupt-apic --- apic相关的初始化，跟IPI相关。CPU之间的中断。
+xiaojin-gates define ---- 一些宏定义
+xiaojin-si --- 软中断相关
+xiaojin time_interrupt ---- 时间中断 tick
+xiaojin-input ---- 键盘中断处理函数
+xiaojin-interrupt-page_fault ----- 缺页异常
+
+-=========xiaojin-accounting
+xiaojin-accounting --- cpu统计信息
+
+=========PER_CPU=======
+xiaojin-percpu ---- percpu的含义 参考文档：https://app.yinxiang.com/shard/s65/nl/15273355/b75171a4-4d50-4e53-9019-7512b2b3305f/
+
+
+==============context switch =======
+xiaojin-contextswitch
+
+
+
+
+===============内存这块
+xiaojin-mm-datastructure  --- 数据结构
+xiaojin-percpu --- 每cpu变量
+xiaojin-mm-cr3 ---- cr3的更新
+xiaojin-mm-data-page --- 内核虚拟内存 页转换宏 __START_KERNEL __START_KERNEL_map 等等
+xiaojin-mm-page-table-macro --- page table entry相关的宏
+xiaojin-mm-mem_map-setup --- 初始化一个node下所有page描述符数组mem_map的流程
+xiaojin-gdt-data --- gdt相关 分段相关
+xiaojin-gdt-func
+xiaojin-mm-page-kernel ---- 内核页的分配
+xiaojin-mm-build_all_zonelists --- NUMA下zone的初始化
+xiaojin-mm-sparsemem  --- 稀疏内存-numa的page struct维护
+xiaojin-mm-sparsemem-pagetable --- 分配页表相关的操作
+xiaojin-mm-buddy --- buddy system相关
+xiaojin-mm-gfp --- how to get free page
+xiaojin-mm-hotplug --- 内存热插拔 (memory_hotplug.c, memory-hotplug.rst)
+xiaojin-mm-sparsemem-subsection --- subsection相关的宏
+xiaojin-mm-sparsemem-section-macroes
+xiaojin-mm-memblock --- memblock这种boot阶段的内存管理，实模式下的物理内存管理机制，数据来源于int 15 e820的bios中断处理函数。初始化sparse的前置模块。
+xiaojin-mm-e820 --- int15 e820的代码，初始化memblock
+xiaojin-mm-pgd --- 全局页目录表的创建过程，fork中对于全局页目录表是会拷贝的。
+
+xiaojin-mm-F === 相关函数的单独解释
+
+------------kthread 这块
+xiaojin-kthread -内核线程创建这块
+xiaojin-percpu_kthread_cpu0_run ---内核如何启动多核的.是由一个core来启动其他核。
+    xiaojin-percpu_kthread_cpu0_run.*secondary（最后通过使得AP进入idle schedule来进入任务调度。schedule()是关键）
+    xiaojin RESCHEDULE_VECTOR 这里做idle的唤醒IPI。
+xiaojin-percpu_kthread -- percpu内核线程亲和力的设置
+xiaojin-cpumask ----cpu的位图相关
+xiaojin-early_initcall ---- linux的初始化代码原理解释。__init与early_init
+
+
+=========sched 
+xiaojin-contextswitch --- 进程第一定律是核心。任何调度都是靠schedule()函数来切换的，其他的切换点只是打标记。为了效率，因为中断与系统调用往往需要更短的执行时间，而真正的调度发生在汇编中，涉及到多个寄存器的切换，所以跟CPU体系架构有关。
+xiaojin-sched-data ---调度相关的数据结构
+xiaojin-sched-func ---调度相关的函数
+
+xiaojin-kernel_stack ==== 创建内核栈的地方
+xiaojin-contextswitch-F === 单独函数解释
+
+
+=========ld linking相关 vmlinux.lds相关
+xiaojin-ld ==== ld相关
+xiaojin-boot-head64 === 怎么到long mode的代码注释。这里主要是为启动long mode做的准备。包括解压缩内核，页表初始化等等工作。
+xiaojin-boot-head64-pagetable   ==== 早期4GB地址空间的页表创建
+xiaojin-longmode ==== 真正linux内核启动相关的代码，大部分C语言
+
+=====term
+xiaojin-term 一些术语
+xiaojin-inline-assembly   内联汇编
+
+[gup] === get user page
+
+[pi]  ==== priority inheritance (PI)  futex context. https://lwn.net/Articles/360699/ (A futex overview and update)。（https://www.wikiwand.com/en/Priority_inheritance）PI的意思是，有
+三个进程 H M L（High Middle low），当L先占有资源，然后阻塞了H与M，这时L运行的时候就可以继承H的优先级，不被M抢占执行，等L执行完释放资源后，H接着执行，M再执行。不用PI就是L有可能被M抢占，H最后才被执行，显然不是很合理。
+
+[compound page] === 一组页组成的大页，按指数来定大小。第一个page是head 其余都是tail。https://app.yinxiang.com/shard/s65/nl/15273355/8050f9d5-8453-4628-9a22-1872ec900e51
+
+[hi] --- HI_SOFTIRQ表示高优先级任务。 http://www.embeddedlinux.org.cn/linux_net/0596002556/understandlni-CHP-9-SECT-3.html
+
+[asmlinkage] === https://app.yinxiang.com/shard/s65/nl/15273355/2b1356dc-81f9-4b27-97d8-7934bb5d6937 .简单说就是标记函数不能从寄存器拿参数只能从栈上拿。同时还代表汇编文件可以调用这个C函数。
+
+ 
+[SYM_FUNC_START, SYM_FUNC_END, SYM_CODE_START SYM_DATA在汇编中是什么意思？] https://app.yinxiang.com/shard/s65/nl/15273355/8155ff9b-e8f8-41e0-ac49-e73f948e1fef
+
+[/Users/xiaojin/workspace/big_repo/linux-5.11.4/include/linux/atomic-arch-fallback.h] 带有fallback的文件都是缺省arch相关的文件会引用的地方.
+
+[comms-返回用户态/back to user]：用户态的程序不能长期执行，因为时钟中断是将那些while(1)拉下来去内核，然后夺走执行权给别的进程，但是内核态是不能被任何机制中断返回到用户态的。不管是syscall还是中断处理程序，都要显式的调用back_to_user来返回，否则会出问题。所以spinlcok-mcs可以做成percpu的原因，rcu的quiescent state的判断都要用到这个常识。
+
+
+[EXPORT_SYMBOL] 这个东西是用来给模块用的，linux中模块是可以热插拔的，对于linux这个大单体怎么热插拔？就是通过集成一个编译器进来，然后通过将特定的符号进行导出然后链接在一起实现加载。这个宏用来将特定符号进行导出的，可以看做动态链接的过程。
+参考：https://app.yinxiang.com/shard/s65/nl/15273355/1c5b8bb9-e321-44fd-abef-768d58676379/   https://app.yinxiang.com/shard/s65/nl/15273355/4accfda7-b651-4e7e-ac51-b07e0447326e/
+
+============macroes
+xiaojin-bitmap --- bitmap的操作代码
+
+[内联汇编 inline assembler] 参考：https://app.yinxiang.com/shard/s65/nl/15273355/82634855-ee0b-44fa-a52f-0f89839be679/
+
+=========syscalls
+xiaojin-futex  
